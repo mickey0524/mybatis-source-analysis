@@ -20,10 +20,14 @@ import org.apache.ibatis.executor.ErrorContext;
 /**
  * @author Clinton Begin
  */
+/**
+ * 异常工厂类，提供静态方法 wrapException，将异常包裹成 PersistenceException
+ */
 public class ExceptionFactory {
 
   private ExceptionFactory() {
     // Prevent Instantiation
+    // 防止实例化
   }
 
   public static RuntimeException wrapException(String message, Exception e) {

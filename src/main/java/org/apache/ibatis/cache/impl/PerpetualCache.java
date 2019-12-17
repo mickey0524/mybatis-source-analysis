@@ -24,6 +24,9 @@ import org.apache.ibatis.cache.CacheException;
 /**
  * @author Clinton Begin
  */
+/**
+ * 永动的 Cache，没有限制，内部就是一个 HashMap
+ */
 public class PerpetualCache implements Cache {
 
   private final String id;

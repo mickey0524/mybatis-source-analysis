@@ -20,6 +20,9 @@ import org.apache.ibatis.exceptions.PersistenceException;
 /**
  * @author Clinton Begin
  */
+/**
+ * Cache 的异常
+ */
 public class CacheException extends PersistenceException {
 
   private static final long serialVersionUID = -193202262468464650L;

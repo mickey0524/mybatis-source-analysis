@@ -29,7 +29,8 @@ public class CacheKey implements Cloneable, Serializable {
 
   private static final long serialVersionUID = 1146682552656046210L;
 
-  public static final CacheKey NULL_CACHE_KEY = new CacheKey(){
+  // 将 NullCacheKey.java 文件废弃，转而定义在了 CacheKey 内部
+  public static final CacheKey NULL_CACHE_KEY = new CacheKey() {
     @Override
     public void update(Object object) {
       throw new CacheException("Not allowed to update a null cache key instance.");
@@ -43,7 +44,7 @@ public class CacheKey implements Cloneable, Serializable {
   private static final int DEFAULT_MULTIPLIER = 37;
   private static final int DEFAULT_HASHCODE = 17;
 
-  private final int multiplier;
+  private final int multiplier;  // 乘数，就和 String.java 中 hashCode 方法中的 31 一样作用
   private int hashcode;
   private long checksum;
   private int count;
@@ -57,6 +58,7 @@ public class CacheKey implements Cloneable, Serializable {
     this.updateList = new ArrayList<>();
   }
 
+  // 传入 objects 对象的构造函数
   public CacheKey(Object[] objects) {
     this();
     updateAll(objects);
@@ -67,6 +69,7 @@ public class CacheKey implements Cloneable, Serializable {
   }
 
   public void update(Object object) {
+    // object 为 null 的时候，ArrayUtil.hashCode 方法会返回 0
     int baseHashCode = object == null ? 1 : ArrayUtil.hashCode(object);
 
     count++;
@@ -125,6 +128,7 @@ public class CacheKey implements Cloneable, Serializable {
     StringJoiner returnValue = new StringJoiner(":");
     returnValue.add(String.valueOf(hashcode));
     returnValue.add(String.valueOf(checksum));
+    // StringJoiner 能够配合 Lambda 使用
     updateList.stream().map(ArrayUtil::toString).forEach(returnValue::add);
     return returnValue.toString();
   }
@@ -132,7 +136,7 @@ public class CacheKey implements Cloneable, Serializable {
   @Override
   public CacheKey clone() throws CloneNotSupportedException {
     CacheKey clonedCacheKey = (CacheKey) super.clone();
-    clonedCacheKey.updateList = new ArrayList<>(updateList);
+    clonedCacheKey.updateList = new ArrayList<>(updateList);  // 深拷贝
     return clonedCacheKey;
   }
 

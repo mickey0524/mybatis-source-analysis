@@ -20,6 +20,10 @@ import java.util.Arrays;
 /**
  * Provides hashCode, equals and toString methods that can handle array.
  */
+/**
+ * 提供数组的 hashCode、equals 以及 toString 方法
+ * 本质上就是通过反射获取数组类型，转型后调用相应的 Arrays 中提供的方法
+ */
 public class ArrayUtil {
 
   /**
@@ -32,12 +36,16 @@ public class ArrayUtil {
   public static int hashCode(Object obj) {
     if (obj == null) {
       // for consistency with Arrays#hashCode() and Objects#hashCode()
+      // 与 Arrays.hashCode 方法和 Objects.hashCode 方法保持一致
+      // Objects.hashCode 方法内部调用的就是 Arrays.hashCode
       return 0;
     }
     final Class<?> clazz = obj.getClass();
+    // 优先判断是否是数组
     if (!clazz.isArray()) {
       return obj.hashCode();
     }
+    // 获取数组元素类型
     final Class<?> componentType = clazz.getComponentType();
     if (long.class.equals(componentType)) {
       return Arrays.hashCode((long[]) obj);

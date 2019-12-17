@@ -38,24 +38,30 @@ import java.util.concurrent.locks.ReadWriteLock;
  *
  * @author Clinton Begin
  */
-
+/**
+ * 缓存的接口
+ */
 public interface Cache {
 
   /**
    * @return The identifier of this cache
    */
+  // 获取缓存实例的 id
   String getId();
 
   /**
    * @param key Can be any object but usually it is a {@link CacheKey}
    * @param value The result of a select.
    */
+  // 存入键值对
+  // key 可以为任何对象，但通常来说，key 是 CacheKey 的实例
   void putObject(Object key, Object value);
 
   /**
    * @param key The key
    * @return The object stored in the cache.
    */
+  // 获取 key 对应的 value
   Object getObject(Object key);
 
   /**
@@ -72,11 +78,13 @@ public interface Cache {
    * @param key The key
    * @return Not used
    */
+  // 删除 key
   Object removeObject(Object key);
 
   /**
    * Clears this cache instance.
    */
+  // 清空缓存实例
   void clear();
 
   /**
@@ -84,6 +92,7 @@ public interface Cache {
    *
    * @return The number of elements stored in the cache (not its capacity).
    */
+  // 获取缓存中存储的键值对总数
   int getSize();
 
   /**
@@ -93,6 +102,7 @@ public interface Cache {
    *
    * @return A ReadWriteLock
    */
+  // 获取读写锁
   default ReadWriteLock getReadWriteLock() {
     return null;
   }
