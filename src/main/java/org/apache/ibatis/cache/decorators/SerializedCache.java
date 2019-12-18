@@ -31,6 +31,7 @@ import org.apache.ibatis.io.Resources;
 /**
  * @author Clinton Begin
  */
+// 序列化的 Cache 装饰器，value 写入的时候需要被序列化，读取的时候需要被反序列化
 public class SerializedCache implements Cache {
 
   private final Cache delegate;

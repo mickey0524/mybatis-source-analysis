@@ -20,6 +20,7 @@ import org.apache.ibatis.cache.Cache;
 /**
  * @author Clinton Begin
  */
+// 方法全部加上了 synchronized 关键字
 public class SynchronizedCache implements Cache {
 
   private final Cache delegate;

@@ -25,16 +25,17 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
+// 先来先出的 Cache 装饰器
 public class FifoCache implements Cache {
 
   private final Cache delegate;
-  private final Deque<Object> keyList;
+  private final Deque<Object> keyList;  // 用 keyList 记录 key 进入 Cache 的位置 
   private int size;
 
   public FifoCache(Cache delegate) {
     this.delegate = delegate;
     this.keyList = new LinkedList<>();
-    this.size = 1024;
+    this.size = 1024;  // 这个 1024 可以抽成一个 DEFAULT_FIFO_SIZE 的常量
   }
 
   @Override
@@ -73,6 +74,7 @@ public class FifoCache implements Cache {
     keyList.clear();
   }
 
+  // putObject 方法中调用了 cycleKeyList 方法
   private void cycleKeyList(Object key) {
     keyList.addLast(key);
     if (keyList.size() > size) {

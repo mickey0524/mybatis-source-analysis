@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Clinton Begin
  */
+// 定时清理（清空）的 Cache 装饰器
 public class ScheduledCache implements Cache {
 
   private final Cache delegate;
@@ -30,8 +31,8 @@ public class ScheduledCache implements Cache {
 
   public ScheduledCache(Cache delegate) {
     this.delegate = delegate;
-    this.clearInterval = TimeUnit.HOURS.toMillis(1);
-    this.lastClear = System.currentTimeMillis();
+    this.clearInterval = TimeUnit.HOURS.toMillis(1);  // clear 的时间间隔
+    this.lastClear = System.currentTimeMillis();  // 上一次 clear 的时刻
   }
 
   public void setClearInterval(long clearInterval) {

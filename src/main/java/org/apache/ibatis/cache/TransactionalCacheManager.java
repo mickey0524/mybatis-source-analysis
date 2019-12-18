@@ -23,6 +23,7 @@ import org.apache.ibatis.cache.decorators.TransactionalCache;
 /**
  * @author Clinton Begin
  */
+// 事务 Cache 的管理者
 public class TransactionalCacheManager {
 
   private final Map<Cache, TransactionalCache> transactionalCaches = new HashMap<>();

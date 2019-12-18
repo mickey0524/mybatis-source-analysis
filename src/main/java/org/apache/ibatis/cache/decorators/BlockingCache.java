@@ -33,6 +33,7 @@ import org.apache.ibatis.cache.CacheException;
  * @author Eduardo Macarron
  *
  */
+// 简单低效的 BlockingCache 的装饰器
 public class BlockingCache implements Cache {
 
   private long timeout;
@@ -85,6 +86,7 @@ public class BlockingCache implements Cache {
     delegate.clear();
   }
 
+  // getOrDefault
   private ReentrantLock getLockForKey(Object key) {
     return locks.computeIfAbsent(key, k -> new ReentrantLock());
   }
@@ -107,7 +109,7 @@ public class BlockingCache implements Cache {
 
   private void releaseLock(Object key) {
     ReentrantLock lock = locks.get(key);
-    if (lock.isHeldByCurrentThread()) {
+    if (lock.isHeldByCurrentThread()) {  // 这里会发生 NPE 吧。。。
       lock.unlock();
     }
   }

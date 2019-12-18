@@ -22,12 +22,13 @@ import org.apache.ibatis.logging.LogFactory;
 /**
  * @author Clinton Begin
  */
+// 记录日志的 Cache 装饰器
 public class LoggingCache implements Cache {
 
   private final Log log;
   private final Cache delegate;
-  protected int requests = 0;
-  protected int hits = 0;
+  protected int requests = 0;  // getObject 的调用方法
+  protected int hits = 0;  // getObject 传入的 key 在 Cache 中的次数
 
   public LoggingCache(Cache delegate) {
     this.delegate = delegate;

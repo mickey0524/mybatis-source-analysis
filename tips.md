@@ -44,3 +44,28 @@ if (long.class.equals(componentType)) {
   ...
 }
 ```
+
+## 装饰器模式的使用
+
+可以定义一个基本接口，比如 Cache
+
+```java
+public interface Cache {
+  // 写入 Cache
+  void putObject(Object key, Object value);
+
+  // 获取 key 对应的 value
+  Object getObject(Object key);
+}
+```
+
+然后定义一堆装饰器类，这些类都实现 Cache 接口，同时定义了一个 Cache 类型的变量
+
+```java
+public class FIFOCache implements Cache {
+  private final Cache delegate;
+
+  ...
+
+}
+```

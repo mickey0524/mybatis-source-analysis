@@ -28,15 +28,16 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
+// 软引用的 Cache 装饰器
 public class SoftCache implements Cache {
-  private final Deque<Object> hardLinksToAvoidGarbageCollection;
-  private final ReferenceQueue<Object> queueOfGarbageCollectedEntries;
+  private final Deque<Object> hardLinksToAvoidGarbageCollection;  // 链表用来引用元素，防止垃圾回收，放入队列，变成强引用
+  private final ReferenceQueue<Object> queueOfGarbageCollectedEntries;  // 被垃圾回收的引用队列
   private final Cache delegate;
   private int numberOfHardLinks;
 
   public SoftCache(Cache delegate) {
     this.delegate = delegate;
-    this.numberOfHardLinks = 256;
+    this.numberOfHardLinks = 256;  // 256 可以抽象为常量 DEFAULT_HARD_LINK_LEN
     this.hardLinksToAvoidGarbageCollection = new LinkedList<>();
     this.queueOfGarbageCollectedEntries = new ReferenceQueue<>();
   }
@@ -52,7 +53,7 @@ public class SoftCache implements Cache {
     return delegate.getSize();
   }
 
-
+  // 这个函数命名，emmmm。
   public void setSize(int size) {
     this.numberOfHardLinks = size;
   }
@@ -100,6 +101,7 @@ public class SoftCache implements Cache {
     delegate.clear();
   }
 
+  // 将 ReferenceQueue 中的元素的对应的 key 从子 Cache 中删除
   private void removeGarbageCollectedItems() {
     SoftEntry sv;
     while ((sv = (SoftEntry) queueOfGarbageCollectedEntries.poll()) != null) {
@@ -111,7 +113,7 @@ public class SoftCache implements Cache {
     private final Object key;
 
     SoftEntry(Object key, Object value, ReferenceQueue<Object> garbageCollectionQueue) {
-      super(value, garbageCollectionQueue);
+      super(value, garbageCollectionQueue);  // 将 value 传递给 ReferenceQueue，保留 key 用来和 delegate 交互
       this.key = key;
     }
   }

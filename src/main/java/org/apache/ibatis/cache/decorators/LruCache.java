@@ -25,10 +25,11 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
+// 最近最少使用的 Cache 装饰器
 public class LruCache implements Cache {
 
   private final Cache delegate;
-  private Map<Object, Object> keyMap;
+  private Map<Object, Object> keyMap;  // 如果是我的话，这个 Map 的 Value 类型会使用 Byte，省空间，反正也没用
   private Object eldestKey;
 
   public LruCache(Cache delegate) {
@@ -46,6 +47,7 @@ public class LruCache implements Cache {
     return delegate.getSize();
   }
 
+  // 定义 LinkedHashMap 用作 LRU
   public void setSize(final int size) {
     keyMap = new LinkedHashMap<Object, Object>(size, .75F, true) {
       private static final long serialVersionUID = 4267176411845948333L;
@@ -69,7 +71,7 @@ public class LruCache implements Cache {
 
   @Override
   public Object getObject(Object key) {
-    keyMap.get(key); //touch
+    keyMap.get(key); // touch
     return delegate.getObject(key);
   }
 

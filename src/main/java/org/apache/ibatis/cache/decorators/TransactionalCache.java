@@ -35,14 +35,16 @@ import org.apache.ibatis.logging.LogFactory;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+// 事务缓存
+// 一次性存入多个 key，移除多个 key
 public class TransactionalCache implements Cache {
 
   private static final Log log = LogFactory.getLog(TransactionalCache.class);
 
   private final Cache delegate;
-  private boolean clearOnCommit;
-  private final Map<Object, Object> entriesToAddOnCommit;
-  private final Set<Object> entriesMissedInCache;
+  private boolean clearOnCommit;  // commit 的时候是否需要清理缓存
+  private final Map<Object, Object> entriesToAddOnCommit;  // commit 时候需要添加的缓存
+  private final Set<Object> entriesMissedInCache;  // Cache 中不存在的 key 集合
 
   public TransactionalCache(Cache delegate) {
     this.delegate = delegate;
@@ -76,6 +78,7 @@ public class TransactionalCache implements Cache {
     }
   }
 
+  // putObject 并不直接向 delegate 中写 kv pair
   @Override
   public void putObject(Object key, Object object) {
     entriesToAddOnCommit.put(key, object);
