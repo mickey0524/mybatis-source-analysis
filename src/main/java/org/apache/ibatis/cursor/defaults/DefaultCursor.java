@@ -44,28 +44,33 @@ public class DefaultCursor<T> implements Cursor<T> {
   protected final ObjectWrapperResultHandler<T> objectWrapperResultHandler = new ObjectWrapperResultHandler<>();
 
   private final CursorIterator cursorIterator = new CursorIterator();
-  private boolean iteratorRetrieved;
+  private boolean iteratorRetrieved;  // 用于限制 iterator 方法仅使用一次
 
   private CursorStatus status = CursorStatus.CREATED;
   private int indexWithRowBound = -1;
 
+  // Cursor 状态
   private enum CursorStatus {
 
     /**
      * A freshly created cursor, database ResultSet consuming has not started.
      */
+    // 一个新创建的 cursor，数据拉取还没开始
     CREATED,
     /**
      * A cursor currently in use, database ResultSet consuming has started.
      */
+    // cursor 已经开始使用，数据拉取开始
     OPEN,
     /**
      * A closed cursor, not fully consumed.
      */
+    // cursor 关闭，数据没有完全拉取完毕
     CLOSED,
     /**
      * A fully consumed cursor, a consumed cursor is always closed.
      */
+    // 数据拉取完毕
     CONSUMED
   }
 
@@ -129,6 +134,7 @@ public class DefaultCursor<T> implements Cursor<T> {
     return result;
   }
 
+  // 从 DB 中拉取下一个 Object
   protected T fetchNextObjectFromDatabase() {
     if (isClosed()) {
       return null;
@@ -166,8 +172,8 @@ public class DefaultCursor<T> implements Cursor<T> {
     return indexWithRowBound + 1;
   }
 
+  
   protected static class ObjectWrapperResultHandler<T> implements ResultHandler<T> {
-
     protected T result;
     protected boolean fetched;
 
@@ -179,11 +185,13 @@ public class DefaultCursor<T> implements Cursor<T> {
     }
   }
 
+  // Cursor 迭代器
   protected class CursorIterator implements Iterator<T> {
 
     /**
      * Holder for the next object to be returned.
      */
+    // 存放下一个被返回的 object
     T object;
 
     /**
@@ -204,6 +212,7 @@ public class DefaultCursor<T> implements Cursor<T> {
       // Fill next with object fetched from hasNext()
       T next = object;
 
+      // 如果调用 next 前没有调用 hasNext，就需要手动调用 fetchNextUsingRowBound 方法
       if (!objectWrapperResultHandler.fetched) {
         next = fetchNextUsingRowBound();
       }

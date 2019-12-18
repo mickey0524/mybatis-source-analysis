@@ -18,14 +18,17 @@ package org.apache.ibatis.session;
 /**
  * @author Clinton Begin
  */
+/**
+ * 分页用
+ */
 public class RowBounds {
 
   public static final int NO_ROW_OFFSET = 0;
   public static final int NO_ROW_LIMIT = Integer.MAX_VALUE;
   public static final RowBounds DEFAULT = new RowBounds();
 
-  private final int offset;
-  private final int limit;
+  private final int offset;  // 从哪里开始
+  private final int limit;  // 限制多少条
 
   public RowBounds() {
     this.offset = NO_ROW_OFFSET;
