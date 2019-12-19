@@ -48,6 +48,7 @@ public final class ConnectionLogger extends BaseJdbcLogger implements Invocation
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, params);
       }
+      // Connection 实例对应的方法
       if ("prepareStatement".equals(method.getName())) {
         if (isDebugEnabled()) {
           debug(" Preparing: " + removeBreakingWhitespace((String) params[0]), true);

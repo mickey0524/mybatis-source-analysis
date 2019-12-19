@@ -20,6 +20,7 @@ import org.apache.ibatis.logging.Log;
 /**
  * @author Clinton Begin
  */
+// 输出流和错误流的 Log
 public class StdOutImpl implements Log {
 
   public StdOutImpl(String clazz) {

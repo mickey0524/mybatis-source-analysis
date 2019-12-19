@@ -40,8 +40,8 @@ import org.apache.ibatis.reflection.ArrayUtil;
  */
 public abstract class BaseJdbcLogger {
 
-  protected static final Set<String> SET_METHODS;
-  protected static final Set<String> EXECUTE_METHODS = new HashSet<>();
+  protected static final Set<String> SET_METHODS;  // 存储所有以 set 开头的方法名
+  protected static final Set<String> EXECUTE_METHODS = new HashSet<>();  // 存储 execute 方法
 
   private final Map<Object, Object> columnMap = new HashMap<>();
 
@@ -86,6 +86,7 @@ public abstract class BaseJdbcLogger {
     return columnMap.get(key);
   }
 
+  // 获取所有的 columnValues 中的 value 对应的 String
   protected String getParameterValueString() {
     List<Object> typeList = new ArrayList<>(columnValues.size());
     for (Object value : columnValues) {
@@ -99,6 +100,7 @@ public abstract class BaseJdbcLogger {
     return parameters.substring(1, parameters.length() - 1);
   }
 
+  // 将 Object 类型的 value 转为 String
   protected String objectValueString(Object value) {
     if (value instanceof Array) {
       try {
@@ -120,6 +122,7 @@ public abstract class BaseJdbcLogger {
     columnValues.clear();
   }
 
+  // 将 Java 所有的分隔符转换为 " "
   protected String removeBreakingWhitespace(String original) {
     StringTokenizer whitespaceStripper = new StringTokenizer(original);
     StringBuilder builder = new StringBuilder();
@@ -150,6 +153,7 @@ public abstract class BaseJdbcLogger {
     }
   }
 
+  // 添加输入输出的 prefix
   private String prefix(boolean isInput) {
     char[] buffer = new char[queryStack * 2 + 2];
     Arrays.fill(buffer, '=');

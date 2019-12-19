@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Eduardo Macarron
  */
+// log4j 的实现
 public class Log4jImpl implements Log {
 
   private static final String FQCN = Log4jImpl.class.getName();

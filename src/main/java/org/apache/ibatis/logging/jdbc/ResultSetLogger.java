@@ -67,16 +67,19 @@ public final class ResultSetLogger extends BaseJdbcLogger implements InvocationH
         return method.invoke(this, params);
       }
       Object o = method.invoke(rs, params);
+      // 获取 DB 中下一条 Record rs.next() 方法调用
       if ("next".equals(method.getName())) {
         if ((Boolean) o) {
-          rows++;
+          rows++;  // 记录 rs 中 record 的数目
           if (isTraceEnabled()) {
             ResultSetMetaData rsmd = rs.getMetaData();
             final int columnCount = rsmd.getColumnCount();
             if (first) {
               first = false;
+              // 第一行打印列头
               printColumnHeaders(rsmd, columnCount);
             }
+            // 打印列值
             printColumnValues(columnCount);
           }
         } else {

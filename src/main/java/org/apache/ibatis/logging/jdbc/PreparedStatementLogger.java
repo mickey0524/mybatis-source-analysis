@@ -47,6 +47,7 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, params);
       }
+      // PreparedStatement 实例对应的方法
       if (EXECUTE_METHODS.contains(method.getName())) {
         if (isDebugEnabled()) {
           debug("Parameters: " + getParameterValueString(), true);
@@ -59,6 +60,7 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
           return method.invoke(statement, params);
         }
       } else if (SET_METHODS.contains(method.getName())) {
+        // PreparedStatement 方法给 ? 填入值
         if ("setNull".equals(method.getName())) {
           setColumn(params[0], null);
         } else {
@@ -66,9 +68,11 @@ public final class PreparedStatementLogger extends BaseJdbcLogger implements Inv
         }
         return method.invoke(statement, params);
       } else if ("getResultSet".equals(method.getName())) {
+        // 获取结果
         ResultSet rs = (ResultSet) method.invoke(statement, params);
         return rs == null ? null : ResultSetLogger.newInstance(rs, statementLog, queryStack);
       } else if ("getUpdateCount".equals(method.getName())) {
+        // 获取影响行数
         int updateCount = (Integer) method.invoke(statement, params);
         if (updateCount != -1) {
           debug("   Updates: " + updateCount, false);

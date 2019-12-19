@@ -26,11 +26,13 @@ public final class LogFactory {
   /**
    * Marker to be used by logging implementations that support markers.
    */
+  // 定义 Marker，能够被某些 logging 实现使用
   public static final String MARKER = "MYBATIS";
 
   private static Constructor<? extends Log> logConstructor;
 
   static {
+    // 顺序是由优先级的
     tryImplementation(LogFactory::useSlf4jLogging);
     tryImplementation(LogFactory::useCommonsLogging);
     tryImplementation(LogFactory::useLog4J2Logging);
@@ -99,6 +101,7 @@ public final class LogFactory {
 
   private static void setImplementation(Class<? extends Log> implClass) {
     try {
+      // 反射获取构造函数
       Constructor<? extends Log> candidate = implClass.getConstructor(String.class);
       Log log = candidate.newInstance(LogFactory.class.getName());
       if (log.isDebugEnabled()) {

@@ -46,6 +46,7 @@ public final class StatementLogger extends BaseJdbcLogger implements InvocationH
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, params);
       }
+      // Statement 实例对应的方法
       if (EXECUTE_METHODS.contains(method.getName())) {
         if (isDebugEnabled()) {
           debug(" Executing: " + removeBreakingWhitespace((String) params[0]), true);

@@ -26,7 +26,7 @@ public class JakartaCommonsLoggingImpl implements org.apache.ibatis.logging.Log 
   private final Log log;
 
   public JakartaCommonsLoggingImpl(String clazz) {
-    log = LogFactory.getLog(clazz);
+    log = LogFactory.getLog(clazz);  // Apache 通用的 Log
   }
 
   @Override

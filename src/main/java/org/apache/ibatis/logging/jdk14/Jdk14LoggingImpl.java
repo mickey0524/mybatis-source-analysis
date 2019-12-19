@@ -28,7 +28,7 @@ public class Jdk14LoggingImpl implements Log {
   private final Logger log;
 
   public Jdk14LoggingImpl(String clazz) {
-    log = Logger.getLogger(clazz);
+    log = Logger.getLogger(clazz);  // Java 14 的 Logger
   }
 
   @Override

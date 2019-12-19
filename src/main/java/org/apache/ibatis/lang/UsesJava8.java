@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
  * Indicates that the element uses Java 8 API.
  * </p>
  */
+// 表示 element 使用 Java8 的 API
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
