@@ -38,6 +38,7 @@ public class XNode {
   private final Properties variables;
   private final XPathParser xpathParser;
 
+  // 构造函数
   public XNode(XPathParser xpathParser, Node node, Properties variables) {
     this.xpathParser = xpathParser;
     this.node = node;
@@ -51,6 +52,7 @@ public class XNode {
     return new XNode(xpathParser, node, variables);
   }
 
+  // 获取 XNode 的父亲节点
   public XNode getParent() {
     Node parent = node.getParentNode();
     if (!(parent instanceof Element)) {
@@ -60,6 +62,7 @@ public class XNode {
     }
   }
 
+  // 沿着节点向上，用 / 分隔所有节点的 name
   public String getPath() {
     StringBuilder builder = new StringBuilder();
     Node current = node;
@@ -73,6 +76,9 @@ public class XNode {
     return builder.toString();
   }
 
+  // 找到节点的标识符
+  // id -> value -> property 的顺序
+  // 也需要沿着节点向上，用 _ 分隔
   public String getValueBasedIdentifier() {
     StringBuilder builder = new StringBuilder();
     XNode current = this;
@@ -96,6 +102,7 @@ public class XNode {
     return builder.toString();
   }
 
+  // 所有的 evalXXX 函数都是调用 xpathParser 的方法实现的
   public String evalString(String expression) {
     return xpathParser.evalString(node, expression);
   }
@@ -124,6 +131,7 @@ public class XNode {
     return name;
   }
 
+  // getXXXBody 方法获取 body 的值，将其转为对应的类型
   public String getStringBody() {
     return getStringBody(null);
   }
@@ -196,6 +204,7 @@ public class XNode {
     }
   }
 
+  // 获取属性
   public <T extends Enum<T>> T getEnumAttribute(Class<T> enumType, String name) {
     return getEnumAttribute(enumType, name, null);
   }
@@ -287,6 +296,7 @@ public class XNode {
     }
   }
 
+  // 获取 node 的子节点
   public List<XNode> getChildren() {
     List<XNode> children = new ArrayList<>();
     NodeList nodeList = node.getChildNodes();
@@ -306,6 +316,7 @@ public class XNode {
     for (XNode child : getChildren()) {
       String name = child.getStringAttribute("name");
       String value = child.getStringAttribute("value");
+      // 只有当节点同时具有 name 和 value 属性才会添加到properties中
       if (name != null && value != null) {
         properties.setProperty(name, value);
       }
@@ -320,9 +331,11 @@ public class XNode {
     return builder.toString();
   }
 
+  // 将 XNode 对象转为 String 输出
   private void toString(StringBuilder builder, int level) {
     builder.append("<");
     builder.append(name);
+    // 输出所有的属性
     for (Map.Entry<Object, Object> entry : attributes.entrySet()) {
       builder.append(" ");
       builder.append(entry.getKey());
@@ -332,7 +345,7 @@ public class XNode {
     }
     List<XNode> children = getChildren();
     if (!children.isEmpty()) {
-      builder.append(">\n");
+      builder.append(">\n");  // 有孩子节点
       for (XNode child : children) {
         indent(builder, level + 1);
         child.toString(builder, level + 1);
@@ -342,6 +355,7 @@ public class XNode {
       builder.append(name);
       builder.append(">");
     } else if (body != null) {
+      // 填充文本
       builder.append(">");
       builder.append(body);
       builder.append("</");
@@ -354,12 +368,14 @@ public class XNode {
     builder.append("\n");
   }
 
+  // 添加前置空格，和层级挂钩
   private void indent(StringBuilder builder, int level) {
     for (int i = 0; i < level; i++) {
       builder.append("    ");
     }
   }
 
+  // 解析属性
   private Properties parseAttributes(Node n) {
     Properties attributes = new Properties();
     NamedNodeMap attributeNodes = n.getAttributes();
@@ -373,13 +389,16 @@ public class XNode {
     return attributes;
   }
 
+  // 解析 body
   private String parseBody(Node node) {
     String data = getBodyData(node);
+    // 如果该节点不是文本节点或者 CDATA 节点，取其子节点值
     if (data == null) {
       NodeList children = node.getChildNodes();
       for (int i = 0; i < children.getLength(); i++) {
         Node child = children.item(i);
         data = getBodyData(child);
+        // 只要一个子节点为文本节点或者 CDATA 节点，就结束循环。因而此时的 body 值只是 node 的第一个文本节点的内容
         if (data != null) {
           break;
         }
@@ -389,6 +408,7 @@ public class XNode {
   }
 
   private String getBodyData(Node child) {
+    // 如果这个节点是文本节点或者 CDATA 节点，就取节点的内容，然后用 PropertyParser.parse() 处理下
     if (child.getNodeType() == Node.CDATA_SECTION_NODE
         || child.getNodeType() == Node.TEXT_NODE) {
       String data = ((CharacterData) child).getData();

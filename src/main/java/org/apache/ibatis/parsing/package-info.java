@@ -16,4 +16,5 @@
 /**
  * Parsing utils
  */
+// 说明这个包放置的是解析的工具类
 package org.apache.ibatis.parsing;

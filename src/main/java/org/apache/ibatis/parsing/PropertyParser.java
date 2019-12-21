@@ -21,6 +21,7 @@ import java.util.Properties;
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
+// 属性解析器
 public class PropertyParser {
 
   private static final String KEY_PREFIX = "org.apache.ibatis.parsing.PropertyParser.";
@@ -32,6 +33,7 @@ public class PropertyParser {
    * </p>
    * @since 3.4.2
    */
+  // key 指代是否允许占位符拥有默认值
   public static final String KEY_ENABLE_DEFAULT_VALUE = KEY_PREFIX + "enable-default-value";
 
   /**
@@ -41,6 +43,7 @@ public class PropertyParser {
    * </p>
    * @since 3.4.2
    */
+  // key 指代默认的分隔符
   public static final String KEY_DEFAULT_VALUE_SEPARATOR = KEY_PREFIX + "default-value-separator";
 
   private static final String ENABLE_DEFAULT_VALUE = "false";
@@ -52,7 +55,7 @@ public class PropertyParser {
 
   public static String parse(String string, Properties variables) {
     VariableTokenHandler handler = new VariableTokenHandler(variables);
-    GenericTokenParser parser = new GenericTokenParser("${", "}", handler);
+    GenericTokenParser parser = new GenericTokenParser("${", "}", handler);  // ${token}
     return parser.parse(string);
   }
 
@@ -67,12 +70,14 @@ public class PropertyParser {
       this.defaultValueSeparator = getPropertyValue(KEY_DEFAULT_VALUE_SEPARATOR, DEFAULT_VALUE_SEPARATOR);
     }
 
+    // getOrDefault
     private String getPropertyValue(String key, String defaultValue) {
       return (variables == null) ? defaultValue : variables.getProperty(key, defaultValue);
     }
 
     @Override
     public String handleToken(String content) {
+      // key:value，:之后的 value 是给出的默认值
       if (variables != null) {
         String key = content;
         if (enableDefaultValue) {
@@ -90,6 +95,7 @@ public class PropertyParser {
           return variables.getProperty(key);
         }
       }
+      // 原封不动返回
       return "${" + content + "}";
     }
   }

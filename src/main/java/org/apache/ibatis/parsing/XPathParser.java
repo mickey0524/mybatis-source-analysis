@@ -44,6 +44,8 @@ import org.xml.sax.SAXParseException;
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
+// XPathParser 类中主要由两类方法构成
+// 构造函数和 eval 函数
 public class XPathParser {
 
   private final Document document;
@@ -229,6 +231,7 @@ public class XPathParser {
 
   private Document createDocument(InputSource inputSource) {
     // important: this must only be called AFTER common constructor
+    // 需要在 commonConstructor 之后执行，因为使用了 validation 和 entityResolver
     try {
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
@@ -265,9 +268,11 @@ public class XPathParser {
   }
 
   private void commonConstructor(boolean validation, Properties variables, EntityResolver entityResolver) {
+    // 初始化基本属性
     this.validation = validation;
     this.entityResolver = entityResolver;
     this.variables = variables;
+    // 生成一个新的 XPath 对象
     XPathFactory factory = XPathFactory.newInstance();
     this.xpath = factory.newXPath();
   }

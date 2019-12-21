@@ -69,3 +69,7 @@ public class FIFOCache implements Cache {
 
 }
 ```
+
+## StringBuilder 清空内容的方法
+
+StringBuilder 没有 clear 方法，可以使用 `setLength(0)` 方法

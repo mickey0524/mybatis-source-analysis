@@ -18,6 +18,7 @@ package org.apache.ibatis.parsing;
 /**
  * @author Clinton Begin
  */
+// 处理器接口，只定义了一个方法，用于处理 Token
 public interface TokenHandler {
   String handleToken(String content);
 }
