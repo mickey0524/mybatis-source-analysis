@@ -23,6 +23,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// Double 类型的 Handler
 public class DoubleTypeHandler extends BaseTypeHandler<Double> {
 
   @Override

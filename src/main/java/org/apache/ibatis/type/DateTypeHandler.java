@@ -25,14 +25,17 @@ import java.util.Date;
 /**
  * @author Clinton Begin
  */
+// Date 类型的 Handler
 public class DateTypeHandler extends BaseTypeHandler<Date> {
 
+  // java.util.Date => java.sql.Timestamp
   @Override
   public void setNonNullParameter(PreparedStatement ps, int i, Date parameter, JdbcType jdbcType)
       throws SQLException {
     ps.setTimestamp(i, new Timestamp(parameter.getTime()));
   }
 
+  // java.sql.Timestamp => java.util.Date
   @Override
   public Date getNullableResult(ResultSet rs, String columnName)
       throws SQLException {

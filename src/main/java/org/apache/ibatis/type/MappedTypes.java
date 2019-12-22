@@ -37,6 +37,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+// 自定义数据类型，MappedTypes 对应的是 Java 中的类
 public @interface MappedTypes {
   /**
    * Returns java types to map {@link TypeHandler}.

@@ -23,6 +23,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// Float 类型的 Handler
 public class FloatTypeHandler extends BaseTypeHandler<Float> {
 
   @Override

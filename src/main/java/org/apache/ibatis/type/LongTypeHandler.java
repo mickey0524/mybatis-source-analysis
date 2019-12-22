@@ -23,6 +23,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// Long 类型的 Handler
 public class LongTypeHandler extends BaseTypeHandler<Long> {
 
   @Override

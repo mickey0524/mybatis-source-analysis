@@ -23,6 +23,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// setXXX 将 Java 数据类型转换为 JDBC 的数据类型，getXXX 将 JDBC 的数据类型转换为 Java 的数据类型
 public interface TypeHandler<T> {
 
   void setParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException;

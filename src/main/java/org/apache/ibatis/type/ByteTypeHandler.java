@@ -23,6 +23,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// Byte 类型的 Handler
 public class ByteTypeHandler extends BaseTypeHandler<Byte> {
 
   @Override

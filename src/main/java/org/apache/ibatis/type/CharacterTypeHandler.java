@@ -23,6 +23,9 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// Character 类型的 Handler
+// ps、rs 和 cs 中只提供了对 String 的 API
+// CharacterTypeHandler 需要调用这些 API
 public class CharacterTypeHandler extends BaseTypeHandler<Character> {
 
   @Override

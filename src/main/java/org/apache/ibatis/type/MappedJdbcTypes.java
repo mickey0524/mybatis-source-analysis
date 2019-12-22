@@ -37,6 +37,7 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+// 自定义数据类型，传入的是 JDBC 的类型
 public @interface MappedJdbcTypes {
   /**
    * Returns jdbc types to map {@link TypeHandler}.

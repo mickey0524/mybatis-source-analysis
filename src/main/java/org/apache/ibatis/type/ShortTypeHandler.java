@@ -23,6 +23,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// Short 类型的 Handler
 public class ShortTypeHandler extends BaseTypeHandler<Short> {
 
   @Override

@@ -25,6 +25,7 @@ import java.sql.SQLException;
 /**
  * @author Paul Krause
  */
+// BigInteger 类的 Handler
 public class BigIntegerTypeHandler extends BaseTypeHandler<BigInteger> {
 
   @Override
