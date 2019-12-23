@@ -28,6 +28,7 @@ import java.sql.SQLException;
  * @since 3.4.0
  * @author Kazuki Shimizu
  */
+// Clob 和 Blob 的区别是：Blob 存储二进制，Clob 直接存储文字
 public class ClobReaderTypeHandler extends BaseTypeHandler<Reader> {
 
   /**

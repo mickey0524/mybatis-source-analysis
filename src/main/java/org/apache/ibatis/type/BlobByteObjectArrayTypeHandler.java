@@ -25,6 +25,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// 其实和 BlobTypeHandler 类似，只是 byte[] 和 Byte[] 之间的类型转换
 public class BlobByteObjectArrayTypeHandler extends BaseTypeHandler<Byte[]> {
 
   @Override

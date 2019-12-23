@@ -31,7 +31,7 @@ public class BlobTypeHandler extends BaseTypeHandler<byte[]> {
   public void setNonNullParameter(PreparedStatement ps, int i, byte[] parameter, JdbcType jdbcType)
       throws SQLException {
     ByteArrayInputStream bis = new ByteArrayInputStream(parameter);
-    ps.setBinaryStream(i, bis, parameter.length);
+    ps.setBinaryStream(i, bis, parameter.length);  // set 二进制流
   }
 
   @Override

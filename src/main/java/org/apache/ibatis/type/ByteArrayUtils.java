@@ -19,6 +19,7 @@ package org.apache.ibatis.type;
  * @author Clinton Begin
  */
 // Byte 数组的工具类
+// byte[] 和 Byte[] 之间的转换
 class ByteArrayUtils {
 
   private ByteArrayUtils() {

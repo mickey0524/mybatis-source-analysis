@@ -33,6 +33,7 @@ public class BigIntegerTypeHandler extends BaseTypeHandler<BigInteger> {
     ps.setBigDecimal(i, new BigDecimal(parameter));
   }
 
+  // JDBC 中只有 BigDecimal 相关操作
   @Override
   public BigInteger getNullableResult(ResultSet rs, String columnName) throws SQLException {
     BigDecimal bigDecimal = rs.getBigDecimal(columnName);

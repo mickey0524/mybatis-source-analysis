@@ -69,6 +69,7 @@ public class BlobInputStreamTypeHandler extends BaseTypeHandler<InputStream> {
     return toInputStream(cs.getBlob(columnIndex));
   }
 
+  // 将 Blob 转为 InputStream
   private InputStream toInputStream(Blob blob) throws SQLException {
     if (blob == null) {
       return null;

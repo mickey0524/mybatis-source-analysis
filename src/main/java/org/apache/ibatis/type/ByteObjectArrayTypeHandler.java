@@ -23,6 +23,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// 和 ByteArrayTypeHandler 类似，只是 byte[] 和 Byte[] 的互相转换
 public class ByteObjectArrayTypeHandler extends BaseTypeHandler<Byte[]> {
 
   @Override

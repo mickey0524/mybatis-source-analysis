@@ -26,6 +26,7 @@ import java.time.Instant;
  * @since 3.4.5
  * @author Tomas Rohovsky
  */
+// java.time.Instant <=> java.sql.Timestamp
 public class InstantTypeHandler extends BaseTypeHandler<Instant> {
 
   @Override

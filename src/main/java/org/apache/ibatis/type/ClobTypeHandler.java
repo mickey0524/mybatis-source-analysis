@@ -25,6 +25,7 @@ import java.sql.SQLException;
 /**
  * @author Clinton Begin
  */
+// Clob 类型的 Handler
 public class ClobTypeHandler extends BaseTypeHandler<String> {
 
   @Override
