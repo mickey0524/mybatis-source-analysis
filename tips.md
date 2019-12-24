@@ -73,3 +73,21 @@ public class FIFOCache implements Cache {
 ## StringBuilder 清空内容的方法
 
 StringBuilder 没有 clear 方法，可以使用 `setLength(0)` 方法
+
+## 判断反射是否能调用 `setAccessible(true)` 的方法
+
+```java
+public static boolean canControlMemberAccessible() {
+  try {
+    SecurityManager securityManager = System.getSecurityManager();
+    if (null != securityManager) {
+      securityManager.checkPermission(new ReflectPermission("suppressAccessChecks"));
+    }
+  } catch (SecurityException e) {
+    return false;
+  }
+  return true;
+}
+```
+
+## `c1.isAssignableFrom(c2)` 可以用来判断 c2 是否和 c1 相等或者 c2 是 c1 的 superClass/superInterface

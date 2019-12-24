@@ -29,6 +29,7 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
+// 元类
 public class MetaClass {
 
   private final ReflectorFactory reflectorFactory;
@@ -39,10 +40,12 @@ public class MetaClass {
     this.reflector = reflectorFactory.findForClass(type);
   }
 
+  // 构造函数的 private，MetaClass 实例需要用 forClass 静态方法来创建
   public static MetaClass forClass(Class<?> type, ReflectorFactory reflectorFactory) {
     return new MetaClass(type, reflectorFactory);
   }
 
+  // 属性的元类
   public MetaClass metaClassForProperty(String name) {
     Class<?> propType = reflector.getGetterType(name);
     return MetaClass.forClass(propType, reflectorFactory);

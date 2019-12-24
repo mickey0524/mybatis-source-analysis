@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// 获取方法参数名的工具类
 public class ParamNameUtil {
   public static List<String> getParamNames(Method method) {
     return getParameterNames(method);

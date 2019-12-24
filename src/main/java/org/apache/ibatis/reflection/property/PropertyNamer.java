@@ -22,12 +22,14 @@ import org.apache.ibatis.reflection.ReflectionException;
 /**
  * @author Clinton Begin
  */
+// 获取属性的名字
 public final class PropertyNamer {
 
   private PropertyNamer() {
     // Prevent Instantiation of Static Class
   }
 
+  // 传入方法名，返回属性名
   public static String methodToProperty(String name) {
     if (name.startsWith("is")) {
       name = name.substring(2);
@@ -44,14 +46,17 @@ public final class PropertyNamer {
     return name;
   }
 
+  // 是否为属性方法
   public static boolean isProperty(String name) {
     return isGetter(name) || isSetter(name);
   }
 
+  // 是否为 get 方法
   public static boolean isGetter(String name) {
     return (name.startsWith("get") && name.length() > 3) || (name.startsWith("is") && name.length() > 2);
   }
 
+  // 是否为 set 方法
   public static boolean isSetter(String name) {
     return name.startsWith("set") && name.length() > 3;
   }

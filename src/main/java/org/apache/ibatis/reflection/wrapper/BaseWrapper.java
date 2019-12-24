@@ -42,8 +42,10 @@ public abstract class BaseWrapper implements ObjectWrapper {
     }
   }
 
+  // 获取集合元素
   protected Object getCollectionValue(PropertyTokenizer prop, Object collection) {
     if (collection instanceof Map) {
+      // Map
       return ((Map) collection).get(prop.getIndex());
     } else {
       int i = Integer.parseInt(prop.getIndex());
@@ -73,6 +75,7 @@ public abstract class BaseWrapper implements ObjectWrapper {
     }
   }
 
+  // 设置集合元素
   protected void setCollectionValue(PropertyTokenizer prop, Object collection, Object value) {
     if (collection instanceof Map) {
       ((Map) collection).put(prop.getIndex(), value);

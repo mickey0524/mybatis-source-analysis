@@ -23,6 +23,7 @@ import org.apache.ibatis.reflection.Reflector;
 /**
  * @author Clinton Begin
  */
+// 调用 Method 的 invoke 方法
 public class MethodInvoker implements Invoker {
 
   private final Class<?> type;
@@ -32,7 +33,7 @@ public class MethodInvoker implements Invoker {
     this.method = method;
 
     if (method.getParameterTypes().length == 1) {
-      type = method.getParameterTypes()[0];
+      type = method.getParameterTypes()[0];  // set 方法
     } else {
       type = method.getReturnType();
     }

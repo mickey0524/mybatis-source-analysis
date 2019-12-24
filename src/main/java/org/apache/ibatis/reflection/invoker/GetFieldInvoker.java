@@ -22,6 +22,7 @@ import org.apache.ibatis.reflection.Reflector;
 /**
  * @author Clinton Begin
  */
+// 执行 Field 的 get 方法
 public class GetFieldInvoker implements Invoker {
   private final Field field;
 

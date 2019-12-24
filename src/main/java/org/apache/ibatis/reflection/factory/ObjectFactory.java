@@ -23,6 +23,7 @@ import java.util.Properties;
  *
  * @author Clinton Begin
  */
+// MyBatis 使用一个 ObjectFactory 来创建所有需要的新对象
 public interface ObjectFactory {
 
   /**
@@ -38,6 +39,7 @@ public interface ObjectFactory {
    * @param type Object type
    * @return
    */
+  // 使用默认的构造方法创建一个新的对象
   <T> T create(Class<T> type);
 
   /**
@@ -47,6 +49,7 @@ public interface ObjectFactory {
    * @param constructorArgs Constructor argument values
    * @return
    */
+  // 使用指定类型参数的构造方法创建一个新的对象
   <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs);
 
   /**
@@ -57,6 +60,7 @@ public interface ObjectFactory {
    * @return whether it is a collection or not
    * @since 3.1.0
    */
+  // 判断是否为集合
   <T> boolean isCollection(Class<T> type);
 
 }

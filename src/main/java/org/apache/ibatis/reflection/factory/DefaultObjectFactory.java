@@ -50,16 +50,17 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
   public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
     Class<?> classToCreate = resolveInterface(type);
     // we know types are assignable
+
     return (T) instantiateClass(classToCreate, constructorArgTypes, constructorArgs);
   }
 
-  private  <T> T instantiateClass(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
+  private <T> T instantiateClass(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
     try {
       Constructor<T> constructor;
       if (constructorArgTypes == null || constructorArgs == null) {
         constructor = type.getDeclaredConstructor();
         try {
-          return constructor.newInstance();
+          return constructor.newInstance();  // 不带任何参数的构造方法
         } catch (IllegalAccessException e) {
           if (Reflector.canControlMemberAccessible()) {
             constructor.setAccessible(true);
@@ -69,6 +70,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
           }
         }
       }
+      // 带有参数的构造方法
       constructor = type.getDeclaredConstructor(constructorArgTypes.toArray(new Class[0]));
       try {
         return constructor.newInstance(constructorArgs.toArray(new Object[0]));
@@ -89,6 +91,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     }
   }
 
+  // type 为接口的化，给出默认的子类
   protected Class<?> resolveInterface(Class<?> type) {
     Class<?> classToCreate;
     if (type == List.class || type == Collection.class || type == Iterable.class) {

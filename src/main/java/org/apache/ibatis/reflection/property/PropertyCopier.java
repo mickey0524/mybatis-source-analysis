@@ -22,12 +22,15 @@ import org.apache.ibatis.reflection.Reflector;
 /**
  * @author Clinton Begin
  */
+// 属性拷贝器
 public final class PropertyCopier {
 
+  // 防止实例化
   private PropertyCopier() {
     // Prevent Instantiation of Static Class
   }
 
+  // 从源对象拷贝 Field 到目的对象
   public static void copyBeanProperties(Class<?> type, Object sourceBean, Object destinationBean) {
     Class<?> parent = type;
     while (parent != null) {

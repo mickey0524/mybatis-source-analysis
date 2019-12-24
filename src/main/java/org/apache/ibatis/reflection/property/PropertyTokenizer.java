@@ -26,6 +26,7 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
   private String index;
   private final String children;
 
+  // a[2].b => name = a index = 2 indexedName = a[2] children = b
   public PropertyTokenizer(String fullname) {
     int delim = fullname.indexOf('.');
     if (delim > -1) {
@@ -36,7 +37,7 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
       children = null;
     }
     indexedName = name;
-    delim = name.indexOf('[');
+    delim = name.indexOf('[');  // 数组
     if (delim > -1) {
       index = name.substring(delim + 1, name.length() - 1);
       name = name.substring(0, delim);
