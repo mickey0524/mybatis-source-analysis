@@ -27,6 +27,7 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
+// Map 包装器
 public class MapWrapper extends BaseWrapper {
 
   private final Map<String, Object> map;
@@ -39,8 +40,8 @@ public class MapWrapper extends BaseWrapper {
   @Override
   public Object get(PropertyTokenizer prop) {
     if (prop.getIndex() != null) {
-      Object collection = resolveCollection(prop, map);
-      return getCollectionValue(prop, collection);
+      Object collection = resolveCollection(prop, map);  // 获取集合
+      return getCollectionValue(prop, collection);  // 从集合中取出对应下标的元素
     } else {
       return map.get(prop.getName());
     }
@@ -75,10 +76,13 @@ public class MapWrapper extends BaseWrapper {
   public Class<?> getSetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
+      // 分为两次调用
+      // 先获取 . 之前的对象对应的 MetaObject
       MetaObject metaValue = metaObject.metaObjectForProperty(prop.getIndexedName());
       if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
         return Object.class;
       } else {
+        // 然后再处理 children
         return metaValue.getSetterType(prop.getChildren());
       }
     } else {

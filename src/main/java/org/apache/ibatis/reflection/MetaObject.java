@@ -30,13 +30,14 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 /**
  * @author Clinton Begin
  */
+// 元对象
 public class MetaObject {
 
-  private final Object originalObject;
+  private final Object originalObject;  // 原始对象
   private final ObjectWrapper objectWrapper;
-  private final ObjectFactory objectFactory;
-  private final ObjectWrapperFactory objectWrapperFactory;
-  private final ReflectorFactory reflectorFactory;
+  private final ObjectFactory objectFactory;  // 对象工厂
+  private final ObjectWrapperFactory objectWrapperFactory;  // 对象包装器工厂
+  private final ReflectorFactory reflectorFactory;  // 反射器工厂
 
   private MetaObject(Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory) {
     this.originalObject = object;
@@ -109,6 +110,7 @@ public class MetaObject {
     return objectWrapper.hasGetter(name);
   }
 
+  // 获取数值
   public Object getValue(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
@@ -123,6 +125,7 @@ public class MetaObject {
     }
   }
 
+  // 设置数值
   public void setValue(String name, Object value) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {

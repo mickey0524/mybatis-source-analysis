@@ -40,7 +40,7 @@ public class MetaClass {
     this.reflector = reflectorFactory.findForClass(type);
   }
 
-  // 构造函数的 private，MetaClass 实例需要用 forClass 静态方法来创建
+  // 构造函数是 private 类型的，MetaClass 实例需要用 forClass 静态方法来创建
   public static MetaClass forClass(Class<?> type, ReflectorFactory reflectorFactory) {
     return new MetaClass(type, reflectorFactory);
   }
@@ -51,11 +51,14 @@ public class MetaClass {
     return MetaClass.forClass(propType, reflectorFactory);
   }
 
+  // 寻找属性
   public String findProperty(String name) {
+    // 在此方法中创建 StringBuilder 实例是因为之后要递归调用
     StringBuilder prop = buildProperty(name, new StringBuilder());
     return prop.length() > 0 ? prop.toString() : null;
   }
 
+  // 将 name 中的 _ 替换为空字符串
   public String findProperty(String name, boolean useCamelCaseMapping) {
     if (useCamelCaseMapping) {
       name = name.replace("_", "");
@@ -71,6 +74,7 @@ public class MetaClass {
     return reflector.getSetablePropertyNames();
   }
 
+  // 获取 set 的类型
   public Class<?> getSetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
@@ -119,6 +123,7 @@ public class MetaClass {
     try {
       Invoker invoker = reflector.getGetInvoker(propertyName);
       if (invoker instanceof MethodInvoker) {
+        // MethodInvoker 中的 Field 字段为 private 类型的
         Field _method = MethodInvoker.class.getDeclaredField("method");
         _method.setAccessible(true);
         Method method = (Method) _method.get(invoker);
@@ -171,7 +176,7 @@ public class MetaClass {
   }
 
   private StringBuilder buildProperty(String name, StringBuilder builder) {
-    PropertyTokenizer prop = new PropertyTokenizer(name);
+    PropertyTokenizer prop = new PropertyTokenizer(name);  // 实例化 PropertyTokenizer 对象
     if (prop.hasNext()) {
       String propertyName = reflector.findPropertyName(prop.getName());
       if (propertyName != null) {

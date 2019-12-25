@@ -29,6 +29,9 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
+// 容器包装器，靠反射的 get/set 方法
+// 因此需要 MetaClass
+// MetaClass 调用 Reflector
 public class BeanWrapper extends BaseWrapper {
 
   private final Object object;
