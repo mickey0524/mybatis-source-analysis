@@ -42,6 +42,7 @@ public class UnpooledDataSource implements DataSource {
   private Properties driverProperties;
   private static Map<String, Driver> registeredDrivers = new ConcurrentHashMap<>();
 
+  // 最基本的数据库属性
   private String driver;
   private String url;
   private String username;
@@ -205,7 +206,7 @@ public class UnpooledDataSource implements DataSource {
   private Connection doGetConnection(String username, String password) throws SQLException {
     Properties props = new Properties();
     if (driverProperties != null) {
-      props.putAll(driverProperties);
+      props.putAll(driverProperties);  // 先将 driver 的属性全部写入
     }
     if (username != null) {
       props.setProperty("user", username);
@@ -223,6 +224,7 @@ public class UnpooledDataSource implements DataSource {
     return connection;
   }
 
+  // 注册 Driver
   private synchronized void initializeDriver() throws SQLException {
     if (!registeredDrivers.containsKey(driver)) {
       Class<?> driverType;
@@ -243,6 +245,7 @@ public class UnpooledDataSource implements DataSource {
     }
   }
 
+  // 配置超时时间、是否自动 commit 以及事务隔离级别
   private void configureConnection(Connection conn) throws SQLException {
     if (defaultNetworkTimeout != null) {
       conn.setNetworkTimeout(Executors.newSingleThreadExecutor(), defaultNetworkTimeout);

@@ -45,6 +45,7 @@ public class PooledDataSource implements DataSource {
   private final UnpooledDataSource dataSource;
 
   // OPTIONAL CONFIGURATION FIELDS
+  // 可选配置项
   protected int poolMaximumActiveConnections = 10;
   protected int poolMaximumIdleConnections = 5;
   protected int poolMaximumCheckoutTime = 20000;
@@ -57,7 +58,7 @@ public class PooledDataSource implements DataSource {
   private int expectedConnectionTypeCode;
 
   public PooledDataSource() {
-    dataSource = new UnpooledDataSource();
+    dataSource = new UnpooledDataSource();  // PooledDataSource 内部有一个 UnpooledDataSource 实例
   }
 
   public PooledDataSource(UnpooledDataSource dataSource) {
@@ -358,6 +359,7 @@ public class PooledDataSource implements DataSource {
     return state;
   }
 
+  // 组装连接类型码
   private int assembleConnectionTypeCode(String url, String username, String password) {
     return ("" + url + username + password).hashCode();
   }
@@ -521,6 +523,7 @@ public class PooledDataSource implements DataSource {
    * @param conn - the connection to check
    * @return True if the connection is still usable
    */
+  // 测试是否一个连接还是活着的
   protected boolean pingConnection(PooledConnection conn) {
     boolean result = true;
 

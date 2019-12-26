@@ -20,6 +20,7 @@ import org.apache.ibatis.datasource.unpooled.UnpooledDataSourceFactory;
 /**
  * @author Clinton Begin
  */
+// 继承 UnpooledDataSourceFactory，说明需要的功能是一样的，就是 setProperties
 public class PooledDataSourceFactory extends UnpooledDataSourceFactory {
 
   public PooledDataSourceFactory() {

@@ -16,4 +16,5 @@
 /**
  * Hyper-simple Datasource.
  */
+// 超级简单的数据源
 package org.apache.ibatis.datasource.unpooled;

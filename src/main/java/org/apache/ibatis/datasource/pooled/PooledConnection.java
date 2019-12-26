@@ -32,13 +32,13 @@ class PooledConnection implements InvocationHandler {
   private static final Class<?>[] IFACES = new Class<?>[] { Connection.class };
 
   private final int hashCode;
-  private final PooledDataSource dataSource;
-  private final Connection realConnection;
-  private final Connection proxyConnection;
+  private final PooledDataSource dataSource;  // 数据源
+  private final Connection realConnection;  // 真正连接
+  private final Connection proxyConnection;  // 代理连接
   private long checkoutTimestamp;
-  private long createdTimestamp;
-  private long lastUsedTimestamp;
-  private int connectionTypeCode;
+  private long createdTimestamp;  // 创建连接时间
+  private long lastUsedTimestamp;  // 上次使用时间
+  private int connectionTypeCode;  // 连接状态码
   private boolean valid;
 
   /**
@@ -49,7 +49,7 @@ class PooledConnection implements InvocationHandler {
    */
   public PooledConnection(Connection connection, PooledDataSource dataSource) {
     this.hashCode = connection.hashCode();
-    this.realConnection = connection;
+    this.realConnection = connection;  // 保留真正的连接
     this.dataSource = dataSource;
     this.createdTimestamp = System.currentTimeMillis();
     this.lastUsedTimestamp = System.currentTimeMillis();
@@ -60,6 +60,7 @@ class PooledConnection implements InvocationHandler {
   /**
    * Invalidates the connection.
    */
+  // 连接设置为不正确
   public void invalidate() {
     valid = false;
   }
@@ -69,6 +70,7 @@ class PooledConnection implements InvocationHandler {
    *
    * @return True if the connection is usable
    */
+  // 连接是否为正确的
   public boolean isValid() {
     return valid && realConnection != null && dataSource.pingConnection(this);
   }
@@ -78,6 +80,7 @@ class PooledConnection implements InvocationHandler {
    *
    * @return The connection
    */
+  // 返回真正的连接
   public Connection getRealConnection() {
     return realConnection;
   }
@@ -87,6 +90,7 @@ class PooledConnection implements InvocationHandler {
    *
    * @return The proxy
    */
+  // 返回代理连接
   public Connection getProxyConnection() {
     return proxyConnection;
   }
@@ -159,6 +163,7 @@ class PooledConnection implements InvocationHandler {
    *
    * @return - the time since the last use
    */
+  // 获取当前时间距离上次使用时间的时间差
   public long getTimeElapsedSinceLastUse() {
     return System.currentTimeMillis() - lastUsedTimestamp;
   }
@@ -229,10 +234,12 @@ class PooledConnection implements InvocationHandler {
    * @param args   - the parameters to be passed to the method
    * @see java.lang.reflect.InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])
    */
+  // 动态代理 invoke 方法
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     String methodName = method.getName();
     if (CLOSE.equals(methodName)) {
+      // 连接关闭，放回池子
       dataSource.pushConnection(this);
       return null;
     }

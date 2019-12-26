@@ -20,6 +20,7 @@ import org.apache.ibatis.exceptions.PersistenceException;
 /**
  * @author Clinton Begin
  */
+// DataSource 中的异常
 public class DataSourceException extends PersistenceException {
 
   private static final long serialVersionUID = -5251396250407091334L;

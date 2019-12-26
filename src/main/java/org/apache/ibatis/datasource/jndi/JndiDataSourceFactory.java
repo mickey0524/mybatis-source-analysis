@@ -40,8 +40,8 @@ public class JndiDataSourceFactory implements DataSourceFactory {
   @Override
   public void setProperties(Properties properties) {
     try {
-      InitialContext initCtx;
-      Properties env = getEnvProperties(properties);
+      InitialContext initCtx;  // 初始化上下文
+      Properties env = getEnvProperties(properties);  // 获取环境变量
       if (env == null) {
         initCtx = new InitialContext();
       } else {
@@ -72,10 +72,11 @@ public class JndiDataSourceFactory implements DataSourceFactory {
     for (Entry<Object, Object> entry : allProps.entrySet()) {
       String key = (String) entry.getKey();
       String value = (String) entry.getValue();
-      if (key.startsWith(PREFIX)) {
+      if (key.startsWith(PREFIX)) {  // 只处理带有 .env 前缀的 key
         if (contextProperties == null) {
           contextProperties = new Properties();
         }
+        // 这里需要把 .env 过滤掉
         contextProperties.put(key.substring(PREFIX.length()), value);
       }
     }
