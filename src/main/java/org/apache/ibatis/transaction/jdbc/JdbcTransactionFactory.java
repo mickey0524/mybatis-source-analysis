@@ -30,6 +30,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
  *
  * @see JdbcTransaction
  */
+// JDBC 的事务工厂，创建 JdbcTransaction 实例
 public class JdbcTransactionFactory implements TransactionFactory {
 
   @Override

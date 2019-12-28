@@ -20,6 +20,8 @@ import java.sql.Connection;
 /**
  * @author Clinton Begin
  */
+// 事务隔离级别，为啥不放到 transaction 包呢
+// 就是事务的四种隔离级别
 public enum TransactionIsolationLevel {
   NONE(Connection.TRANSACTION_NONE),
   READ_COMMITTED(Connection.TRANSACTION_READ_COMMITTED),

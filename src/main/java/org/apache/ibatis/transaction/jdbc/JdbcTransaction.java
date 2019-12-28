@@ -35,6 +35,10 @@ import org.apache.ibatis.transaction.TransactionException;
  *
  * @see JdbcTransactionFactory
  */
+// 直接使用 JDBC 的 commit 和 rollback 机制
+// JdbcTransaction 依赖从数据源处获取的连接来管理事务的范围
+// 延迟获取连接直到 getConnection() 方法被调用
+// 如果设置了 autoCommit，那么忽略 commit 或 rollback 请求
 public class JdbcTransaction implements Transaction {
 
   private static final Log log = LogFactory.getLog(JdbcTransaction.class);
@@ -50,6 +54,7 @@ public class JdbcTransaction implements Transaction {
     autoCommit = desiredAutoCommit;
   }
 
+  // 传入已经存在的连接
   public JdbcTransaction(Connection connection) {
     this.connection = connection;
   }
@@ -68,7 +73,7 @@ public class JdbcTransaction implements Transaction {
       if (log.isDebugEnabled()) {
         log.debug("Committing JDBC Connection [" + connection + "]");
       }
-      connection.commit();
+      connection.commit();  // 直接调用 connection 的 commit 方法
     }
   }
 
@@ -78,7 +83,7 @@ public class JdbcTransaction implements Transaction {
       if (log.isDebugEnabled()) {
         log.debug("Rolling back JDBC Connection [" + connection + "]");
       }
-      connection.rollback();
+      connection.rollback();  // 直接调用 connection 的 rollback 方法
     }
   }
 
@@ -110,6 +115,7 @@ public class JdbcTransaction implements Transaction {
     }
   }
 
+  // 重置 autoCommit
   protected void resetAutoCommit() {
     try {
       if (!connection.getAutoCommit()) {
@@ -118,6 +124,8 @@ public class JdbcTransaction implements Transaction {
         // and they mandate a commit/rollback before closing the connection.
         // A workaround is setting the autocommit to true before closing the connection.
         // Sybase throws an exception here.
+        // 有些数据库会在 select 语句开始的时候开启事务，然后要求关闭连接前执行 commit/rollback 操作
+        // 因此需要设置 autoCommit
         if (log.isDebugEnabled()) {
           log.debug("Resetting autocommit to true on JDBC Connection [" + connection + "]");
         }
@@ -131,6 +139,7 @@ public class JdbcTransaction implements Transaction {
     }
   }
 
+  // 获取连接
   protected void openConnection() throws SQLException {
     if (log.isDebugEnabled()) {
       log.debug("Opening JDBC Connection");

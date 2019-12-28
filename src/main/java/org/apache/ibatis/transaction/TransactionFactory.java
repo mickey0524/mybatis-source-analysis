@@ -27,12 +27,14 @@ import org.apache.ibatis.session.TransactionIsolationLevel;
  *
  * @author Clinton Begin
  */
+// 事务工厂，创建事务实例
 public interface TransactionFactory {
 
   /**
    * Sets transaction factory custom properties.
    * @param props
    */
+  // 设置事务工厂自定义属性
   default void setProperties(Properties props) {
     // NOP
   }
@@ -43,6 +45,7 @@ public interface TransactionFactory {
    * @return Transaction
    * @since 3.1.0
    */
+  // 根据一个已经存在的连接创建事务实例
   Transaction newTransaction(Connection conn);
 
   /**
@@ -53,6 +56,7 @@ public interface TransactionFactory {
    * @return Transaction
    * @since 3.1.0
    */
+  // 根据数据源创建事务实例
   Transaction newTransaction(DataSource dataSource, TransactionIsolationLevel level, boolean autoCommit);
 
 }

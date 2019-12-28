@@ -31,9 +31,10 @@ import org.apache.ibatis.transaction.TransactionFactory;
  *
  * @see ManagedTransaction
  */
+// 用于创建 ManagedTransaction
 public class ManagedTransactionFactory implements TransactionFactory {
 
-  private boolean closeConnection = true;
+  private boolean closeConnection = true;  // 默认情况下，是会关闭连接的，但可以通过 setProperties 方法配置
 
   @Override
   public void setProperties(Properties props) {
@@ -55,6 +56,7 @@ public class ManagedTransactionFactory implements TransactionFactory {
     // Silently ignores autocommit and isolation level, as managed transactions are entirely
     // controlled by an external manager.  It's silently ignored so that
     // code remains portable between managed and unmanaged configurations.
+    // 忽略自动提交和隔离级别，因为 ManagedTransaction 完全被一个外部管理者控制
     return new ManagedTransaction(ds, level, closeConnection);
   }
 }
