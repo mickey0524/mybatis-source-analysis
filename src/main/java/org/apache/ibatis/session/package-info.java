@@ -16,4 +16,5 @@
 /**
  * Base package. Contains the SqlSession.
  */
+// 基础包，包含数据库 session
 package org.apache.ibatis.session;

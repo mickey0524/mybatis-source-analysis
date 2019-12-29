@@ -45,6 +45,8 @@ import org.apache.ibatis.session.SqlSession;
  *
  * @author Clinton Begin
  */
+// SqlSession 的默认实现
+// 这个类不是线程安全的
 public class DefaultSqlSession implements SqlSession {
 
   private final Configuration configuration;
@@ -70,10 +72,12 @@ public class DefaultSqlSession implements SqlSession {
     return this.selectOne(statement, null);
   }
 
+  // 取回一个单行
   @Override
   public <T> T selectOne(String statement, Object parameter) {
     // Popular vote was to return null on 0 results and throw exception on too many.
-    List<T> list = this.selectList(statement, parameter);
+    // 投票发现，大多数赞同在 0 的结果的时候返回 null，在多个结果的时候抛出异常
+    List<T> list = this.selectList(statement, parameter);  // 内部调用 selectList 方法
     if (list.size() == 1) {
       return list.get(0);
     } else if (list.size() > 1) {
@@ -93,6 +97,7 @@ public class DefaultSqlSession implements SqlSession {
     return this.selectMap(statement, parameter, mapKey, RowBounds.DEFAULT);
   }
 
+  // selectMap 是一种特殊情况，它用于根据结果对象中的属性之一将结果列表转换为 Map
   @Override
   public <K, V> Map<K, V> selectMap(String statement, Object parameter, String mapKey, RowBounds rowBounds) {
     final List<? extends V> list = selectList(statement, parameter, rowBounds);
@@ -116,12 +121,13 @@ public class DefaultSqlSession implements SqlSession {
     return selectCursor(statement, parameter, RowBounds.DEFAULT);
   }
 
+  // 游标提供与列表相同的结果，不同之处在于它使用 Iterator 延迟获取数据
   @Override
   public <T> Cursor<T> selectCursor(String statement, Object parameter, RowBounds rowBounds) {
     try {
       MappedStatement ms = configuration.getMappedStatement(statement);
       Cursor<T> cursor = executor.queryCursor(ms, wrapCollection(parameter), rowBounds);
-      registerCursor(cursor);
+      registerCursor(cursor);  // 注册游标结果
       return cursor;
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
@@ -140,6 +146,7 @@ public class DefaultSqlSession implements SqlSession {
     return this.selectList(statement, parameter, RowBounds.DEFAULT);
   }
 
+  // 取回多行
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
@@ -179,6 +186,7 @@ public class DefaultSqlSession implements SqlSession {
     return insert(statement, null);
   }
 
+  // insert 方法内部调用 update 方法
   @Override
   public int insert(String statement, Object parameter) {
     return update(statement, parameter);
@@ -268,6 +276,7 @@ public class DefaultSqlSession implements SqlSession {
     }
   }
 
+  // 关闭游标
   private void closeCursors() {
     if (cursorList != null && !cursorList.isEmpty()) {
       for (Cursor<?> cursor : cursorList) {
@@ -316,6 +325,7 @@ public class DefaultSqlSession implements SqlSession {
     return (!autoCommit && dirty) || force;
   }
 
+  // 包裹集合
   private Object wrapCollection(final Object object) {
     if (object instanceof Collection) {
       StrictMap<Object> map = new StrictMap<>();
@@ -332,6 +342,7 @@ public class DefaultSqlSession implements SqlSession {
     return object;
   }
 
+  // 继承 HashMap，不存在抛出异常
   public static class StrictMap<V> extends HashMap<String, V> {
 
     private static final long serialVersionUID = -5741767162221585340L;

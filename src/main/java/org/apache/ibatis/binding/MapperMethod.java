@@ -49,13 +49,16 @@ public class MapperMethod {
   private final SqlCommand command;
   private final MethodSignature method;
 
+  // 传递是那个接口的哪个方法，以及配置文件
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
     this.command = new SqlCommand(config, mapperInterface, method);
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
+  // 执行
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
+    // 可以看到执行时就是4种情况，insert|update|delete|select，分别调用 SqlSession 的4大类方法
     switch (command.getType()) {
       case INSERT: {
         Object param = method.convertArgsToSqlCommandParam(args);
@@ -202,6 +205,7 @@ public class MapperMethod {
     return result;
   }
 
+  // 严格的 HashMap，key 不存在抛出异常
   public static class ParamMap<V> extends HashMap<String, V> {
 
     private static final long serialVersionUID = -2212268410512043556L;
@@ -216,11 +220,14 @@ public class MapperMethod {
 
   }
 
+  // SqlCommand 指的是 sql 命令
   public static class SqlCommand {
 
     private final String name;
     private final SqlCommandType type;
 
+    // mapperInterface 指代是哪个接口
+    // method 指代是接口中的哪个方法
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
       final String methodName = method.getName();
       final Class<?> declaringClass = method.getDeclaringClass();
@@ -235,6 +242,7 @@ public class MapperMethod {
               + mapperInterface.getName() + "." + methodName);
         }
       } else {
+        // 从 cache 中获取 MappedStatement 对象
         name = ms.getId();
         type = ms.getSqlCommandType();
         if (type == SqlCommandType.UNKNOWN) {
@@ -255,10 +263,13 @@ public class MapperMethod {
         Class<?> declaringClass, Configuration configuration) {
       String statementId = mapperInterface.getName() + "." + methodName;
       if (configuration.hasStatement(statementId)) {
+        // 从缓存中获取
         return configuration.getMappedStatement(statementId);
       } else if (mapperInterface.equals(declaringClass)) {
+        // 匹配上了
         return null;
       }
+      // 试图从父类中匹配
       for (Class<?> superInterface : mapperInterface.getInterfaces()) {
         if (declaringClass.isAssignableFrom(superInterface)) {
           MappedStatement ms = resolveMappedStatement(superInterface, methodName,
@@ -272,14 +283,15 @@ public class MapperMethod {
     }
   }
 
+  // 方法签名
   public static class MethodSignature {
 
-    private final boolean returnsMany;
-    private final boolean returnsMap;
-    private final boolean returnsVoid;
-    private final boolean returnsCursor;
-    private final boolean returnsOptional;
-    private final Class<?> returnType;
+    private final boolean returnsMany;  // 方法是否返回集合/数组
+    private final boolean returnsMap;  // 方法是否返回 Map
+    private final boolean returnsVoid;  // 方法是否返回空
+    private final boolean returnsCursor;  // 方法是否返回游标
+    private final boolean returnsOptional;  // 方法是否返回 Optional
+    private final Class<?> returnType;  // 方法返回类型
     private final String mapKey;
     private final Integer resultHandlerIndex;
     private final Integer rowBoundsIndex;
@@ -300,8 +312,8 @@ public class MapperMethod {
       this.returnsOptional = Optional.class.equals(this.returnType);
       this.mapKey = getMapKey(method);
       this.returnsMap = this.mapKey != null;
-      this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);
-      this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);
+      this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);  // 记录 RowBounds 是第几个参数
+      this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);  // 记录 ResultHandler 是第几个参数
       this.paramNameResolver = new ParamNameResolver(configuration, method);
     }
 
@@ -360,6 +372,7 @@ public class MapperMethod {
 
     private Integer getUniqueParamIndex(Method method, Class<?> paramType) {
       Integer index = null;
+      // 获取 method 的全部参数
       final Class<?>[] argTypes = method.getParameterTypes();
       for (int i = 0; i < argTypes.length; i++) {
         if (paramType.isAssignableFrom(argTypes[i])) {
@@ -375,6 +388,7 @@ public class MapperMethod {
 
     private String getMapKey(Method method) {
       String mapKey = null;
+      // method 的返回类型是 Map 的子类
       if (Map.class.isAssignableFrom(method.getReturnType())) {
         final MapKey mapKeyAnnotation = method.getAnnotation(MapKey.class);
         if (mapKeyAnnotation != null) {

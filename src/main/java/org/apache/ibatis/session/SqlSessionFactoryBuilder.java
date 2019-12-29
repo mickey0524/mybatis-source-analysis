@@ -30,6 +30,7 @@ import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
  *
  * @author Clinton Begin
  */
+// 生成 SqlSession 实例
 public class SqlSessionFactoryBuilder {
 
   public SqlSessionFactory build(Reader reader) {
@@ -44,6 +45,7 @@ public class SqlSessionFactoryBuilder {
     return build(reader, null, properties);
   }
 
+  // 传入 Reader
   public SqlSessionFactory build(Reader reader, String environment, Properties properties) {
     try {
       XMLConfigBuilder parser = new XMLConfigBuilder(reader, environment, properties);
@@ -72,6 +74,7 @@ public class SqlSessionFactoryBuilder {
     return build(inputStream, null, properties);
   }
 
+  // 传入 InputStream
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);

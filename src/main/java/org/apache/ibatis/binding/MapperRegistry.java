@@ -31,15 +31,18 @@ import org.apache.ibatis.session.SqlSession;
  * @author Eduardo Macarron
  * @author Lasse Voss
  */
+// Mapper 注册器
 public class MapperRegistry {
 
   private final Configuration config;
+  // 将已经添加的映射都放入 HashMap
   private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<>();
 
   public MapperRegistry(Configuration config) {
     this.config = config;
   }
 
+  // 获取 Mapper
   @SuppressWarnings("unchecked")
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
