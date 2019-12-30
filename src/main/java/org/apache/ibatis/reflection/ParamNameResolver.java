@@ -28,8 +28,10 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+// 参数名称解析器
 public class ParamNameResolver {
 
+  // 通用前缀
   public static final String GENERIC_NAME_PREFIX = "param";
 
   /**
@@ -45,14 +47,16 @@ public class ParamNameResolver {
    * <li>aMethod(int a, RowBounds rb, int b) -&gt; {{0, "0"}, {2, "1"}}</li>
    * </ul>
    */
+  // key 是索引，value 是名字
+  // 如果使用了 @Param 注解，名字则为注解中的 value，否则，则为索引
   private final SortedMap<Integer, String> names;
 
   private boolean hasParamAnnotation;
 
   public ParamNameResolver(Configuration config, Method method) {
-    final Class<?>[] paramTypes = method.getParameterTypes();
-    final Annotation[][] paramAnnotations = method.getParameterAnnotations();
-    final SortedMap<Integer, String> map = new TreeMap<>();
+    final Class<?>[] paramTypes = method.getParameterTypes();  // 获取所有参数类型
+    final Annotation[][] paramAnnotations = method.getParameterAnnotations();  // 获取参数的注解
+    final SortedMap<Integer, String> map = new TreeMap<>();  // 使用 TreeMap，按照参数索引顺序排序
     int paramCount = paramAnnotations.length;
     // get names from @Param annotations
     for (int paramIndex = 0; paramIndex < paramCount; paramIndex++) {
@@ -62,32 +66,37 @@ public class ParamNameResolver {
       }
       String name = null;
       for (Annotation annotation : paramAnnotations[paramIndex]) {
-        if (annotation instanceof Param) {
+        if (annotation instanceof Param) {  // 查找参数是否有被 @Param 注解修饰的
           hasParamAnnotation = true;
           name = ((Param) annotation).value();
           break;
         }
       }
+      // 没有使用 @Param 修饰
       if (name == null) {
         // @Param was not specified.
+        // 使用参数真正的名称
         if (config.isUseActualParamName()) {
           name = getActualParamName(method, paramIndex);
         }
         if (name == null) {
           // use the parameter index as the name ("0", "1", ...)
           // gcode issue #71
+          // 这就是使用索引，但是会跳过 RowBounds 和 ResultHandler 类型，因此不一定能和 key 匹配上
           name = String.valueOf(map.size());
         }
       }
       map.put(paramIndex, name);
     }
-    names = Collections.unmodifiableSortedMap(map);
+    names = Collections.unmodifiableSortedMap(map);  // 返回一个不可修改的 view
   }
 
+  // 返回真正的参数名称
   private String getActualParamName(Method method, int paramIndex) {
     return ParamNameUtil.getParamNames(method).get(paramIndex);
   }
 
+  // RowBounds 和 ResultHandler 类型的参数过滤
   private static boolean isSpecialParameter(Class<?> clazz) {
     return RowBounds.class.isAssignableFrom(clazz) || ResultHandler.class.isAssignableFrom(clazz);
   }
@@ -95,6 +104,7 @@ public class ParamNameResolver {
   /**
    * Returns parameter names referenced by SQL providers.
    */
+  // 返回参数 name
   public String[] getNames() {
     return names.values().toArray(new String[0]);
   }
@@ -107,6 +117,9 @@ public class ParamNameResolver {
    * ...).
    * </p>
    */
+  // 一个非特殊单参数会被不带名称的返回
+  // 多参数需要使用命名规则
+  // 除了默认名称之外，方法也会使用通用的名称（param1，param2，...)
   public Object getNamedParams(Object[] args) {
     final int paramCount = names.size();
     if (args == null || paramCount == 0) {

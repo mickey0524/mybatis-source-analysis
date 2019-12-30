@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 // 获取方法参数名的工具类
+// Method 和 Constructor 都继承 Executable 类
 public class ParamNameUtil {
+
   public static List<String> getParamNames(Method method) {
     return getParameterNames(method);
   }

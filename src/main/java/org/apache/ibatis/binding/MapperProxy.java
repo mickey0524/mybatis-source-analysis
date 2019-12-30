@@ -90,7 +90,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     }
   }
 
-  // 缓存 Invoker
+  // 缓存 Invoker，缓存到 methodCache 中
   private MapperMethodInvoker cachedInvoker(Object proxy, Method method, Object[] args) throws Throwable {
     try {
       return methodCache.computeIfAbsent(method, m -> {

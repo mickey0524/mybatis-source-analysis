@@ -58,7 +58,7 @@ public class MapperMethod {
   // 执行
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
-    // 可以看到执行时就是4种情况，insert|update|delete|select，分别调用 SqlSession 的4大类方法
+    // 可以看到执行时就是4种情况，insert|update|delete|select，分别调用 SqlSession 的 4 大类方法
     switch (command.getType()) {
       case INSERT: {
         Object param = method.convertArgsToSqlCommandParam(args);
@@ -76,9 +76,10 @@ public class MapperMethod {
         break;
       }
       case SELECT:
+        // 如果方法返回 void，同时方法定义了 ResultHandler
         if (method.returnsVoid() && method.hasResultHandler()) {
           executeWithResultHandler(sqlSession, args);
-          result = null;
+          result = null;  // 返回 void，result 置为 null
         } else if (method.returnsMany()) {
           result = executeForMany(sqlSession, args);
         } else if (method.returnsMap()) {
@@ -107,6 +108,7 @@ public class MapperMethod {
     return result;
   }
 
+  // 处理返回结果
   private Object rowCountResult(int rowCount) {
     final Object result;
     if (method.returnsVoid()) {
@@ -123,6 +125,7 @@ public class MapperMethod {
     return result;
   }
 
+  // 配合 ResultHandler 执行
   private void executeWithResultHandler(SqlSession sqlSession, Object[] args) {
     MappedStatement ms = sqlSession.getConfiguration().getMappedStatement(command.getName());
     if (!StatementType.CALLABLE.equals(ms.getStatementType())
@@ -140,6 +143,7 @@ public class MapperMethod {
     }
   }
 
+  // 结果为集合/数组的执行
   private <E> Object executeForMany(SqlSession sqlSession, Object[] args) {
     List<E> result;
     Object param = method.convertArgsToSqlCommandParam(args);
@@ -160,6 +164,7 @@ public class MapperMethod {
     return result;
   }
 
+  // 结果为游标的执行
   private <T> Cursor<T> executeForCursor(SqlSession sqlSession, Object[] args) {
     Cursor<T> result;
     Object param = method.convertArgsToSqlCommandParam(args);
@@ -172,6 +177,7 @@ public class MapperMethod {
     return result;
   }
 
+  // 转换为集合
   private <E> Object convertToDeclaredCollection(Configuration config, List<E> list) {
     Object collection = config.getObjectFactory().create(method.getReturnType());
     MetaObject metaObject = config.newMetaObject(collection);
@@ -179,9 +185,10 @@ public class MapperMethod {
     return collection;
   }
 
+  // 转换为数组
   @SuppressWarnings("unchecked")
   private <E> Object convertToArray(List<E> list) {
-    Class<?> arrayComponentType = method.getReturnType().getComponentType();
+    Class<?> arrayComponentType = method.getReturnType().getComponentType();  // 获取数组元素类型
     Object array = Array.newInstance(arrayComponentType, list.size());
     if (arrayComponentType.isPrimitive()) {
       for (int i = 0; i < list.size(); i++) {
@@ -314,9 +321,10 @@ public class MapperMethod {
       this.returnsMap = this.mapKey != null;
       this.rowBoundsIndex = getUniqueParamIndex(method, RowBounds.class);  // 记录 RowBounds 是第几个参数
       this.resultHandlerIndex = getUniqueParamIndex(method, ResultHandler.class);  // 记录 ResultHandler 是第几个参数
-      this.paramNameResolver = new ParamNameResolver(configuration, method);
+      this.paramNameResolver = new ParamNameResolver(configuration, method);  // 参数命名解释器
     }
 
+    // 将参数转换为 SqlCommand 的参数
     public Object convertArgsToSqlCommandParam(Object[] args) {
       return paramNameResolver.getNamedParams(args);
     }
@@ -325,6 +333,7 @@ public class MapperMethod {
       return rowBoundsIndex != null;
     }
 
+    // 将参数转为 RowBounds
     public RowBounds extractRowBounds(Object[] args) {
       return hasRowBounds() ? (RowBounds) args[rowBoundsIndex] : null;
     }
@@ -333,6 +342,7 @@ public class MapperMethod {
       return resultHandlerIndex != null;
     }
 
+    // 将参数转为 ResultHandler
     public ResultHandler extractResultHandler(Object[] args) {
       return hasResultHandler() ? (ResultHandler) args[resultHandlerIndex] : null;
     }
