@@ -22,13 +22,14 @@ import java.util.List;
 /**
  * @author Clinton Begin
  */
+// 拦截器链
 public class InterceptorChain {
 
   private final List<Interceptor> interceptors = new ArrayList<>();
 
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
-      target = interceptor.plugin(target);
+      target = interceptor.plugin(target);  // 依次 wrap 自己
     }
     return target;
   }

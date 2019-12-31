@@ -20,6 +20,7 @@ import java.util.Properties;
 /**
  * @author Clinton Begin
  */
+// 拦截器
 public interface Interceptor {
 
   Object intercept(Invocation invocation) throws Throwable;

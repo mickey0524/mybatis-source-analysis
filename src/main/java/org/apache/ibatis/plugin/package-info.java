@@ -16,4 +16,11 @@
 /**
  * Base package for handing plugins.
  */
+// 处理插件的基础包
+// Signature 是一个注解，表明需要拦截那一个类中哪一个方法（带参数的），可以用 getMethod 获取是否有这个方法，用于 Intercepts 注解中
+// Intercepts 也是一个注解，用于拦截器的类上
+// InterceptorChain 将所有拦截器放到一个 List 中，依次 wrap target 对象
+// Interceptor intercept 方法可以在 Invocation 执行前后做自己的事情
+// Invocation 就是执行一个 Method 的反射调用
+// Plugin 用于判断拦截器是否需要拦截目标方法
 package org.apache.ibatis.plugin;

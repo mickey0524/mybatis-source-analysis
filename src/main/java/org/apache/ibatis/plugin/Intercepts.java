@@ -42,6 +42,7 @@ import java.lang.annotation.Target;
  * </pre>
  * @author Clinton Begin
  */
+// 注解定义了需要拦截的目标方法
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

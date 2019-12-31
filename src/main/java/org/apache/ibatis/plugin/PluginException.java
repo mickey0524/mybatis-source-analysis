@@ -20,6 +20,7 @@ import org.apache.ibatis.exceptions.PersistenceException;
 /**
  * @author Clinton Begin
  */
+// 插件异常
 public class PluginException extends PersistenceException {
 
   private static final long serialVersionUID = 8548771664564998595L;

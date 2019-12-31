@@ -41,8 +41,8 @@ public class Plugin implements InvocationHandler {
   }
 
   public static Object wrap(Object target, Interceptor interceptor) {
-    Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
-    Class<?> type = target.getClass();
+    Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);  // 获取拦截器需要处理的方法
+    Class<?> type = target.getClass();  // 获取 target 的类型
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
       return Proxy.newProxyInstance(
@@ -53,6 +53,7 @@ public class Plugin implements InvocationHandler {
     return target;
   }
 
+  // 动态代理执行
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
@@ -66,17 +67,21 @@ public class Plugin implements InvocationHandler {
     }
   }
 
+  // 获取签名 Map，key 是类，value 是 Method 组成的 Set
   private static Map<Class<?>, Set<Method>> getSignatureMap(Interceptor interceptor) {
     Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);
     // issue #251
+    // 没有被 @Intercepts 修饰，抛出异常
     if (interceptsAnnotation == null) {
       throw new PluginException("No @Intercepts annotation was found in interceptor " + interceptor.getClass().getName());
     }
-    Signature[] sigs = interceptsAnnotation.value();
+    Signature[] sigs = interceptsAnnotation.value();  // 取出签名数组
     Map<Class<?>, Set<Method>> signatureMap = new HashMap<>();
     for (Signature sig : sigs) {
+      // type() 获取类
       Set<Method> methods = signatureMap.computeIfAbsent(sig.type(), k -> new HashSet<>());
       try {
+        // 获取指定名称 + 参数的 Method 方法
         Method method = sig.type().getMethod(sig.method(), sig.args());
         methods.add(method);
       } catch (NoSuchMethodException e) {
@@ -86,6 +91,7 @@ public class Plugin implements InvocationHandler {
     return signatureMap;
   }
 
+  // 获取所有签名修饰的接口
   private static Class<?>[] getAllInterfaces(Class<?> type, Map<Class<?>, Set<Method>> signatureMap) {
     Set<Class<?>> interfaces = new HashSet<>();
     while (type != null) {
@@ -94,7 +100,7 @@ public class Plugin implements InvocationHandler {
           interfaces.add(c);
         }
       }
-      type = type.getSuperclass();
+      type = type.getSuperclass();  // 获取 type 父
     }
     return interfaces.toArray(new Class<?>[interfaces.size()]);
   }
