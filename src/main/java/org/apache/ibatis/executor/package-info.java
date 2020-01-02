@@ -16,4 +16,5 @@
 /**
  * Contains the statement executors.
  */
+// 包含 statement 的执行器
 package org.apache.ibatis.executor;
