@@ -31,6 +31,7 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+// 映射的语句
 public final class MappedStatement {
 
   private String resource;

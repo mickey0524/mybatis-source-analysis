@@ -27,6 +27,9 @@ import javax.sql.DataSource;
  *
  * @author Eduardo Macarron
  */
+// 应该返回一个 id 来标识此数据库的类型
+// 以后可以使用该 id 为每种数据库类型构建不同的查询
+// 此机制可支持多个供应商或版本
 public interface DatabaseIdProvider {
 
   default void setProperties(Properties p) {

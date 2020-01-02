@@ -23,6 +23,7 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+// 参数 Map
 public class ParameterMap {
 
   private String id;

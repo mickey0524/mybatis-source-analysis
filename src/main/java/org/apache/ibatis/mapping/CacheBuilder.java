@@ -37,10 +37,11 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 /**
  * @author Clinton Begin
  */
+// 缓存构造器
 public class CacheBuilder {
   private final String id;
-  private Class<? extends Cache> implementation;
-  private final List<Class<? extends Cache>> decorators;
+  private Class<? extends Cache> implementation;  // base 缓存
+  private final List<Class<? extends Cache>> decorators;  // 装饰器 list
   private Integer size;
   private Long clearInterval;
   private boolean readWrite;
@@ -106,10 +107,12 @@ public class CacheBuilder {
     return cache;
   }
 
+  // 设置基本的实现，也就是 Cache 的基类
   private void setDefaultImplementations() {
     if (implementation == null) {
       implementation = PerpetualCache.class;
       if (decorators.isEmpty()) {
+        // 默认给一个 LRU 的装饰器
         decorators.add(LruCache.class);
       }
     }
@@ -139,11 +142,12 @@ public class CacheBuilder {
     }
   }
 
+  // 设置 Cache 属性
   private void setCacheProperties(Cache cache) {
     if (properties != null) {
       MetaObject metaCache = SystemMetaObject.forObject(cache);
       for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-        String name = (String) entry.getKey();
+        String name = (String) entry.getKey();  // 获取 key value
         String value = (String) entry.getValue();
         if (metaCache.hasSetter(name)) {
           Class<?> type = metaCache.getSetterType(name);
@@ -185,25 +189,28 @@ public class CacheBuilder {
       }
     }
   }
-
+  
+  // 新建一个基类 Cache 的实例
   private Cache newBaseCacheInstance(Class<? extends Cache> cacheClass, String id) {
     Constructor<? extends Cache> cacheConstructor = getBaseCacheConstructor(cacheClass);
     try {
-      return cacheConstructor.newInstance(id);
+      return cacheConstructor.newInstance(id);  // 传入 id
     } catch (Exception e) {
       throw new CacheException("Could not instantiate cache implementation (" + cacheClass + "). Cause: " + e, e);
     }
   }
 
+  // 获取构造器
   private Constructor<? extends Cache> getBaseCacheConstructor(Class<? extends Cache> cacheClass) {
     try {
-      return cacheClass.getConstructor(String.class);
+      return cacheClass.getConstructor(String.class);  
     } catch (Exception e) {
       throw new CacheException("Invalid base cache implementation (" + cacheClass + ").  "
         + "Base cache implementations must have a constructor that takes a String id as a parameter.  Cause: " + e, e);
     }
   }
 
+  // 新建一个装饰器 Cache 的实例
   private Cache newCacheDecoratorInstance(Class<? extends Cache> cacheClass, Cache base) {
     Constructor<? extends Cache> cacheConstructor = getCacheDecoratorConstructor(cacheClass);
     try {
@@ -213,6 +220,7 @@ public class CacheBuilder {
     }
   }
 
+  // 获取构造器
   private Constructor<? extends Cache> getCacheDecoratorConstructor(Class<? extends Cache> cacheClass) {
     try {
       return cacheClass.getConstructor(Cache.class);

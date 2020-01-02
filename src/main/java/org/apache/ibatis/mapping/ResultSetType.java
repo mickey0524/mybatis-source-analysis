@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 /**
  * @author Clinton Begin
  */
+// ResultSet 的 类型
 public enum ResultSetType {
   /**
    * behavior with same as unset (driver dependent).

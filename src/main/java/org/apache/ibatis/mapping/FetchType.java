@@ -18,6 +18,7 @@ package org.apache.ibatis.mapping;
 /**
  * @author Eduardo Macarron
  */
+// 拉取结果的模式
 public enum FetchType {
   LAZY, EAGER, DEFAULT
 }

@@ -34,6 +34,7 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+// 结果 Map
 public class ResultMap {
   private Configuration configuration;
 

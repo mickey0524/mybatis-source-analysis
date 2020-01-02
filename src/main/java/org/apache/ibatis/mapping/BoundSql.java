@@ -33,6 +33,9 @@ import org.apache.ibatis.session.Configuration;
  *
  * @author Clinton Begin
  */
+// 在处理完动态内容之后，从 SqlSource 处获取的真正的 SQL 语句
+// SQL 可能包含 SQL 占位符 ?
+// 以及参数映射的有序列表和每个参数的附加信息（至少是输入对象的属性名称）
 public class BoundSql {
 
   private final String sql;

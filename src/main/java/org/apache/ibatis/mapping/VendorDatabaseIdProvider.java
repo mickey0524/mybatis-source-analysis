@@ -37,6 +37,7 @@ import org.apache.ibatis.logging.LogFactory;
  *
  * @author Eduardo Macarron
  */
+// 返回数据库的产品名作为 databaseId
 public class VendorDatabaseIdProvider implements DatabaseIdProvider {
 
   private Properties properties;
@@ -59,6 +60,7 @@ public class VendorDatabaseIdProvider implements DatabaseIdProvider {
     this.properties = p;
   }
 
+  // 获取数据库名称
   private String getDatabaseName(DataSource dataSource) throws SQLException {
     String productName = getDatabaseProductName(dataSource);
     if (this.properties != null) {
@@ -75,8 +77,8 @@ public class VendorDatabaseIdProvider implements DatabaseIdProvider {
 
   private String getDatabaseProductName(DataSource dataSource) throws SQLException {
     try (Connection con = dataSource.getConnection()) {
-      DatabaseMetaData metaData = con.getMetaData();
-      return metaData.getDatabaseProductName();
+      DatabaseMetaData metaData = con.getMetaData();  // 从数据库连接中获取数据库元信息
+      return metaData.getDatabaseProductName();  // 从数据库元信息中获取数据库名称
     }
 
   }

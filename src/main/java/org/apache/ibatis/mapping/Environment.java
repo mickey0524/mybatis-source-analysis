@@ -22,6 +22,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 /**
  * @author Clinton Begin
  */
+// 环境
 public final class Environment {
   private final String id;
   private final TransactionFactory transactionFactory;

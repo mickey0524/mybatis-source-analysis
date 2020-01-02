@@ -23,6 +23,7 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+// 鉴定器
 public class Discriminator {
 
   private ResultMapping resultMapping;

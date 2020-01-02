@@ -28,6 +28,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+// 结果映射
 public class ResultMapping {
 
   private Configuration configuration;
@@ -141,6 +142,7 @@ public class ResultMapping {
       return resultMapping;
     }
 
+    // 一些验证逻辑
     private void validate() {
       // Issue #697: cannot define both nestedQueryId and nestedResultMapId
       if (resultMapping.nestedQueryId != null && resultMapping.nestedResultMapId != null) {
@@ -169,6 +171,7 @@ public class ResultMapping {
       }
     }
 
+    // 和 ParameterMapping 中一样，如果没有设置特别的 typeHandler，那就从 TypeHandlerRegistry 中找到默认的
     private void resolveTypeHandler() {
       if (resultMapping.typeHandler == null && resultMapping.javaType != null) {
         Configuration configuration = resultMapping.configuration;
