@@ -35,6 +35,7 @@ import org.apache.ibatis.io.Resources;
 /**
  * @author Clinton Begin
  */
+// 类型别名注册器
 public class TypeAliasRegistry {
 
   private final Map<String, Class<?>> typeAliases = new HashMap<>();
@@ -102,6 +103,7 @@ public class TypeAliasRegistry {
 
   @SuppressWarnings("unchecked")
   // throws class cast exception as well if types cannot be assigned
+  // 优先从 Map 中获取对应的 Class，再用 Resources.classForName 做兜底
   public <T> Class<T> resolveAlias(String string) {
     try {
       if (string == null) {
@@ -125,6 +127,7 @@ public class TypeAliasRegistry {
     registerAliases(packageName, Object.class);
   }
 
+  // 注册一个包的类
   public void registerAliases(String packageName, Class<?> superType) {
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
     resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
@@ -138,6 +141,7 @@ public class TypeAliasRegistry {
     }
   }
 
+  // 如果仅仅传入一个类，那么优先使用类上的 Alias 注解，其次使用类的 simpleName
   public void registerAlias(Class<?> type) {
     String alias = type.getSimpleName();
     Alias aliasAnnotation = type.getAnnotation(Alias.class);
@@ -147,6 +151,7 @@ public class TypeAliasRegistry {
     registerAlias(alias, type);
   }
 
+  // alias 是别名，value 是一个 java 类型
   public void registerAlias(String alias, Class<?> value) {
     if (alias == null) {
       throw new TypeException("The parameter alias cannot be null");
@@ -161,6 +166,7 @@ public class TypeAliasRegistry {
 
   public void registerAlias(String alias, String value) {
     try {
+      // 使用 classForName 处理 value，使其变为一个 Class
       registerAlias(alias, Resources.classForName(value));
     } catch (ClassNotFoundException e) {
       throw new TypeException("Error registering type alias " + alias + " for " + value + ". Cause: " + e, e);
@@ -170,6 +176,7 @@ public class TypeAliasRegistry {
   /**
    * @since 3.2.2
    */
+  // 变为不可变的 Map
   public Map<String, Class<?>> getTypeAliases() {
     return Collections.unmodifiableMap(typeAliases);
   }

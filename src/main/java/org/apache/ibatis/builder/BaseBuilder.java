@@ -31,6 +31,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+// 基础的 builder，是一个抽象类
 public abstract class BaseBuilder {
   protected final Configuration configuration;
   protected final TypeAliasRegistry typeAliasRegistry;
@@ -46,34 +47,40 @@ public abstract class BaseBuilder {
     return configuration;
   }
 
+  // 解析表达式
   protected Pattern parseExpression(String regex, String defaultValue) {
     return Pattern.compile(regex == null ? defaultValue : regex);
   }
 
+  // Boolean 化
   protected Boolean booleanValueOf(String value, Boolean defaultValue) {
     return value == null ? defaultValue : Boolean.valueOf(value);
   }
 
+  // Integer 化
   protected Integer integerValueOf(String value, Integer defaultValue) {
     return value == null ? defaultValue : Integer.valueOf(value);
   }
 
+  // StringSet 化
   protected Set<String> stringSetValueOf(String value, String defaultValue) {
     value = value == null ? defaultValue : value;
     return new HashSet<>(Arrays.asList(value.split(",")));
   }
 
+  // JDBC 化
   protected JdbcType resolveJdbcType(String alias) {
     if (alias == null) {
       return null;
     }
     try {
-      return JdbcType.valueOf(alias);
+      return JdbcType.valueOf(alias);  
     } catch (IllegalArgumentException e) {
       throw new BuilderException("Error resolving JdbcType. Cause: " + e, e);
     }
   }
 
+  // ResultSetType 化
   protected ResultSetType resolveResultSetType(String alias) {
     if (alias == null) {
       return null;
@@ -85,6 +92,7 @@ public abstract class BaseBuilder {
     }
   }
 
+  // ParameterMode 化
   protected ParameterMode resolveParameterMode(String alias) {
     if (alias == null) {
       return null;

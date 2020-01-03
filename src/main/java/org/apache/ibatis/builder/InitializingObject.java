@@ -21,6 +21,7 @@ package org.apache.ibatis.builder;
  * @since 3.4.2
  * @author Kazuki Shimizu
  */
+// 指示提供初始化方法的接口
 public interface InitializingObject {
 
   /**
@@ -30,6 +31,8 @@ public interface InitializingObject {
    * </p>
    * @throws Exception in the event of misconfiguration (such as failure to set an essential property) or if initialization fails
    */
+  // 初始化一个实例
+  // 这个方法会在设置所有属性之后被调用
   void initialize() throws Exception;
 
 }

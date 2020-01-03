@@ -31,6 +31,7 @@ import java.util.HashMap;
  *
  * @author Frank D. Martinez [mnesarco]
  */
+// parameter 表达式
 public class ParameterExpression extends HashMap<String, String> {
 
   private static final long serialVersionUID = -2417552199605158680L;
@@ -40,10 +41,14 @@ public class ParameterExpression extends HashMap<String, String> {
   }
 
   private void parse(String expression) {
+    // #{property,javaType=int,jdbcType=NUMERIC}
+    // property:VARCHAR
     int p = skipWS(expression, 0);
     if (expression.charAt(p) == '(') {
+      // 处理表达式
       expression(expression, p + 1);
     } else {
+      // 处理属性
       property(expression, p);
     }
   }
@@ -65,12 +70,14 @@ public class ParameterExpression extends HashMap<String, String> {
 
   private void property(String expression, int left) {
     if (left < expression.length()) {
+      // 首先，得到逗号或者冒号之前的字符串，加入到 property
       int right = skipUntil(expression, left, ",:");
       put("property", trimmedStr(expression, left, right));
       jdbcTypeOpt(expression, right);
     }
   }
 
+  // 过滤空白
   private int skipWS(String expression, int p) {
     for (int i = p; i < expression.length(); i++) {
       if (expression.charAt(i) > 0x20) {
@@ -80,6 +87,7 @@ public class ParameterExpression extends HashMap<String, String> {
     return expression.length();
   }
 
+  // 遇到 endChars 里的字符就结束
   private int skipUntil(String expression, int p, final String endChars) {
     for (int i = p; i < expression.length(); i++) {
       char c = expression.charAt(i);
@@ -91,6 +99,7 @@ public class ParameterExpression extends HashMap<String, String> {
   }
 
   private void jdbcTypeOpt(String expression, int p) {
+    // 过滤空白
     p = skipWS(expression, p);
     if (p < expression.length()) {
       if (expression.charAt(p) == ':') {
@@ -103,6 +112,7 @@ public class ParameterExpression extends HashMap<String, String> {
     }
   }
 
+  // property:VARCHAR 类型的
   private void jdbcType(String expression, int p) {
     int left = skipWS(expression, p);
     int right = skipUntil(expression, left, ",");
@@ -114,6 +124,7 @@ public class ParameterExpression extends HashMap<String, String> {
     option(expression, right + 1);
   }
 
+  //#{property,javaType=int,jdbcType=NUMERIC} 类型的
   private void option(String expression, int p) {
     int left = skipWS(expression, p);
     if (left < expression.length()) {
@@ -127,6 +138,7 @@ public class ParameterExpression extends HashMap<String, String> {
     }
   }
 
+  // 过滤 str 首位的空白
   private String trimmedStr(String str, int start, int end) {
     while (str.charAt(start) <= 0x20) {
       start++;
