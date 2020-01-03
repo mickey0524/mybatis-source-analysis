@@ -66,6 +66,7 @@ public class ResolverUtil<T> {
    * A simple interface that specifies how to test classes to determine if they
    * are to be included in the results produced by the ResolverUtil.
    */
+  // Base 接口
   public interface Test {
     /**
      * Will be called repeatedly with candidate classes. Must return True if a class
@@ -78,6 +79,7 @@ public class ResolverUtil<T> {
    * A Test that checks to see if each class is assignable to the provided class. Note
    * that this test will match the parent type itself if it is presented for matching.
    */
+  // 构造函数传入父类，matches 传入子类，判断是否 match
   public static class IsA implements Test {
     private Class<?> parent;
 
@@ -102,6 +104,7 @@ public class ResolverUtil<T> {
    * A Test that checks to see if each class is annotated with a specific annotation. If it
    * is, then the test returns true, otherwise false.
    */
+  // 构造函数传入注解类， matches 函数传入待检测类，判断待检测类是否被注解类注解
   public static class AnnotatedWith implements Test {
     private Class<? extends Annotation> annotation;
 
@@ -147,6 +150,7 @@ public class ResolverUtil<T> {
    *
    * @return the ClassLoader that will be used to scan for classes
    */
+  // 获取 ClassLoader，优先选取 field，否则选择当前线程的 ClassLoader
   public ClassLoader getClassLoader() {
     return classloader == null ? Thread.currentThread().getContextClassLoader() : classloader;
   }
@@ -236,6 +240,7 @@ public class ResolverUtil<T> {
    *
    * @param packageName The Java package name to convert to a path
    */
+  // 将 . 替换为 /
   protected String getPackagePath(String packageName) {
     return packageName == null ? null : packageName.replace('.', '/');
   }
@@ -248,6 +253,7 @@ public class ResolverUtil<T> {
    * @param fqn the fully qualified name of a class
    */
   @SuppressWarnings("unchecked")
+  // fqn 为 a/b/c.class
   protected void addIfMatching(Test test, String fqn) {
     try {
       String externalName = fqn.substring(0, fqn.indexOf('.')).replace('/', '.');

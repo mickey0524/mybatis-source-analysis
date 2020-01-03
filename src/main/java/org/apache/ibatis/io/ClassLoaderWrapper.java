@@ -23,6 +23,7 @@ import java.net.URL;
  *
  * @author Clinton Begin
  */
+// ClassLoaderWrapper 用于包装多个 loader 类，使其像一个一样工作
 public class ClassLoaderWrapper {
 
   ClassLoader defaultClassLoader;
@@ -30,7 +31,7 @@ public class ClassLoaderWrapper {
 
   ClassLoaderWrapper() {
     try {
-      systemClassLoader = ClassLoader.getSystemClassLoader();
+      systemClassLoader = ClassLoader.getSystemClassLoader();  // 获取系统的 ClassLoader
     } catch (SecurityException ignored) {
       // AccessControlException on Google App Engine
     }
@@ -42,6 +43,7 @@ public class ClassLoaderWrapper {
    * @param resource - the resource to locate
    * @return the resource or null
    */
+  // 使用当前类路径获取资源作为 URL
   public URL getResourceAsURL(String resource) {
     return getResourceAsURL(resource, getClassLoaders(null));
   }
@@ -63,6 +65,7 @@ public class ClassLoaderWrapper {
    * @param resource - the resource to find
    * @return the stream or null
    */
+  // 从 classpath 获取资源
   public InputStream getResourceAsStream(String resource) {
     return getResourceAsStream(resource, getClassLoaders(null));
   }
@@ -108,6 +111,7 @@ public class ClassLoaderWrapper {
    * @param classLoader - the classloaders to examine
    * @return the resource or null
    */
+  // 获取资源作为流
   InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
     for (ClassLoader cl : classLoader) {
       if (null != cl) {
@@ -135,6 +139,7 @@ public class ClassLoaderWrapper {
    * @param classLoader - the class loaders to examine
    * @return the resource or null
    */
+  // 使用当前类路径获取资源作为 URL
   URL getResourceAsURL(String resource, ClassLoader[] classLoader) {
 
     URL url;
@@ -144,10 +149,12 @@ public class ClassLoaderWrapper {
       if (null != cl) {
 
         // look for the resource as passed in...
+        // 寻找资源
         url = cl.getResource(resource);
 
         // ...but some class loaders want this leading "/", so we'll add it
         // and try again if we didn't find the resource
+        // 一些 ClassLoader 需要前导 /，重试
         if (null == url) {
           url = cl.getResource("/" + resource);
         }
@@ -175,6 +182,7 @@ public class ClassLoaderWrapper {
    * @return the class
    * @throws ClassNotFoundException - Remember the wisdom of Judge Smails: Well, the world needs ditch diggers, too.
    */
+  // 获取类
   Class<?> classForName(String name, ClassLoader[] classLoader) throws ClassNotFoundException {
 
     for (ClassLoader cl : classLoader) {
@@ -201,13 +209,14 @@ public class ClassLoaderWrapper {
 
   }
 
+  // 获取 ClassLoader 数组
   ClassLoader[] getClassLoaders(ClassLoader classLoader) {
     return new ClassLoader[]{
-        classLoader,
-        defaultClassLoader,
-        Thread.currentThread().getContextClassLoader(),
-        getClass().getClassLoader(),
-        systemClassLoader};
+        classLoader,  // 传入的 ClassLoader 参数
+        defaultClassLoader,  // 默认的 ClassLoader
+        Thread.currentThread().getContextClassLoader(),  // 当前线程的 ClassLoader
+        getClass().getClassLoader(),  // ClassLoaderWrapper 类的 ClassLoader
+        systemClassLoader};  // 系统 ClassLoader
   }
 
 }

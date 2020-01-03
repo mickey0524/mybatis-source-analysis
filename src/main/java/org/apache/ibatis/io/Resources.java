@@ -30,6 +30,7 @@ import java.util.Properties;
  *
  * @author Clinton Begin
  */
+// 简化通过类加载器访问资源的类
 public class Resources {
 
   private static ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper();
@@ -57,6 +58,7 @@ public class Resources {
    *
    * @param defaultClassLoader - the new default ClassLoader
    */
+  // 设置默认的 ClassLoader
   public static void setDefaultClassLoader(ClassLoader defaultClassLoader) {
     classLoaderWrapper.defaultClassLoader = defaultClassLoader;
   }
@@ -81,6 +83,7 @@ public class Resources {
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
    */
+  // 获取资源，返回 URL 对象
   public static URL getResourceURL(ClassLoader loader, String resource) throws IOException {
     URL url = classLoaderWrapper.getResourceAsURL(resource, loader);
     if (url == null) {
@@ -108,6 +111,7 @@ public class Resources {
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
    */
+  // 获取资源，返回 InputStream
   public static InputStream getResourceAsStream(ClassLoader loader, String resource) throws IOException {
     InputStream in = classLoaderWrapper.getResourceAsStream(resource, loader);
     if (in == null) {
@@ -123,6 +127,7 @@ public class Resources {
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
    */
+  // 获取资源，返回 Properties 对象
   public static Properties getResourceAsProperties(String resource) throws IOException {
     Properties props = new Properties();
     try (InputStream in = getResourceAsStream(resource)) {
@@ -139,6 +144,7 @@ public class Resources {
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
    */
+  // 获取资源，返回 Properties 对象
   public static Properties getResourceAsProperties(ClassLoader loader, String resource) throws IOException {
     Properties props = new Properties();
     try (InputStream in = getResourceAsStream(loader, resource)) {
@@ -172,6 +178,7 @@ public class Resources {
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
    */
+  // 获取资源，返回 Reader 对象
   public static Reader getResourceAsReader(ClassLoader loader, String resource) throws IOException {
     Reader reader;
     if (charset == null) {
@@ -201,6 +208,7 @@ public class Resources {
    * @return The resource
    * @throws java.io.IOException If the resource cannot be found or read
    */
+  // 返回资源，获取 File 对象
   public static File getResourceAsFile(ClassLoader loader, String resource) throws IOException {
     return new File(getResourceURL(loader, resource).getFile());
   }
