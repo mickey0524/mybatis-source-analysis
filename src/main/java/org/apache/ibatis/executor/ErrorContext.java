@@ -18,10 +18,11 @@ package org.apache.ibatis.executor;
 /**
  * @author Clinton Begin
  */
+// 错误上下文
 public class ErrorContext {
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
-  private static final ThreadLocal<ErrorContext> LOCAL = new ThreadLocal<>();
+  private static final ThreadLocal<ErrorContext> LOCAL = new ThreadLocal<>();  // 使用 ThreadLocal 解决冲突
 
   private ErrorContext stored;
   private String resource;

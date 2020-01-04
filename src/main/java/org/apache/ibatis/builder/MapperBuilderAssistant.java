@@ -353,6 +353,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return resultMaps;
   }
 
+  // 返回 ResultMapping 实例
   public ResultMapping buildResultMapping(
       Class<?> resultType,
       String property,
@@ -422,6 +423,9 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return composites;
   }
 
+  // 处理 resultMap 中的 javaType
+  // 先根据类和类中的字段得到类型
+  // 如果无法识别，设为 Object
   private Class<?> resolveResultJavaType(Class<?> resultType, String property, Class<?> javaType) {
     if (javaType == null && property != null) {
       try {
