@@ -91,3 +91,11 @@ public static boolean canControlMemberAccessible() {
 ```
 
 ## `c1.isAssignableFrom(c2)` 可以用来判断 c2 是否和 c1 相等或者 c2 是 c1 的 superClass/superInterface
+
+## 使用 Java8 语法
+
+```java
+Properties variablesContext = new Properties();
+Properties configurationVariables = configuration.getVariables();
+Optional.ofNullable(configurationVariables).ifPresent(variablesContext::putAll);
+```

@@ -69,6 +69,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return currentNamespace;
   }
 
+  // 设置当前的命名空间
   public void setCurrentNamespace(String currentNamespace) {
     if (currentNamespace == null) {
       throw new BuilderException("The mapper element requires a namespace attribute to be specified.");
@@ -82,17 +83,20 @@ public class MapperBuilderAssistant extends BaseBuilder {
     this.currentNamespace = currentNamespace;
   }
 
+  // 应用当前的命名空间
   public String applyCurrentNamespace(String base, boolean isReference) {
     if (base == null) {
       return null;
     }
     if (isReference) {
       // is it qualified with any namespace yet?
+      // 是否已经被任何命名空间修饰
       if (base.contains(".")) {
         return base;
       }
     } else {
       // is it qualified with this namespace yet?
+      // 是否被当前命名空间修饰
       if (base.startsWith(currentNamespace + ".")) {
         return base;
       }
@@ -180,7 +184,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
       Discriminator discriminator,
       List<ResultMapping> resultMappings,
       Boolean autoMapping) {
-    id = applyCurrentNamespace(id, false);
+    id = applyCurrentNamespace(id, false);  // 引入命名空间
     extend = applyCurrentNamespace(extend, true);
 
     if (extend != null) {
@@ -206,7 +210,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     ResultMap resultMap = new ResultMap.Builder(configuration, id, type, resultMappings, autoMapping)
         .discriminator(discriminator)
         .build();
-    configuration.addResultMap(resultMap);
+    configuration.addResultMap(resultMap);  // 加入 resultMap
     return resultMap;
   }
 
@@ -241,6 +245,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return new Discriminator.Builder(configuration, resultMapping, namespaceDiscriminatorMap).build();
   }
 
+  // 添加 MappedStatement
   public MappedStatement addMappedStatement(
       String id,
       SqlSource sqlSource,
@@ -267,7 +272,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
       throw new IncompleteElementException("Cache-ref not yet resolved");
     }
 
-    id = applyCurrentNamespace(id, false);
+    id = applyCurrentNamespace(id, false);  // 应用命名空间
     boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 
     MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, id, sqlSource, sqlCommandType)
@@ -294,10 +299,11 @@ public class MapperBuilderAssistant extends BaseBuilder {
     }
 
     MappedStatement statement = statementBuilder.build();
-    configuration.addMappedStatement(statement);
+    configuration.addMappedStatement(statement);  // 加入 configuration
     return statement;
   }
 
+  // 其实就是有一个 default 数值，很正常的写法
   private <T> T valueOrDefault(T value, T defaultValue) {
     return value == null ? defaultValue : value;
   }
@@ -325,14 +331,16 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return parameterMap;
   }
 
+  // 获取 ResultMap 数组
   private List<ResultMap> getStatementResultMaps(
       String resultMap,
       Class<?> resultType,
       String statementId) {
-    resultMap = applyCurrentNamespace(resultMap, true);
+    resultMap = applyCurrentNamespace(resultMap, true);  // 引入命名空间
 
     List<ResultMap> resultMaps = new ArrayList<>();
     if (resultMap != null) {
+      // 引用定义的 resultMap
       String[] resultMapNames = resultMap.split(",");
       for (String resultMapName : resultMapNames) {
         try {

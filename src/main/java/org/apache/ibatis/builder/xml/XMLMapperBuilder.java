@@ -137,6 +137,7 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
+    // for 循环处理 XML 中的 SQL 语句
     for (XNode context : list) {
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
       try {
@@ -290,7 +291,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       }
     }
     String id = resultMapNode.getStringAttribute("id",
-            resultMapNode.getValueBasedIdentifier());
+            resultMapNode.getValueBasedIdentifier());  // id
     String extend = resultMapNode.getStringAttribute("extends");
     Boolean autoMapping = resultMapNode.getBooleanAttribute("autoMapping");
     ResultMapResolver resultMapResolver = new ResultMapResolver(builderAssistant, id, typeClass, extend, discriminator, resultMappings, autoMapping);

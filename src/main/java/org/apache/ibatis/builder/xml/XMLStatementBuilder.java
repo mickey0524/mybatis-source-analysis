@@ -36,6 +36,7 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+// insert/select/delete/update 语句
 public class XMLStatementBuilder extends BaseBuilder {
 
   private final MapperBuilderAssistant builderAssistant;
@@ -46,6 +47,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     this(configuration, builderAssistant, context, null);
   }
 
+  // 构造函数
   public XMLStatementBuilder(Configuration configuration, MapperBuilderAssistant builderAssistant, XNode context, String databaseId) {
     super(configuration);
     this.builderAssistant = builderAssistant;
@@ -53,6 +55,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     this.requiredDatabaseId = databaseId;
   }
 
+  // 解析 XNode
   public void parseStatementNode() {
     String id = context.getStringAttribute("id");
     String databaseId = context.getStringAttribute("databaseId");
@@ -62,23 +65,25 @@ public class XMLStatementBuilder extends BaseBuilder {
     }
 
     String nodeName = context.getNode().getNodeName();
-    SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
+    SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));  // 获取 SQL 类型
     boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
     boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
-    boolean useCache = context.getBooleanAttribute("useCache", isSelect);
+    boolean useCache = context.getBooleanAttribute("useCache", isSelect);  // 是否缓存 select 结果
     boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
 
     // Include Fragments before parsing
+    // 解析之前先解析 <include> SQL片段 这个在前面 XMLMapperBuilder 中已经构建完成，这里需要调用并解析
     XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
     includeParser.applyIncludes(context.getNode());
 
-    String parameterType = context.getStringAttribute("parameterType");
+    String parameterType = context.getStringAttribute("parameterType");  // 获取参数类型
     Class<?> parameterTypeClass = resolveClass(parameterType);
 
     String lang = context.getStringAttribute("lang");
     LanguageDriver langDriver = getLanguageDriver(lang);
 
     // Parse selectKey after includes and remove them.
+    // 处理 selectKey
     processSelectKeyNodes(id, parameterTypeClass, langDriver);
 
     // Parse the SQL (pre: <selectKey> and <include> were parsed and removed)
@@ -95,12 +100,12 @@ public class XMLStatementBuilder extends BaseBuilder {
 
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
     StatementType statementType = StatementType.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));
-    Integer fetchSize = context.getIntAttribute("fetchSize");
-    Integer timeout = context.getIntAttribute("timeout");
-    String parameterMap = context.getStringAttribute("parameterMap");
+    Integer fetchSize = context.getIntAttribute("fetchSize");  // 驱动程序每次批量返回的结果行数
+    Integer timeout = context.getIntAttribute("timeout");  // 超时时间
+    String parameterMap = context.getStringAttribute("parameterMap");  // 引用外部 parameterMap，已废弃
     String resultType = context.getStringAttribute("resultType");
     Class<?> resultTypeClass = resolveClass(resultType);
-    String resultMap = context.getStringAttribute("resultMap");
+    String resultMap = context.getStringAttribute("resultMap");  // 引用外部的 resultMap(高级功能) 非常重要了
     String resultSetType = context.getStringAttribute("resultSetType");
     ResultSetType resultSetTypeEnum = resolveResultSetType(resultSetType);
     if (resultSetTypeEnum == null) {
@@ -116,6 +121,7 @@ public class XMLStatementBuilder extends BaseBuilder {
         keyGenerator, keyProperty, keyColumn, databaseId, langDriver, resultSets);
   }
 
+  // 处理 <selectKey>
   private void processSelectKeyNodes(String id, Class<?> parameterTypeClass, LanguageDriver langDriver) {
     List<XNode> selectKeyNodes = context.evalNodes("selectKey");
     if (configuration.getDatabaseId() != null) {
@@ -125,9 +131,11 @@ public class XMLStatementBuilder extends BaseBuilder {
     removeSelectKeyNodes(selectKeyNodes);
   }
 
+  // 处理 <selectKey>
+  // parentId 是 insert 的 id
   private void parseSelectKeyNodes(String parentId, List<XNode> list, Class<?> parameterTypeClass, LanguageDriver langDriver, String skRequiredDatabaseId) {
     for (XNode nodeToHandle : list) {
-      String id = parentId + SelectKeyGenerator.SELECT_KEY_SUFFIX;
+      String id = parentId + SelectKeyGenerator.SELECT_KEY_SUFFIX;  // 添加 selectKey 的后缀
       String databaseId = nodeToHandle.getStringAttribute("databaseId");
       if (databaseIdMatchesCurrent(id, databaseId, skRequiredDatabaseId)) {
         parseSelectKeyNode(id, nodeToHandle, parameterTypeClass, langDriver, databaseId);
@@ -135,6 +143,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     }
   }
 
+  // 处理 <selectKey>
   private void parseSelectKeyNode(String id, XNode nodeToHandle, Class<?> parameterTypeClass, LanguageDriver langDriver, String databaseId) {
     String resultType = nodeToHandle.getStringAttribute("resultType");
     Class<?> resultTypeClass = resolveClass(resultType);
@@ -174,6 +183,9 @@ public class XMLStatementBuilder extends BaseBuilder {
     }
   }
 
+  // 查看 databaseId 是否匹配
+  // databaseId 是 sql 语句上的
+  // requiredDatabaseId 是 configuration 中传递进来的
   private boolean databaseIdMatchesCurrent(String id, String databaseId, String requiredDatabaseId) {
     if (requiredDatabaseId != null) {
       return requiredDatabaseId.equals(databaseId);
@@ -181,6 +193,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     if (databaseId != null) {
       return false;
     }
+    // 给 id 加上 namespace
     id = builderAssistant.applyCurrentNamespace(id, false);
     if (!this.configuration.hasStatement(id, false)) {
       return true;

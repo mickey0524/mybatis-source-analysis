@@ -31,6 +31,7 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Clinton Begin
  */
+// SqlSource 的生成器
 public class SqlSourceBuilder extends BaseBuilder {
 
   private static final String PARAMETER_PROPERTIES = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
@@ -62,15 +63,17 @@ public class SqlSourceBuilder extends BaseBuilder {
       return parameterMappings;
     }
 
+    // 实现 TokenHandler 接口的方法
     @Override
     public String handleToken(String content) {
       parameterMappings.add(buildParameterMapping(content));
       return "?";
     }
 
+    // 生成 ParameterMapping
     private ParameterMapping buildParameterMapping(String content) {
       Map<String, String> propertiesMap = parseParameterMapping(content);
-      String property = propertiesMap.get("property");
+      String property = propertiesMap.get("property");  // 属性名
       Class<?> propertyType;
       if (metaParameters.hasGetter(property)) { // issue #448 get type from additional params
         propertyType = metaParameters.getGetterType(property);
@@ -123,9 +126,10 @@ public class SqlSourceBuilder extends BaseBuilder {
       return builder.build();
     }
 
+    // 解析 ParameterMapping
     private Map<String, String> parseParameterMapping(String content) {
       try {
-        return new ParameterExpression(content);
+        return new ParameterExpression(content);  // ParameterExpression 继承了 HashMap
       } catch (BuilderException ex) {
         throw ex;
       } catch (Exception ex) {
