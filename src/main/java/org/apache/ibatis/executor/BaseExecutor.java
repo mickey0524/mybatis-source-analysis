@@ -47,6 +47,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+// 执行器基类
 public abstract class BaseExecutor implements Executor {
 
   private static final Log log = LogFactory.getLog(BaseExecutor.class);
@@ -55,17 +56,17 @@ public abstract class BaseExecutor implements Executor {
   protected Executor wrapper;
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
-  protected PerpetualCache localCache;
+  protected PerpetualCache localCache;  // PerpetualCache 是最基本的 Cache，一个 HashMap 写入完事
   protected PerpetualCache localOutputParameterCache;
   protected Configuration configuration;
 
   protected int queryStack;
-  private boolean closed;
+  private boolean closed;  // 是否关闭
 
   protected BaseExecutor(Configuration configuration, Transaction transaction) {
     this.transaction = transaction;
     this.deferredLoads = new ConcurrentLinkedQueue<>();
-    this.localCache = new PerpetualCache("LocalCache");
+    this.localCache = new PerpetualCache("LocalCache");  // 传入的是 id
     this.localOutputParameterCache = new PerpetualCache("LocalOutputParameterCache");
     this.closed = false;
     this.configuration = configuration;
@@ -122,6 +123,7 @@ public abstract class BaseExecutor implements Executor {
     return flushStatements(false);
   }
 
+  // flush sql statement
   public List<BatchResult> flushStatements(boolean isRollBack) throws SQLException {
     if (closed) {
       throw new ExecutorException("Executor was closed.");
@@ -129,6 +131,7 @@ public abstract class BaseExecutor implements Executor {
     return doFlushStatements(isRollBack);
   }
 
+  // query 请求，生成 BoundSql 实例和 CacheKey 实例
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
     BoundSql boundSql = ms.getBoundSql(parameter);
@@ -136,6 +139,7 @@ public abstract class BaseExecutor implements Executor {
     return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
   }
 
+  // 真正的 query 方法
   @SuppressWarnings("unchecked")
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
@@ -143,6 +147,7 @@ public abstract class BaseExecutor implements Executor {
     if (closed) {
       throw new ExecutorException("Executor was closed.");
     }
+    // 请求栈为 0 的时候，需要清 cache
     if (queryStack == 0 && ms.isFlushCacheRequired()) {
       clearLocalCache();
     }
@@ -191,6 +196,7 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  // 生成 CacheKey，其实就是把一堆 sql 有关的参数拼接盛一个 CacheKey
   @Override
   public CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql) {
     if (closed) {
@@ -204,6 +210,7 @@ public abstract class BaseExecutor implements Executor {
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     TypeHandlerRegistry typeHandlerRegistry = ms.getConfiguration().getTypeHandlerRegistry();
     // mimic DefaultParameterHandler logic
+    // 将参数的 value 也拼接起来
     for (ParameterMapping parameterMapping : parameterMappings) {
       if (parameterMapping.getMode() != ParameterMode.OUT) {
         Object value;
@@ -228,11 +235,13 @@ public abstract class BaseExecutor implements Executor {
     return cacheKey;
   }
 
+  // 是否缓存
   @Override
   public boolean isCached(MappedStatement ms, CacheKey key) {
     return localCache.getObject(key) != null;
   }
 
+  // 事务 commit 操作
   @Override
   public void commit(boolean required) throws SQLException {
     if (closed) {
@@ -245,6 +254,7 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  // 事务 rollback 操作
   @Override
   public void rollback(boolean required) throws SQLException {
     if (!closed) {
@@ -259,6 +269,7 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  // 清空本地缓存
   @Override
   public void clearLocalCache() {
     if (!closed) {
@@ -267,6 +278,7 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  // 以下四个模版方法
   protected abstract int doUpdate(MappedStatement ms, Object parameter)
       throws SQLException;
 
@@ -300,16 +312,19 @@ public abstract class BaseExecutor implements Executor {
     StatementUtil.applyTransactionTimeout(statement, statement.getQueryTimeout(), transaction.getTimeout());
   }
 
+  // 本地缓存中存在对应的 key
   private void handleLocallyCachedOutputParameters(MappedStatement ms, CacheKey key, Object parameter, BoundSql boundSql) {
     if (ms.getStatementType() == StatementType.CALLABLE) {
-      final Object cachedParameter = localOutputParameterCache.getObject(key);
+      final Object cachedParameter = localOutputParameterCache.getObject(key);  // 缓存的参数
       if (cachedParameter != null && parameter != null) {
+        // 创建两个元类，一个是缓存的参数，一个是这次的参数
         final MetaObject metaCachedParameter = configuration.newMetaObject(cachedParameter);
         final MetaObject metaParameter = configuration.newMetaObject(parameter);
         for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
           if (parameterMapping.getMode() != ParameterMode.IN) {
             final String parameterName = parameterMapping.getProperty();
             final Object cachedValue = metaCachedParameter.getValue(parameterName);
+            // 将缓存参数的数值写入这次的参数
             metaParameter.setValue(parameterName, cachedValue);
           }
         }
@@ -317,9 +332,10 @@ public abstract class BaseExecutor implements Executor {
     }
   }
 
+  // 缓存失效，请求 db
   private <E> List<E> queryFromDatabase(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql) throws SQLException {
     List<E> list;
-    localCache.putObject(key, EXECUTION_PLACEHOLDER);
+    localCache.putObject(key, EXECUTION_PLACEHOLDER);  // key 对应的请求正在进行中
     try {
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {
@@ -346,6 +362,7 @@ public abstract class BaseExecutor implements Executor {
     this.wrapper = wrapper;
   }
 
+  // 延迟加载
   private static class DeferredLoad {
 
     private final MetaObject resultObject;
@@ -379,7 +396,7 @@ public abstract class BaseExecutor implements Executor {
     public void load() {
       @SuppressWarnings("unchecked")
       // we suppose we get back a List
-      List<Object> list = (List<Object>) localCache.getObject(key);
+      List<Object> list = (List<Object>) localCache.getObject(key);  // 从缓存中获取结果
       Object value = resultExtractor.extractObjectFromList(list, targetType);
       resultObject.setValue(property, value);
     }

@@ -35,6 +35,7 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
  * @author Clinton Begin
  */
 // 默认的 SqlSession 工厂
+// SqlSessionFactory 是由 SqlSessionFactoryBuilder 执行 build 方法得到的
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
   private final Configuration configuration;
@@ -88,11 +89,12 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     return configuration;
   }
 
+  // openSession 方法最后都会调用 openSessionFromDataSource 方法
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
     try {
-      final Environment environment = configuration.getEnvironment();
-      final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+      final Environment environment = configuration.getEnvironment();  // 定义 DataSource 和 TransactionFactory
+      final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment); 
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
       final Executor executor = configuration.newExecutor(tx, execType);
       return new DefaultSqlSession(configuration, executor, autoCommit);
@@ -104,6 +106,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     }
   }
 
+  // 直接传入 Connection
   private SqlSession openSessionFromConnection(ExecutorType execType, Connection connection) {
     try {
       boolean autoCommit;
@@ -126,13 +129,16 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     }
   }
 
+  // 从 Environment 中获取 TransactionFactory
   private TransactionFactory getTransactionFactoryFromEnvironment(Environment environment) {
     if (environment == null || environment.getTransactionFactory() == null) {
+      // 如果未定义，使用 ManagedTransactionFactory
       return new ManagedTransactionFactory();
     }
     return environment.getTransactionFactory();
   }
 
+  // 关闭事务
   private void closeTransaction(Transaction tx) {
     if (tx != null) {
       try {

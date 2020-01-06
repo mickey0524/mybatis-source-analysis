@@ -99,3 +99,54 @@ Properties variablesContext = new Properties();
 Properties configurationVariables = configuration.getVariables();
 Optional.ofNullable(configurationVariables).ifPresent(variablesContext::putAll);
 ```
+
+## 枚举类 enum 中可以定义抽象方法
+
+```java
+enum Enum {
+    A {
+        @Override
+        public void execute() {
+            System.out.println("A");
+        }
+    },
+    B {
+        @Override
+        public void execute() {
+            System.out.println("A");
+        }
+    };
+
+    public abstract void execute();
+}
+```
+
+如果还需要定义 field 属性
+
+```java
+enum Enum {
+    A(100) {
+        @Override
+        public void execute() {
+            System.out.println("A");
+        }
+    },
+    B(200) {
+        @Override
+        public void execute() {
+            System.out.println("A");
+        }
+    };
+
+    Enum(int code) {
+        this.code = code;
+    }
+
+    public abstract void execute();
+    private int code;
+
+    public int getCode() {
+        return code;
+    }
+}
+```

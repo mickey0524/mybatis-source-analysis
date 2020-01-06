@@ -600,8 +600,10 @@ public class Configuration {
 
   public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
     executorType = executorType == null ? defaultExecutorType : executorType;
+    // 这句再做一下保护，防止粗心大意的人将 defaultExecutorType 设成 null
     executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
     Executor executor;
+    // 设置三种类型的 Executor
     if (ExecutorType.BATCH == executorType) {
       executor = new BatchExecutor(this, transaction);
     } else if (ExecutorType.REUSE == executorType) {
@@ -609,9 +611,11 @@ public class Configuration {
     } else {
       executor = new SimpleExecutor(this, transaction);
     }
+    // 如果要求缓存，生成另一种 CachingExecutor（默认就是有缓存），装饰者模式，所以默认都是返回 CachingExecutor
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }
+    // 引入插件系统
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }
