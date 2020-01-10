@@ -36,6 +36,7 @@ import org.apache.ibatis.transaction.Transaction;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+// 缓存执行器
 public class CachingExecutor implements Executor {
 
   private final Executor delegate;
@@ -76,6 +77,7 @@ public class CachingExecutor implements Executor {
     return delegate.update(ms, parameterObject);
   }
 
+  // Session 调用的方法
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
     BoundSql boundSql = ms.getBoundSql(parameterObject);
@@ -89,6 +91,7 @@ public class CachingExecutor implements Executor {
     return delegate.queryCursor(ms, parameter, rowBounds);
   }
 
+  // 真正调用的方法
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
@@ -99,6 +102,7 @@ public class CachingExecutor implements Executor {
         ensureNoOutParams(ms, boundSql);
         @SuppressWarnings("unchecked")
         List<E> list = (List<E>) tcm.getObject(cache, key);
+        // 当 cache 中 key 对应的 value 为 null 的时候，执行底层的 query 方法
         if (list == null) {
           list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
           tcm.putObject(cache, key, list); // issue #578 and #116
@@ -131,6 +135,7 @@ public class CachingExecutor implements Executor {
     }
   }
 
+  // 确保没有 out 类型的参数
   private void ensureNoOutParams(MappedStatement ms, BoundSql boundSql) {
     if (ms.getStatementType() == StatementType.CALLABLE) {
       for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
@@ -141,11 +146,13 @@ public class CachingExecutor implements Executor {
     }
   }
 
+  // 生成 CacheKey 实例
   @Override
   public CacheKey createCacheKey(MappedStatement ms, Object parameterObject, RowBounds rowBounds, BoundSql boundSql) {
     return delegate.createCacheKey(ms, parameterObject, rowBounds, boundSql);
   }
 
+  // 本地 cache 是否缓存了 CacheKey
   @Override
   public boolean isCached(MappedStatement ms, CacheKey key) {
     return delegate.isCached(ms, key);
@@ -156,11 +163,13 @@ public class CachingExecutor implements Executor {
     delegate.deferLoad(ms, resultObject, property, key, targetType);
   }
 
+  // 清空本地缓存
   @Override
   public void clearLocalCache() {
     delegate.clearLocalCache();
   }
 
+  // 当需要的时候，flush cache
   private void flushCacheIfRequired(MappedStatement ms) {
     Cache cache = ms.getCache();
     if (cache != null && ms.isFlushCacheRequired()) {

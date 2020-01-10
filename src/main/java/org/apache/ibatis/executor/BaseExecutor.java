@@ -53,7 +53,7 @@ public abstract class BaseExecutor implements Executor {
   private static final Log log = LogFactory.getLog(BaseExecutor.class);
 
   protected Transaction transaction;
-  protected Executor wrapper;
+  protected Executor wrapper;  // 包裹类
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
   protected PerpetualCache localCache;  // PerpetualCache 是最基本的 Cache，一个 HashMap 写入完事
@@ -183,6 +183,7 @@ public abstract class BaseExecutor implements Executor {
     return doQueryCursor(ms, parameter, rowBounds, boundSql);
   }
 
+  // 延迟加载
   @Override
   public void deferLoad(MappedStatement ms, MetaObject resultObject, String property, CacheKey key, Class<?> targetType) {
     if (closed) {
@@ -291,6 +292,7 @@ public abstract class BaseExecutor implements Executor {
   protected abstract <E> Cursor<E> doQueryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds, BoundSql boundSql)
       throws SQLException;
 
+  // 关闭 Statement
   protected void closeStatement(Statement statement) {
     if (statement != null) {
       try {
@@ -317,7 +319,7 @@ public abstract class BaseExecutor implements Executor {
     if (ms.getStatementType() == StatementType.CALLABLE) {
       final Object cachedParameter = localOutputParameterCache.getObject(key);  // 缓存的参数
       if (cachedParameter != null && parameter != null) {
-        // 创建两个元类，一个是缓存的参数，一个是这次的参数
+        // 创建两个元类，一个是缓存的参数（cachedParameter），一个是这次的参数（parameter）
         final MetaObject metaCachedParameter = configuration.newMetaObject(cachedParameter);
         final MetaObject metaParameter = configuration.newMetaObject(parameter);
         for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
@@ -388,7 +390,8 @@ public abstract class BaseExecutor implements Executor {
       this.resultExtractor = new ResultExtractor(configuration, objectFactory);
       this.targetType = targetType;
     }
-
+    
+    // 可以加载了
     public boolean canLoad() {
       return localCache.getObject(key) != null && localCache.getObject(key) != EXECUTION_PLACEHOLDER;
     }

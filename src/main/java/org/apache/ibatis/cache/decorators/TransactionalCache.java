@@ -114,6 +114,7 @@ public class TransactionalCache implements Cache {
     entriesMissedInCache.clear();
   }
 
+  // flush 暂存的实体
   private void flushPendingEntries() {
     for (Map.Entry<Object, Object> entry : entriesToAddOnCommit.entrySet()) {
       delegate.putObject(entry.getKey(), entry.getValue());
@@ -125,6 +126,7 @@ public class TransactionalCache implements Cache {
     }
   }
 
+  // 解锁 miss 的实体
   private void unlockMissedEntries() {
     for (Object entry : entriesMissedInCache) {
       try {

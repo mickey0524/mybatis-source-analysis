@@ -52,6 +52,7 @@ public class TransactionalCacheManager {
     }
   }
 
+  // 得到 TransactionalCache
   private TransactionalCache getTransactionalCache(Cache cache) {
     return transactionalCaches.computeIfAbsent(cache, TransactionalCache::new);
   }

@@ -32,6 +32,8 @@ import org.apache.ibatis.session.RowBounds;
 /**
  * @author Clinton Begin
  */
+// 根据 MappedStatement 类型，实例化不同的 StatementHandler
+// 工厂模式，所有的方法，路由到 delegate 的同名方法中
 public class RoutingStatementHandler implements StatementHandler {
 
   private final StatementHandler delegate;
