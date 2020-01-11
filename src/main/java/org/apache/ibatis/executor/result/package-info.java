@@ -16,4 +16,5 @@
 /**
  * Contains the result handlers.
  */
+// 包含结果处理程序
 package org.apache.ibatis.executor.result;

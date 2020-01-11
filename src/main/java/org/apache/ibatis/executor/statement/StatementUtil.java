@@ -24,6 +24,7 @@ import java.sql.Statement;
  * @since 3.4.0
  * @author Kazuki Shimizu
  */
+// java.sql.Statement 的工具类
 public class StatementUtil {
 
   private StatementUtil() {
@@ -40,6 +41,7 @@ public class StatementUtil {
    * @param transactionTimeout a transaction timeout
    * @throws SQLException if a database access error occurs, this method is called on a closed <code>Statement</code>
    */
+  // 设置事务的超时时间
   public static void applyTransactionTimeout(Statement statement, Integer queryTimeout, Integer transactionTimeout) throws SQLException {
     if (transactionTimeout == null) {
       return;

@@ -16,4 +16,5 @@
 /**
  * Statement handlers.
  */
+// Statement 的处理器
 package org.apache.ibatis.executor.statement;

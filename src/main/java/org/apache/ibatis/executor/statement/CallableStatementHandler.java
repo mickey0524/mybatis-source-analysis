@@ -38,6 +38,7 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Clinton Begin
  */
+// 对应于 CallableStatement
 public class CallableStatementHandler extends BaseStatementHandler {
 
   public CallableStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
@@ -80,6 +81,7 @@ public class CallableStatementHandler extends BaseStatementHandler {
     return resultList;
   }
 
+  // 实例化 CallableStatement
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     String sql = boundSql.getSql();

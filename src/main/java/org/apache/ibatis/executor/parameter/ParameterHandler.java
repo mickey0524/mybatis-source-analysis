@@ -23,6 +23,7 @@ import java.sql.SQLException;
  *
  * @author Clinton Begin
  */
+// 参数处理器，用于 PreparedStatement
 public interface ParameterHandler {
 
   Object getParameterObject();

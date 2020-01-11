@@ -36,6 +36,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+// StatementHandler 的基础类
 public abstract class BaseStatementHandler implements StatementHandler {
 
   protected final Configuration configuration;
@@ -80,13 +81,17 @@ public abstract class BaseStatementHandler implements StatementHandler {
     return parameterHandler;
   }
 
+  // 准备语句
   @Override
   public Statement prepare(Connection connection, Integer transactionTimeout) throws SQLException {
     ErrorContext.instance().sql(boundSql.getSql());
     Statement statement = null;
     try {
+      // 实例化 Statement
       statement = instantiateStatement(connection);
+      // 设置超时
       setStatementTimeout(statement, transactionTimeout);
+      // 设置读取条数
       setFetchSize(statement);
       return statement;
     } catch (SQLException e) {
@@ -100,11 +105,14 @@ public abstract class BaseStatementHandler implements StatementHandler {
 
   protected abstract Statement instantiateStatement(Connection connection) throws SQLException;
 
+  // 设置超时
   protected void setStatementTimeout(Statement stmt, Integer transactionTimeout) throws SQLException {
     Integer queryTimeout = null;
+    // 从 ms 中读取
     if (mappedStatement.getTimeout() != null) {
       queryTimeout = mappedStatement.getTimeout();
     } else if (configuration.getDefaultStatementTimeout() != null) {
+      // 配置中的默认值做兜底
       queryTimeout = configuration.getDefaultStatementTimeout();
     }
     if (queryTimeout != null) {
@@ -113,7 +121,9 @@ public abstract class BaseStatementHandler implements StatementHandler {
     StatementUtil.applyTransactionTimeout(stmt, queryTimeout, transactionTimeout);
   }
 
+  // 设置读取条数
   protected void setFetchSize(Statement stmt) throws SQLException {
+    // 同样是 ms 中读取，配置中默认值做兜底
     Integer fetchSize = mappedStatement.getFetchSize();
     if (fetchSize != null) {
       stmt.setFetchSize(fetchSize);
@@ -125,6 +135,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
     }
   }
 
+  // 关闭 Statement
   protected void closeStatement(Statement statement) {
     try {
       if (statement != null) {

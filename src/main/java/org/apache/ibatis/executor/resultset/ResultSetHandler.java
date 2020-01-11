@@ -25,6 +25,7 @@ import org.apache.ibatis.cursor.Cursor;
 /**
  * @author Clinton Begin
  */
+// ResultSet 处理器
 public interface ResultSetHandler {
 
   <E> List<E> handleResultSets(Statement stmt) throws SQLException;

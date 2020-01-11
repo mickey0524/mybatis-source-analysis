@@ -25,6 +25,7 @@ import org.apache.ibatis.session.ResultHandler;
 /**
  * @author Clinton Begin
  */
+// 默认的 ResultHandler
 public class DefaultResultHandler implements ResultHandler<Object> {
 
   private final List<Object> list;
@@ -35,7 +36,7 @@ public class DefaultResultHandler implements ResultHandler<Object> {
 
   @SuppressWarnings("unchecked")
   public DefaultResultHandler(ObjectFactory objectFactory) {
-    list = objectFactory.create(List.class);
+    list = objectFactory.create(List.class);  // 一样会生成 ArrayList 实例
   }
 
   @Override

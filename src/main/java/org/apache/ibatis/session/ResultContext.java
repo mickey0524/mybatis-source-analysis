@@ -18,6 +18,7 @@ package org.apache.ibatis.session;
 /**
  * @author Clinton Begin
  */
+// 结果上下文
 public interface ResultContext<T> {
 
   T getResultObject();

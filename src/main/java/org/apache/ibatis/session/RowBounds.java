@@ -19,7 +19,7 @@ package org.apache.ibatis.session;
  * @author Clinton Begin
  */
 /**
- * 分页用
+ * 行范围，分页用
  */
 public class RowBounds {
 

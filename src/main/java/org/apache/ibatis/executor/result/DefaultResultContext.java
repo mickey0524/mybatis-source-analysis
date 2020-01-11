@@ -20,6 +20,7 @@ import org.apache.ibatis.session.ResultContext;
 /**
  * @author Clinton Begin
  */
+// 默认的 ResultContext
 public class DefaultResultContext<T> implements ResultContext<T> {
 
   private T resultObject;

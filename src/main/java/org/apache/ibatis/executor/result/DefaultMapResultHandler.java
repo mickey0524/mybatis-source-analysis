@@ -27,9 +27,10 @@ import org.apache.ibatis.session.ResultHandler;
 /**
  * @author Clinton Begin
  */
+// 默认的 Map ResultHandler
 public class DefaultMapResultHandler<K, V> implements ResultHandler<V> {
 
-  private final Map<K, V> mappedResults;
+  private final Map<K, V> mappedResults;  // DefaultResultHandler 是 List，这里是 Map
   private final String mapKey;
   private final ObjectFactory objectFactory;
   private final ObjectWrapperFactory objectWrapperFactory;

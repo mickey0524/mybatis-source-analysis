@@ -16,4 +16,5 @@
 /**
  * Base package for handling parameters.
  */
+// 处理参数的包
 package org.apache.ibatis.executor.parameter;

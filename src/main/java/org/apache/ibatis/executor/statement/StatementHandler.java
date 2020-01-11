@@ -28,6 +28,7 @@ import org.apache.ibatis.session.ResultHandler;
 /**
  * @author Clinton Begin
  */
+// StatementHandler 的接口
 public interface StatementHandler {
 
   Statement prepare(Connection connection, Integer transactionTimeout)
