@@ -55,6 +55,7 @@ public class ResultSetWrapper {
     this.resultSet = rs;
     final ResultSetMetaData metaData = rs.getMetaData();
     final int columnCount = metaData.getColumnCount();
+    // 从 1 开始
     for (int i = 1; i <= columnCount; i++) {
       columnNames.add(configuration.isUseColumnLabel() ? metaData.getColumnLabel(i) : metaData.getColumnName(i));
       jdbcTypes.add(JdbcType.forCode(metaData.getColumnType(i)));
@@ -78,6 +79,7 @@ public class ResultSetWrapper {
     return jdbcTypes;
   }
 
+  // 获取 jdbc type  
   public JdbcType getJdbcType(String columnName) {
     for (int i = 0 ; i < columnNames.size(); i++) {
       if (columnNames.get(i).equalsIgnoreCase(columnName)) {
@@ -96,6 +98,7 @@ public class ResultSetWrapper {
    * @param columnName
    * @return
    */
+  // 获取 TypeHandler
   public TypeHandler<?> getTypeHandler(Class<?> propertyType, String columnName) {
     TypeHandler<?> handler = null;
     Map<Class<?>, TypeHandler<?>> columnHandlers = typeHandlerMap.get(columnName);
@@ -105,6 +108,7 @@ public class ResultSetWrapper {
     } else {
       handler = columnHandlers.get(propertyType);
     }
+    // Map 中没找到
     if (handler == null) {
       JdbcType jdbcType = getJdbcType(columnName);
       handler = typeHandlerRegistry.getTypeHandler(propertyType, jdbcType);
