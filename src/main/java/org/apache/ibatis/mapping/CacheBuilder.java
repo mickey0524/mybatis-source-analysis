@@ -49,7 +49,7 @@ public class CacheBuilder {
   private boolean blocking;
 
   public CacheBuilder(String id) {
-    this.id = id;
+    this.id = id;  // Mapper 文件的 namespace
     this.decorators = new ArrayList<>();
   }
 
@@ -90,6 +90,7 @@ public class CacheBuilder {
     return this;
   }
 
+  // 生成 Cache 实例
   public Cache build() {
     setDefaultImplementations();
     Cache cache = newBaseCacheInstance(implementation, id);

@@ -25,6 +25,7 @@ import org.apache.ibatis.mapping.MappedStatement;
  * @since 3.4.0
  * @author Kazuki Shimizu
  */
+// 当检测到未知列的时候，明确行为
 public enum AutoMappingUnknownColumnBehavior {
 
   /**

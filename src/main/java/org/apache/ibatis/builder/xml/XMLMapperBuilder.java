@@ -128,7 +128,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
-  // 处理 crud 标签
+  // 处理所有的 crud 标签
   private void buildStatementFromContext(List<XNode> list) {
     if (configuration.getDatabaseId() != null) {
       buildStatementFromContext(list, configuration.getDatabaseId());
@@ -136,6 +136,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     buildStatementFromContext(list, null);
   }
 
+  // 根据标签生成 Statement
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
     // for 循环处理 XML 中的 SQL 语句
     for (XNode context : list) {
@@ -193,6 +194,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  // cache-ref 元素
   private void cacheRefElement(XNode context) {
     if (context != null) {
       configuration.addCacheRef(builderAssistant.getCurrentNamespace(), context.getStringAttribute("namespace"));
@@ -205,12 +207,13 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  // cache 元素
   private void cacheElement(XNode context) {
     if (context != null) {
       String type = context.getStringAttribute("type", "PERPETUAL");
-      Class<? extends Cache> typeClass = typeAliasRegistry.resolveAlias(type);
+      Class<? extends Cache> typeClass = typeAliasRegistry.resolveAlias(type);  // Cache 类型
       String eviction = context.getStringAttribute("eviction", "LRU");
-      Class<? extends Cache> evictionClass = typeAliasRegistry.resolveAlias(eviction);
+      Class<? extends Cache> evictionClass = typeAliasRegistry.resolveAlias(eviction);  // Eviction 类型
       Long flushInterval = context.getLongAttribute("flushInterval");
       Integer size = context.getIntAttribute("size");
       boolean readWrite = !context.getBooleanAttribute("readOnly", false);
@@ -246,7 +249,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
-  // 处理 <mapper> 中的 <resultMap> 标签
+  // 处理 <mapper> 中的 <resultMap> 标签（可能不止一个，所以是 List）
   private void resultMapElements(List<XNode> list) throws Exception {
     for (XNode resultMapNode : list) {
       try {
@@ -257,10 +260,12 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  // 处理一个 <resultMap>
   private ResultMap resultMapElement(XNode resultMapNode) throws Exception {
     return resultMapElement(resultMapNode, Collections.emptyList(), null);
   }
 
+  // 处理一个 <resultMap>
   private ResultMap resultMapElement(XNode resultMapNode, List<ResultMapping> additionalResultMappings, Class<?> enclosingType) throws Exception {
     ErrorContext.instance().activity("processing " + resultMapNode.getValueBasedIdentifier());
     // 按照 type => ofType => resultType => javaType 的步骤获取 type
@@ -268,7 +273,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         resultMapNode.getStringAttribute("ofType",
             resultMapNode.getStringAttribute("resultType",
                 resultMapNode.getStringAttribute("javaType"))));
-    Class<?> typeClass = resolveClass(type);
+    Class<?> typeClass = resolveClass(type);  // resultMap 对应的类型
     if (typeClass == null) {
       typeClass = inheritEnclosingType(resultMapNode, enclosingType);
     }
@@ -346,7 +351,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     return builderAssistant.buildDiscriminator(resultType, column, javaTypeClass, jdbcTypeEnum, typeHandlerClass, discriminatorMap);
   }
 
-  // 处理 <sql> 标签
+  // 处理 <sql> 标签 (可能有多个，所以需要 List)
   private void sqlElement(List<XNode> list) {
     if (configuration.getDatabaseId() != null) {
       sqlElement(list, configuration.getDatabaseId());
@@ -354,6 +359,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     sqlElement(list, null);
   }
 
+  // 处理单个 <sql> 标签
   private void sqlElement(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
       String databaseId = context.getStringAttribute("databaseId");
@@ -380,15 +386,15 @@ public class XMLMapperBuilder extends BaseBuilder {
     return context.getStringAttribute("databaseId") == null;
   }
 
-  // 生成 ResultMapping
+  // 生成 ResultMapping，由此可见，ResultMapping 和 ResultMap 息息相关
   private ResultMapping buildResultMappingFromContext(XNode context, Class<?> resultType, List<ResultFlag> flags) throws Exception {
     String property;
     if (flags.contains(ResultFlag.CONSTRUCTOR)) {
       property = context.getStringAttribute("name");
     } else {
-      property = context.getStringAttribute("property");  // 常用
+      property = context.getStringAttribute("property");  // 常用，是 Java Class 的 field
     }
-    String column = context.getStringAttribute("column");  // 常用
+    String column = context.getStringAttribute("column");  // 常用，column 对应的是数据库列
     String javaType = context.getStringAttribute("javaType");  // 常用
     String jdbcType = context.getStringAttribute("jdbcType");  // 常用
     String nestedSelect = context.getStringAttribute("select");

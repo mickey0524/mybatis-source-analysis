@@ -36,6 +36,7 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+// 默认的参数处理器
 public class DefaultParameterHandler implements ParameterHandler {
 
   private final TypeHandlerRegistry typeHandlerRegistry;
@@ -58,8 +59,10 @@ public class DefaultParameterHandler implements ParameterHandler {
     return parameterObject;
   }
 
+  // 作用于 PreparedStatement
   @Override
   public void setParameters(PreparedStatement ps) {
+    // parameterMap 已经被弃用了
     ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     if (parameterMappings != null) {

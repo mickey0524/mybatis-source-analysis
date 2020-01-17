@@ -46,7 +46,7 @@ public class XMLIncludeTransformer {
   }
 
   // 应用 <include>
-  // source 是 XMLStatementBuilder.java 中传入的
+  // source 是 XMLStatementBuilder.java 中传入的，其实就是 insert|update|select|delete 标签
   public void applyIncludes(Node source) {
     Properties variablesContext = new Properties();
     Properties configurationVariables = configuration.getVariables();
@@ -68,8 +68,9 @@ public class XMLIncludeTransformer {
   private void applyIncludes(Node source, final Properties variablesContext, boolean included) {
     // <include>
     if (source.getNodeName().equals("include")) {
-      // 通过 refid 寻找 sql fragment，进而获取 <sql> 节点
+      // 通过 refid 寻找 sql fragment，进而获取 <sql> 节点，toInclude 是一个 <sql> 节点
       Node toInclude = findSqlFragment(getStringAttribute(source, "refid"), variablesContext);
+      // 进到这个 if，表明 source 是 include 节点
       Properties toIncludeContext = getVariablesContext(source, variablesContext);
       applyIncludes(toInclude, toIncludeContext, true);
       if (toInclude.getOwnerDocument() != source.getOwnerDocument()) {
@@ -101,7 +102,7 @@ public class XMLIncludeTransformer {
     }
   }
 
-  // 寻找 sqlFragment
+  // 寻找 refid 对应的 sqlFragment
   private Node findSqlFragment(String refid, Properties variables) {
     refid = PropertyParser.parse(refid, variables);
     refid = builderAssistant.applyCurrentNamespace(refid, true);  // 添加 namespace

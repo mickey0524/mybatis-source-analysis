@@ -52,6 +52,7 @@ import org.apache.ibatis.type.TypeHandler;
 /**
  * @author Clinton Begin
  */
+// Mapper 生成器助手
 public class MapperBuilderAssistant extends BaseBuilder {
 
   private String currentNamespace;
@@ -107,6 +108,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
     return currentNamespace + "." + base;
   }
 
+  // 使用 cache-ref
   public Cache useCacheRef(String namespace) {
     if (namespace == null) {
       throw new BuilderException("cache-ref element requires a namespace attribute.");
@@ -124,7 +126,8 @@ public class MapperBuilderAssistant extends BaseBuilder {
       throw new IncompleteElementException("No cache for namespace '" + namespace + "' could be found.", e);
     }
   }
-
+  
+  // 使用新的 Cache
   public Cache useNewCache(Class<? extends Cache> typeClass,
       Class<? extends Cache> evictionClass,
       Long flushInterval,

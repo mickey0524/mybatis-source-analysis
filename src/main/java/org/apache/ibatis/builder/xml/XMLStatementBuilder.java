@@ -66,7 +66,7 @@ public class XMLStatementBuilder extends BaseBuilder {
 
     String nodeName = context.getNode().getNodeName();
     SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));  // 获取 SQL 类型
-    boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
+    boolean isSelect = sqlCommandType == SqlCommandType.SELECT;  // 是否为 select 语句
     boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
     boolean useCache = context.getBooleanAttribute("useCache", isSelect);  // 是否缓存 select 结果
     boolean resultOrdered = context.getBooleanAttribute("resultOrdered", false);
@@ -122,6 +122,10 @@ public class XMLStatementBuilder extends BaseBuilder {
   }
 
   // 处理 <selectKey>
+  // selectKey 会将 SELECT LAST_INSERT_ID() 的结果放入到传入的 model 的主键里面，
+  // keyProperty 对应的 model 中的主键的属性名
+  // order AFTER 表示 SELECT LAST_INSERT_ID() 在insert执行之后执行，多用于自增主键
+  // BEFORE 表示 SELECT LAST_INSERT_ID() 在insert执行之前执行，这样的话就拿不到主键了，这种适合那种主键不是自增的类型
   private void processSelectKeyNodes(String id, Class<?> parameterTypeClass, LanguageDriver langDriver) {
     List<XNode> selectKeyNodes = context.evalNodes("selectKey");
     if (configuration.getDatabaseId() != null) {

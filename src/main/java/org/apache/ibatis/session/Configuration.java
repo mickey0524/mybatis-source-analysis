@@ -98,10 +98,12 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 /**
  * @author Clinton Begin
  */
+// 配置项
 public class Configuration {
-
+  // 环境
   protected Environment environment;
 
+  // ---------以下都是 <settings> 节点-------
   protected boolean safeRowBoundsEnabled;
   protected boolean safeResultHandlerEnabled = true;
   protected boolean mapUnderscoreToCamelCase;
@@ -109,6 +111,7 @@ public class Configuration {
   protected boolean multipleResultSetsEnabled = true;
   protected boolean useGeneratedKeys;
   protected boolean useColumnLabel = true;
+  // 默认启用缓存
   protected boolean cacheEnabled = true;
   protected boolean callSettersOnNulls;
   protected boolean useActualParamName = true;
@@ -126,11 +129,12 @@ public class Configuration {
   protected ExecutorType defaultExecutorType = ExecutorType.SIMPLE;
   protected AutoMappingBehavior autoMappingBehavior = AutoMappingBehavior.PARTIAL;
   protected AutoMappingUnknownColumnBehavior autoMappingUnknownColumnBehavior = AutoMappingUnknownColumnBehavior.NONE;
+  // ---------以上都是 <settings> 节点-------
 
   protected Properties variables = new Properties();
-  protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
-  protected ObjectFactory objectFactory = new DefaultObjectFactory();
-  protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
+  protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();  // 反射工厂
+  protected ObjectFactory objectFactory = new DefaultObjectFactory();  // 对象工厂
+  protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();  // 对象包裹器工厂
 
   protected boolean lazyLoadingEnabled = false;
   protected ProxyFactory proxyFactory = new JavassistProxyFactory(); // #224 Using internal Javassist instead of OGNL
@@ -144,23 +148,24 @@ public class Configuration {
    */
   protected Class<?> configurationFactory;
 
-  protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
-  protected final InterceptorChain interceptorChain = new InterceptorChain();
-  protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry(this);
-  protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
+  protected final MapperRegistry mapperRegistry = new MapperRegistry(this);  // Mapper 注册器
+  protected final InterceptorChain interceptorChain = new InterceptorChain();  // 插件链
+  protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry(this);  // 类型处理器注册器
+  protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();  // 类型别名注册器
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();
 
   protected final Map<String, MappedStatement> mappedStatements = new StrictMap<MappedStatement>("Mapped Statements collection")
       .conflictMessageProducer((savedValue, targetValue) ->
-          ". please check " + savedValue.getResource() + " and " + targetValue.getResource());
+          ". please check " + savedValue.getResource() + " and " + targetValue.getResource());  // 映射的语句,存在 Map 里
   protected final Map<String, Cache> caches = new StrictMap<>("Caches collection");
   protected final Map<String, ResultMap> resultMaps = new StrictMap<>("Result Maps collection");
   protected final Map<String, ParameterMap> parameterMaps = new StrictMap<>("Parameter Maps collection");
   protected final Map<String, KeyGenerator> keyGenerators = new StrictMap<>("Key Generators collection");
 
-  protected final Set<String> loadedResources = new HashSet<>();
+  protected final Set<String> loadedResources = new HashSet<>();  // 已经加载的资源
   protected final Map<String, XNode> sqlFragments = new StrictMap<>("XML fragments parsed from previous mappers");
 
+  // 不完整的 SQL 语句
   protected final Collection<XMLStatementBuilder> incompleteStatements = new LinkedList<>();
   protected final Collection<CacheRefResolver> incompleteCacheRefs = new LinkedList<>();
   protected final Collection<ResultMapResolver> incompleteResultMaps = new LinkedList<>();
@@ -179,24 +184,32 @@ public class Configuration {
   }
 
   public Configuration() {
+    // 注册更多的类型别名
+
+    // 事务工厂别名
     typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
     typeAliasRegistry.registerAlias("MANAGED", ManagedTransactionFactory.class);
 
+    // 数据源别名
     typeAliasRegistry.registerAlias("JNDI", JndiDataSourceFactory.class);
     typeAliasRegistry.registerAlias("POOLED", PooledDataSourceFactory.class);
     typeAliasRegistry.registerAlias("UNPOOLED", UnpooledDataSourceFactory.class);
 
+    // 缓存别名
     typeAliasRegistry.registerAlias("PERPETUAL", PerpetualCache.class);
     typeAliasRegistry.registerAlias("FIFO", FifoCache.class);
     typeAliasRegistry.registerAlias("LRU", LruCache.class);
     typeAliasRegistry.registerAlias("SOFT", SoftCache.class);
     typeAliasRegistry.registerAlias("WEAK", WeakCache.class);
 
+    // 数据库 id 提供者别名
     typeAliasRegistry.registerAlias("DB_VENDOR", VendorDatabaseIdProvider.class);
 
+    // 语言驱动器别名
     typeAliasRegistry.registerAlias("XML", XMLLanguageDriver.class);
     typeAliasRegistry.registerAlias("RAW", RawLanguageDriver.class);
 
+    // 日志别名
     typeAliasRegistry.registerAlias("SLF4J", Slf4jImpl.class);
     typeAliasRegistry.registerAlias("COMMONS_LOGGING", JakartaCommonsLoggingImpl.class);
     typeAliasRegistry.registerAlias("LOG4J", Log4jImpl.class);
@@ -205,6 +218,7 @@ public class Configuration {
     typeAliasRegistry.registerAlias("STDOUT_LOGGING", StdOutImpl.class);
     typeAliasRegistry.registerAlias("NO_LOGGING", NoLoggingImpl.class);
 
+    // 代理工厂别名
     typeAliasRegistry.registerAlias("CGLIB", CglibProxyFactory.class);
     typeAliasRegistry.registerAlias("JAVASSIST", JavassistProxyFactory.class);
 
@@ -224,6 +238,7 @@ public class Configuration {
     return logImpl;
   }
 
+  // 设置 Log 的实现类
   public void setLogImpl(Class<? extends Log> logImpl) {
     if (logImpl != null) {
       this.logImpl = logImpl;
@@ -235,6 +250,7 @@ public class Configuration {
     return this.vfsImpl;
   }
 
+  // 设置 vfs 的实现类
   public void setVfsImpl(Class<? extends VFS> vfsImpl) {
     if (vfsImpl != null) {
       this.vfsImpl = vfsImpl;
@@ -306,10 +322,12 @@ public class Configuration {
     this.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
   }
 
+  // 添加已经加载的资源
   public void addLoadedResource(String resource) {
     loadedResources.add(resource);
   }
 
+  // 资源是否被加载
   public boolean isResourceLoaded(String resource) {
     return loadedResources.contains(resource);
   }
@@ -571,16 +589,19 @@ public class Configuration {
     return getDefaultScriptingLanguageInstance();
   }
 
+  // 新建 MetaObject 实例
   public MetaObject newMetaObject(Object object) {
     return MetaObject.forObject(object, objectFactory, objectWrapperFactory, reflectorFactory);
   }
 
+  // 新建参数的处理器
   public ParameterHandler newParameterHandler(MappedStatement mappedStatement, Object parameterObject, BoundSql boundSql) {
     ParameterHandler parameterHandler = mappedStatement.getLang().createParameterHandler(mappedStatement, parameterObject, boundSql);
     parameterHandler = (ParameterHandler) interceptorChain.pluginAll(parameterHandler);
     return parameterHandler;
   }
 
+  // 新建 ResultSet 的 处理器
   public ResultSetHandler newResultSetHandler(Executor executor, MappedStatement mappedStatement, RowBounds rowBounds, ParameterHandler parameterHandler,
       ResultHandler resultHandler, BoundSql boundSql) {
     ResultSetHandler resultSetHandler = new DefaultResultSetHandler(executor, mappedStatement, parameterHandler, resultHandler, boundSql, rowBounds);
@@ -588,6 +609,7 @@ public class Configuration {
     return resultSetHandler;
   }
 
+  // 新建 Statement 的处理器
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
     statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
@@ -640,6 +662,7 @@ public class Configuration {
     return keyGenerators.containsKey(id);
   }
 
+  // Cache 相关操作
   public void addCache(Cache cache) {
     caches.put(cache.getId(), cache);
   }
@@ -728,6 +751,7 @@ public class Configuration {
     return incompleteCacheRefs;
   }
 
+  // 添加不完整的 cache-ref 标签
   public void addIncompleteCacheRef(CacheRefResolver incompleteCacheRef) {
     incompleteCacheRefs.add(incompleteCacheRef);
   }
@@ -771,10 +795,12 @@ public class Configuration {
     mapperRegistry.addMappers(packageName, superType);
   }
 
+  // 一个 packageName 都是 Mapper 文件
   public void addMappers(String packageName) {
     mapperRegistry.addMappers(packageName);
   }
 
+  // 添加一个 Mapper 类
   public <T> void addMapper(Class<T> type) {
     mapperRegistry.addMapper(type);
   }
@@ -798,6 +824,7 @@ public class Configuration {
     return mappedStatements.containsKey(statementName);
   }
 
+  // 添加 cache-ref
   public void addCacheRef(String namespace, String referencedNamespace) {
     cacheRefMap.put(namespace, referencedNamespace);
   }
@@ -904,6 +931,7 @@ public class Configuration {
     }
   }
 
+  // 严格的 HashMap，主要是改了 put 和 get 方法
   protected static class StrictMap<V> extends HashMap<String, V> {
 
     private static final long serialVersionUID = -4950446264854982944L;
@@ -946,10 +974,12 @@ public class Configuration {
     @Override
     @SuppressWarnings("unchecked")
     public V put(String key, V value) {
+      // 若 key 已经存在，抛出异常
       if (containsKey(key)) {
         throw new IllegalArgumentException(name + " already contains value for " + key
             + (conflictMessageProducer == null ? "" : conflictMessageProducer.apply(super.get(key), value)));
       }
+      // 若 key 中存在 .，split 取最后一截
       if (key.contains(".")) {
         final String shortKey = getShortName(key);
         if (super.get(shortKey) == null) {

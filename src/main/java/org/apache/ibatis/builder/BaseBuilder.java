@@ -104,6 +104,7 @@ public abstract class BaseBuilder {
     }
   }
 
+  // 创建实例
   protected Object createInstance(String alias) {
     Class<?> clazz = resolveClass(alias);
     if (clazz == null) {
@@ -116,6 +117,7 @@ public abstract class BaseBuilder {
     }
   }
 
+  // 获取类
   protected <T> Class<? extends T> resolveClass(String alias) {
     if (alias == null) {
       return null;
@@ -127,7 +129,7 @@ public abstract class BaseBuilder {
     }
   }
 
-  // 处理 TypeHandler
+  // 获取 TypeHandler
   protected TypeHandler<?> resolveTypeHandler(Class<?> javaType, String typeHandlerAlias) {
     if (typeHandlerAlias == null) {
       return null;
@@ -141,7 +143,7 @@ public abstract class BaseBuilder {
     return resolveTypeHandler(javaType, typeHandlerType);
   }
 
-  // 处理 TypeHandler
+  // 获取 TypeHandler
   protected TypeHandler<?> resolveTypeHandler(Class<?> javaType, Class<? extends TypeHandler<?>> typeHandlerType) {
     if (typeHandlerType == null) {
       return null;
@@ -150,11 +152,13 @@ public abstract class BaseBuilder {
     TypeHandler<?> handler = typeHandlerRegistry.getMappingTypeHandler(typeHandlerType);
     if (handler == null) {
       // not in registry, create a new one
+      // 没有注册，创建一个新的
       handler = typeHandlerRegistry.getInstance(javaType, typeHandlerType);
     }
     return handler;
   }
 
+  // 获取简写对应的类
   protected <T> Class<? extends T> resolveAlias(String alias) {
     return typeAliasRegistry.resolveAlias(alias);
   }
