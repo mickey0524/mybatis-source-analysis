@@ -42,7 +42,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private static final Method privateLookupInMethod;
   private final SqlSession sqlSession;
   private final Class<T> mapperInterface;
-  private final Map<Method, MapperMethodInvoker> methodCache;
+  private final Map<Method, MapperMethodInvoker> methodCache;  // 是 MapperProxyFactory 中传入的，一个接口类共用一个
 
   public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache) {
     this.sqlSession = sqlSession;
@@ -76,6 +76,8 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     lookupConstructor = lookup;
   }
 
+  // InvocationHandler 接口方法
+  // method 参数为接口中调用的方法
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
@@ -106,6 +108,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
             throw new RuntimeException(e);
           }
         } else {
+          // 看这个就行，一般都是接口方法
           return new PlainMethodInvoker(new MapperMethod(mapperInterface, method, sqlSession.getConfiguration()));
         }
       });
@@ -142,6 +145,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
       this.mapperMethod = mapperMethod;
     }
 
+    // MapperProxyFactory 请求代理到上面的 invoke 方法，然后调用本方法
     @Override
     public Object invoke(Object proxy, Method method, Object[] args, SqlSession sqlSession) throws Throwable {
       return mapperMethod.execute(sqlSession, args);

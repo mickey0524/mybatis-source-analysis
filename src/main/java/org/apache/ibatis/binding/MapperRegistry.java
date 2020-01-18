@@ -35,7 +35,7 @@ import org.apache.ibatis.session.SqlSession;
 public class MapperRegistry {
 
   private final Configuration config;
-  // 将已经添加的映射都放入 HashMap
+  // 将已经添加的映射都放入 HashMap，key 是接口文件，value 是 MapperProxyFactory 实例
   private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<>();
 
   public MapperRegistry(Configuration config) {
@@ -56,11 +56,13 @@ public class MapperRegistry {
     }
   }
 
+  // 本地 map 中是否加载了 Mapper 文件
   public <T> boolean hasMapper(Class<T> type) {
     return knownMappers.containsKey(type);
   }
 
   public <T> void addMapper(Class<T> type) {
+    // 判断是接口
     if (type.isInterface()) {
       if (hasMapper(type)) {
         throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
@@ -97,6 +99,7 @@ public class MapperRegistry {
     resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
     Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();
     for (Class<?> mapperClass : mapperSet) {
+      // 添加每一个 Mapper 类
       addMapper(mapperClass);
     }
   }
@@ -104,6 +107,7 @@ public class MapperRegistry {
   /**
    * @since 3.2.2
    */
+  // 添加所有的 Mapper 文件
   public void addMappers(String packageName) {
     addMappers(packageName, Object.class);
   }

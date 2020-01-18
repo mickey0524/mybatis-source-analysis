@@ -44,6 +44,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Lasse Voss
  * @author Kazuki Shimizu
  */
+// 一个接口中的一个 Method 方法对应一个 MapperMethod 实例
 public class MapperMethod {
 
   private final SqlCommand command;
@@ -238,6 +239,7 @@ public class MapperMethod {
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
       final String methodName = method.getName();
       final Class<?> declaringClass = method.getDeclaringClass();
+      // 获取方法对应的 MappedStatement 实例
       MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
           configuration);
       if (ms == null) {
@@ -249,7 +251,7 @@ public class MapperMethod {
               + mapperInterface.getName() + "." + methodName);
         }
       } else {
-        // 从 cache 中获取 MappedStatement 对象
+        // 从 Configuration 中获取 MappedStatement 对象
         name = ms.getId();
         type = ms.getSqlCommandType();
         if (type == SqlCommandType.UNKNOWN) {
@@ -266,9 +268,10 @@ public class MapperMethod {
       return type;
     }
 
+    // 获取 MappedStatement 实例
     private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
         Class<?> declaringClass, Configuration configuration) {
-      String statementId = mapperInterface.getName() + "." + methodName;
+      String statementId = mapperInterface.getName() + "." + methodName;  // namespace（Mapper 上定义的） + id（sql id 为接口中的方法名）
       if (configuration.hasStatement(statementId)) {
         // 从缓存中获取
         return configuration.getMappedStatement(statementId);
@@ -324,7 +327,7 @@ public class MapperMethod {
       this.paramNameResolver = new ParamNameResolver(configuration, method);  // 参数命名解释器
     }
 
-    // 将参数转换为 SqlCommand 的参数
+    // 将参数转换为 SqlCommand 的参数，返回一个 Map
     public Object convertArgsToSqlCommandParam(Object[] args) {
       return paramNameResolver.getNamedParams(args);
     }

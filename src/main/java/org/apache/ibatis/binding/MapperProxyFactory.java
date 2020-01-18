@@ -30,7 +30,7 @@ import org.apache.ibatis.session.SqlSession;
 public class MapperProxyFactory<T> {
 
   private final Class<T> mapperInterface;  // mapper 接口
-  private final Map<Method, MapperMethodInvoker> methodCache = new ConcurrentHashMap<>();
+  private final Map<Method, MapperMethodInvoker> methodCache = new ConcurrentHashMap<>();  // 存放接口中的方法
 
   public MapperProxyFactory(Class<T> mapperInterface) {
     this.mapperInterface = mapperInterface;
@@ -44,6 +44,8 @@ public class MapperProxyFactory<T> {
     return methodCache;
   }
 
+  // 动态代理，创建一个接口的实现类，怪不得 Spring 里能够 @AutoWired 自动装载
+  // 请求全部打到 mapperProxy 实例
   @SuppressWarnings("unchecked")
   protected T newInstance(MapperProxy<T> mapperProxy) {
     return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[] { mapperInterface }, mapperProxy);

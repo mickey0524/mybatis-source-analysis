@@ -17,4 +17,12 @@
  * Parses XML files to create a Configuration
  */
 // 解析 XML 文件创建一个 Configuration 实例
+// SqlSessionFactoryBuilder 调用本包解析生成 Configuration
+// 然后根据 Configuration 生成 SqlSessionFactory
+// 具体过程
+// XMLConfigBuilder 负责解析 XML 文件
+// XMLMapperBuilder 负责解析所有的 Mapper 文件
+// XMLStatementBuilder 负责解析 UPDATE|INSERT|DELETE|SELECT 语句，生成对应的 MappedStatement 对象，到时候使用时，根据 id（接口文件中函数名字）
+// 找到对应的 MappedStatement 对象
+// 所有配置相关都会放入 Configuration 实例中
 package org.apache.ibatis.builder.xml;
