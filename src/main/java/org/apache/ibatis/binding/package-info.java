@@ -17,4 +17,8 @@
  * Bings mapper interfaces with mapped statements
  */
 // 将 mapper 的接口与 mapper 的 statements 绑定
+// Spring 中就是通过 binding 来使用 Mybatis
+// MapperRegister 中会存放每个接口类和 MapperProxyFactory 的映射
+// MapperProxyFactory 会使用动态代理将请求转发到 MapperProxy 类中，进而调用 MapperMethod 类
+// 执行 SqlSession 中的方法（selectList 之类的）
 package org.apache.ibatis.binding;

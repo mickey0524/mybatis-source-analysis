@@ -36,6 +36,7 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
  */
 // 默认的 SqlSession 工厂
 // SqlSessionFactory 是由 SqlSessionFactoryBuilder 执行 build 方法得到的
+// MyBatis 应用启动之后，就会生成一个唯一的 SqlSessionFactory 实例
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
   private final Configuration configuration;

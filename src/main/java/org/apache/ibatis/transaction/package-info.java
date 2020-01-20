@@ -16,5 +16,7 @@
 /**
  * Base package for transactions.
  */
-// 事务的基础包
+// 事务的基础包，分为 jdbc 和 managed 两种
+// jdbc 包调用 Connection 类自身的 commit/rollback 方法
+// managed 包的 commit 和 rollback 方法都是 NOP（空函数），由外部控制
 package org.apache.ibatis.transaction;

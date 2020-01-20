@@ -48,6 +48,7 @@ public class JdbcTransaction implements Transaction {
   protected TransactionIsolationLevel level;
   protected boolean autoCommit;
 
+  // 传入数据源、事务隔离级别以及是否自动提交
   public JdbcTransaction(DataSource ds, TransactionIsolationLevel desiredLevel, boolean desiredAutoCommit) {
     dataSource = ds;
     level = desiredLevel;
@@ -98,6 +99,7 @@ public class JdbcTransaction implements Transaction {
     }
   }
 
+  // 设置连接是否自动提交
   protected void setDesiredAutoCommit(boolean desiredAutoCommit) {
     try {
       if (connection.getAutoCommit() != desiredAutoCommit) {
