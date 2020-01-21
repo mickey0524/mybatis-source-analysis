@@ -36,6 +36,7 @@ import org.apache.ibatis.logging.LogFactory;
  *
  * @author Clinton Begin
  */
+// 池子数据源，类似线程池
 public class PooledDataSource implements DataSource {
 
   private static final Log log = LogFactory.getLog(PooledDataSource.class);
@@ -85,6 +86,7 @@ public class PooledDataSource implements DataSource {
     expectedConnectionTypeCode = assembleConnectionTypeCode(dataSource.getUrl(), dataSource.getUsername(), dataSource.getPassword());
   }
 
+  // 获取连接
   @Override
   public Connection getConnection() throws SQLException {
     return popConnection(dataSource.getUsername(), dataSource.getPassword()).getProxyConnection();  // 返回的都是动态代理生成的代理连接
@@ -406,7 +408,8 @@ public class PooledDataSource implements DataSource {
       }
     }
   }
-
+  
+  // 从池子中 pop 一个连接
   private PooledConnection popConnection(String username, String password) throws SQLException {
     boolean countedWait = false;
     PooledConnection conn = null;
@@ -537,6 +540,7 @@ public class PooledDataSource implements DataSource {
   protected boolean pingConnection(PooledConnection conn) {
     boolean result = true;
 
+    // 先检查是否内部设置了 close 标记
     try {
       result = !conn.getRealConnection().isClosed();
     } catch (SQLException e) {
@@ -547,6 +551,7 @@ public class PooledDataSource implements DataSource {
     }
 
     if (result) {
+      // 是否设置了允许 ping 操作
       if (poolPingEnabled) {
         if (poolPingConnectionsNotUsedFor >= 0 && conn.getTimeElapsedSinceLastUse() > poolPingConnectionsNotUsedFor) {
           try {
@@ -589,9 +594,12 @@ public class PooledDataSource implements DataSource {
    * @return The 'real' connection
    */
   public static Connection unwrapConnection(Connection conn) {
+    // 判断 conn 是否被动态代理
     if (Proxy.isProxyClass(conn.getClass())) {
+      // 获取动态代理类
       InvocationHandler handler = Proxy.getInvocationHandler(conn);
       if (handler instanceof PooledConnection) {
+        // 获取真正的连接
         return ((PooledConnection) handler).getRealConnection();
       }
     }

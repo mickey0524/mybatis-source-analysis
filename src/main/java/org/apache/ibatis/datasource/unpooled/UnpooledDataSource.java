@@ -36,11 +36,13 @@ import org.apache.ibatis.io.Resources;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+// 非池子数据源
+// 调用 getConnection 方法就新建一个连接
 public class UnpooledDataSource implements DataSource {
 
   private ClassLoader driverClassLoader;
   private Properties driverProperties;
-  private static Map<String, Driver> registeredDrivers = new ConcurrentHashMap<>();
+  private static Map<String, Driver> registeredDrivers = new ConcurrentHashMap<>();  // 注册的数据库驱动
 
   // 最基本的数据库属性
   private String driver;
@@ -91,6 +93,7 @@ public class UnpooledDataSource implements DataSource {
     this.driverProperties = driverProperties;
   }
 
+  // 获取连接
   @Override
   public Connection getConnection() throws SQLException {
     return doGetConnection(username, password);
@@ -203,6 +206,7 @@ public class UnpooledDataSource implements DataSource {
     this.defaultNetworkTimeout = defaultNetworkTimeout;
   }
 
+  // 获取连接
   private Connection doGetConnection(String username, String password) throws SQLException {
     Properties props = new Properties();
     if (driverProperties != null) {
@@ -217,6 +221,7 @@ public class UnpooledDataSource implements DataSource {
     return doGetConnection(props);
   }
 
+  // 获取连接
   private Connection doGetConnection(Properties properties) throws SQLException {
     initializeDriver();
     Connection connection = DriverManager.getConnection(url, properties);

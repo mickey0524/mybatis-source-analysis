@@ -17,4 +17,6 @@
  * Base package for Datasources
  */
 // 数据源的基础包
+// 本包提供了不同的数据源，数据源就是用来提供 Connection 的
+// 池子类数据源和线程池类似
 package org.apache.ibatis.datasource;

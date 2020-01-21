@@ -26,6 +26,7 @@ import org.apache.ibatis.reflection.ExceptionUtil;
 /**
  * @author Clinton Begin
  */
+// 动态代理
 class PooledConnection implements InvocationHandler {
 
   private static final String CLOSE = "close";
