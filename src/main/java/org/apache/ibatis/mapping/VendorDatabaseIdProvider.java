@@ -42,6 +42,7 @@ public class VendorDatabaseIdProvider implements DatabaseIdProvider {
 
   private Properties properties;
 
+  // 获取数据库 id
   @Override
   public String getDatabaseId(DataSource dataSource) {
     if (dataSource == null) {
@@ -55,6 +56,7 @@ public class VendorDatabaseIdProvider implements DatabaseIdProvider {
     return null;
   }
 
+  // 设置属性
   @Override
   public void setProperties(Properties p) {
     this.properties = p;

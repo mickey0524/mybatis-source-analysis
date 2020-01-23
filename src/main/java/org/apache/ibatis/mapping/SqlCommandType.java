@@ -18,7 +18,7 @@ package org.apache.ibatis.mapping;
 /**
  * @author Clinton Begin
  */
-// sql 命令的类型
+// sql 命令的类型，可以看到就是 CURD
 public enum SqlCommandType {
   UNKNOWN, INSERT, UPDATE, DELETE, SELECT, FLUSH
 }

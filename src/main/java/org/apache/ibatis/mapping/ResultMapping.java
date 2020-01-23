@@ -31,9 +31,9 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 // 结果映射
 public class ResultMapping {
 
-  private Configuration configuration;
-  private String property;
-  private String column;
+  private Configuration configuration;  // MyBatis 的配置
+  private String property;  // resultMap 对应的 Java 类的字段名
+  private String column;  // 对应的数据库表的列名
   private Class<?> javaType;
   private JdbcType jdbcType;
   private TypeHandler<?> typeHandler;
@@ -135,6 +135,7 @@ public class ResultMapping {
 
     public ResultMapping build() {
       // lock down collections
+      // 为集合上锁
       resultMapping.flags = Collections.unmodifiableList(resultMapping.flags);
       resultMapping.composites = Collections.unmodifiableList(resultMapping.composites);
       resolveTypeHandler();
@@ -176,6 +177,7 @@ public class ResultMapping {
       if (resultMapping.typeHandler == null && resultMapping.javaType != null) {
         Configuration configuration = resultMapping.configuration;
         TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
+        // 获取 typeHandler
         resultMapping.typeHandler = typeHandlerRegistry.getTypeHandler(resultMapping.javaType, resultMapping.jdbcType);
       }
     }

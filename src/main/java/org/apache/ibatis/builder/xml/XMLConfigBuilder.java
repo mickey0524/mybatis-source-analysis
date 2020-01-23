@@ -315,7 +315,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       // awful patch to keep backward compatibility
       // 糟糕的补丁以保持向后兼容性
       if ("VENDOR".equals(type)) {
-        type = "DB_VENDOR";
+        type = "DB_VENDOR";  // Configuration 中注册了别名
       }
       Properties properties = context.getChildrenAsProperties();
       databaseIdProvider = (DatabaseIdProvider) resolveClass(type).getDeclaredConstructor().newInstance();
@@ -324,7 +324,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     Environment environment = configuration.getEnvironment();
     if (environment != null && databaseIdProvider != null) {
       String databaseId = databaseIdProvider.getDatabaseId(environment.getDataSource());
-      configuration.setDatabaseId(databaseId);
+      configuration.setDatabaseId(databaseId);  // 设置 databaseId
     }
   }
 

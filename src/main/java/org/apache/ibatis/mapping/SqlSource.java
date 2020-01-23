@@ -23,6 +23,7 @@ package org.apache.ibatis.mapping;
  */
 // 表示从 XML 文件或者注解中读取的映射语句的内容
 // SqlSource 创建的 SQL 语句会被传递给 database
+// builder 目录下有一个 StaticSqlSource 实现类
 public interface SqlSource {
 
   BoundSql getBoundSql(Object parameterObject);

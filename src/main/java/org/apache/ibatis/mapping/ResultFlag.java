@@ -18,7 +18,7 @@ package org.apache.ibatis.mapping;
 /**
  * @author Clinton Begin
  */
-// 结果标志
+// 结果标志，应用于 ResultMap 中
 public enum ResultFlag {
   ID, CONSTRUCTOR
 }

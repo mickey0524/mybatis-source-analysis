@@ -96,6 +96,7 @@ public class CacheBuilder {
     Cache cache = newBaseCacheInstance(implementation, id);
     setCacheProperties(cache);
     // issue #352, do not apply decorators to custom caches
+    // 不为自定义 Cache 应用装饰器
     if (PerpetualCache.class.equals(cache.getClass())) {
       for (Class<? extends Cache> decorator : decorators) {
         cache = newCacheDecoratorInstance(decorator, cache);
@@ -144,6 +145,8 @@ public class CacheBuilder {
   }
 
   // 设置 Cache 属性
+  // 反射获取所有的 field
+  // 如果 properties 中存在 field，写入
   private void setCacheProperties(Cache cache) {
     if (properties != null) {
       MetaObject metaCache = SystemMetaObject.forObject(cache);

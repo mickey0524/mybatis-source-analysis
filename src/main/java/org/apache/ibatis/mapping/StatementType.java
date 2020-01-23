@@ -19,6 +19,7 @@ package org.apache.ibatis.mapping;
  * @author Clinton Begin
  */
 // Statement 的 type
+// 对应 java.sql 中的三种 Statement —— Statement，PrepareStatement 和 CallableStatement
 public enum StatementType {
   STATEMENT, PREPARED, CALLABLE
 }
