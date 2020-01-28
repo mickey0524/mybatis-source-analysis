@@ -29,6 +29,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 // 参数名称解析器
+// binding 中的 MapperMethod 调用了 ParamNameResolver
 public class ParamNameResolver {
 
   // 通用前缀
@@ -49,6 +50,7 @@ public class ParamNameResolver {
    */
   // key 是索引，value 是名字
   // 如果使用了 @Param 注解，名字则为注解中的 value，否则，则为索引
+  // RowBounds 和 ResultHandler 需要跳过
   private final SortedMap<Integer, String> names;
 
   private boolean hasParamAnnotation;

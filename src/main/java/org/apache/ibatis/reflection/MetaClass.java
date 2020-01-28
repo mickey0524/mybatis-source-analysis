@@ -35,6 +35,7 @@ public class MetaClass {
   private final ReflectorFactory reflectorFactory;
   private final Reflector reflector;
 
+  // 构造函数，type 是传入的类，reflectorFactory 是反射器工厂，用于生成类对应的反射器
   private MetaClass(Class<?> type, ReflectorFactory reflectorFactory) {
     this.reflectorFactory = reflectorFactory;
     this.reflector = reflectorFactory.findForClass(type);
@@ -47,7 +48,7 @@ public class MetaClass {
 
   // 属性的元类
   public MetaClass metaClassForProperty(String name) {
-    Class<?> propType = reflector.getGetterType(name);
+    Class<?> propType = reflector.getGetterType(name);  // 获取 type 类中 name 字段的类
     return MetaClass.forClass(propType, reflectorFactory);
   }
 
@@ -66,15 +67,17 @@ public class MetaClass {
     return findProperty(name);
   }
 
+  // 类中所有可读的属性
   public String[] getGetterNames() {
     return reflector.getGetablePropertyNames();
   }
 
+  // 类中所有可写的属性
   public String[] getSetterNames() {
     return reflector.getSetablePropertyNames();
   }
 
-  // 获取 set 的类型
+  // 获取 name 对应的字段的类型
   public Class<?> getSetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
@@ -95,6 +98,7 @@ public class MetaClass {
     return getGetterType(prop);
   }
 
+  // 生成属性的元类
   private MetaClass metaClassForProperty(PropertyTokenizer prop) {
     Class<?> propType = getGetterType(prop);
     return MetaClass.forClass(propType, reflectorFactory);
@@ -139,6 +143,7 @@ public class MetaClass {
     return null;
   }
 
+  // 是否有 name 属性的 set 方法
   public boolean hasSetter(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
@@ -153,6 +158,7 @@ public class MetaClass {
     }
   }
 
+  // 是否有 name 属性的 get 方法
   public boolean hasGetter(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
@@ -175,10 +181,12 @@ public class MetaClass {
     return reflector.getSetInvoker(name);
   }
 
+  // 递归生成属性名
   private StringBuilder buildProperty(String name, StringBuilder builder) {
-    PropertyTokenizer prop = new PropertyTokenizer(name);  // 实例化 PropertyTokenizer 对象
+    PropertyTokenizer prop = new PropertyTokenizer(name);  // 实例化 PropertyTokenizer 对象，name 是属性名
     if (prop.hasNext()) {
       String propertyName = reflector.findPropertyName(prop.getName());
+      // 这里忽略了 PropertyTokenizer 中的 index
       if (propertyName != null) {
         builder.append(propertyName);
         builder.append(".");
@@ -186,6 +194,7 @@ public class MetaClass {
         metaProp.buildProperty(prop.getChildren(), builder);
       }
     } else {
+      // 如果 name 在 type 中被定义了，那么 propertyName 就不为 null
       String propertyName = reflector.findPropertyName(name);
       if (propertyName != null) {
         builder.append(propertyName);
@@ -194,6 +203,7 @@ public class MetaClass {
     return builder;
   }
 
+  // type 类是否定义了默认的构造函数
   public boolean hasDefaultConstructor() {
     return reflector.hasDefaultConstructor();
   }

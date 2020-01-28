@@ -21,6 +21,7 @@ import org.apache.ibatis.reflection.ReflectionException;
 /**
  * @author Clinton Begin
  */
+// 默认的对象包裹器工厂
 public class DefaultObjectWrapperFactory implements ObjectWrapperFactory {
 
   @Override

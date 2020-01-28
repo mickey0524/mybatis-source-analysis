@@ -43,6 +43,7 @@ public class BeanWrapper extends BaseWrapper {
     this.metaClass = MetaClass.forClass(object.getClass(), metaObject.getReflectorFactory());
   }
 
+  // 获取属性数值
   @Override
   public Object get(PropertyTokenizer prop) {
     if (prop.getIndex() != null) {
@@ -53,6 +54,7 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
+  // 设置属性数值
   @Override
   public void set(PropertyTokenizer prop, Object value) {
     if (prop.getIndex() != null) {
@@ -78,6 +80,7 @@ public class BeanWrapper extends BaseWrapper {
     return metaClass.getSetterNames();
   }
 
+  // 获取 set 类型
   @Override
   public Class<?> getSetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
@@ -93,6 +96,7 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
+  // 获取 get 类型
   @Override
   public Class<?> getGetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
@@ -146,6 +150,8 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
+  // 实例化属性的值，在 metaObject 中的 setValue 方法中使用，当 prop 存在 children 的时候
+  // 但是 . 前面的父对象没有实例化的时候调用
   @Override
   public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
     MetaObject metaValue;
@@ -160,6 +166,7 @@ public class BeanWrapper extends BaseWrapper {
     return metaValue;
   }
 
+  // 获取 bean 的属性
   private Object getBeanProperty(PropertyTokenizer prop, Object object) {
     try {
       Invoker method = metaClass.getGetInvoker(prop.getName());
@@ -175,6 +182,7 @@ public class BeanWrapper extends BaseWrapper {
     }
   }
 
+  // 设置 bean 的属性
   private void setBeanProperty(PropertyTokenizer prop, Object object, Object value) {
     try {
       Invoker method = metaClass.getSetInvoker(prop.getName());

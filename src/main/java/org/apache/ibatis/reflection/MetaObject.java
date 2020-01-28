@@ -34,7 +34,7 @@ import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
 public class MetaObject {
 
   private final Object originalObject;  // 原始对象
-  private final ObjectWrapper objectWrapper;
+  private final ObjectWrapper objectWrapper;  // 构造函数中设定
   private final ObjectFactory objectFactory;  // 对象工厂
   private final ObjectWrapperFactory objectWrapperFactory;  // 对象包装器工厂
   private final ReflectorFactory reflectorFactory;  // 反射器工厂
@@ -58,6 +58,7 @@ public class MetaObject {
     }
   }
 
+  // 构造函数是 private 类型的
   public static MetaObject forObject(Object object, ObjectFactory objectFactory, ObjectWrapperFactory objectWrapperFactory, ReflectorFactory reflectorFactory) {
     if (object == null) {
       return SystemMetaObject.NULL_META_OBJECT;
@@ -133,6 +134,7 @@ public class MetaObject {
       if (metaValue == SystemMetaObject.NULL_META_OBJECT) {
         if (value == null) {
           // don't instantiate child path if value is null
+          // 如果 value 为 null，不需要实例化
           return;
         } else {
           metaValue = objectWrapper.instantiatePropertyValue(name, prop, objectFactory);
@@ -144,6 +146,7 @@ public class MetaObject {
     }
   }
 
+  // 传入属性名，生成 metaObject 对象
   public MetaObject metaObjectForProperty(String name) {
     Object value = getValue(name);
     return MetaObject.forObject(value, objectFactory, objectWrapperFactory, reflectorFactory);

@@ -27,6 +27,7 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
   private final String children;
 
   // a[2].b => name = a index = 2 indexedName = a[2] children = b
+  // . 分隔符前是本次迭代需要处理的，next 放回 . 之后的
   public PropertyTokenizer(String fullname) {
     int delim = fullname.indexOf('.');
     if (delim > -1) {

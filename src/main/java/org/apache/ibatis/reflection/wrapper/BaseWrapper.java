@@ -25,6 +25,7 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
+// 包裹器抽象类
 public abstract class BaseWrapper implements ObjectWrapper {
 
   protected static final Object[] NO_ARGUMENTS = new Object[0];
@@ -34,11 +35,12 @@ public abstract class BaseWrapper implements ObjectWrapper {
     this.metaObject = metaObject;
   }
 
+  // 获取集合
   protected Object resolveCollection(PropertyTokenizer prop, Object object) {
     if ("".equals(prop.getName())) {
       return object;
     } else {
-      return metaObject.getValue(prop.getName());
+      return metaObject.getValue(prop.getName());  // getName() 取索引之前的
     }
   }
 

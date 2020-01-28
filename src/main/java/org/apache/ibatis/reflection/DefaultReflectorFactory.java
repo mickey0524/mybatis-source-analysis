@@ -18,6 +18,7 @@ package org.apache.ibatis.reflection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+// 反射器工厂，当 classCacheEnabled 为 true 的时候，存储类和反射器实例的映射
 public class DefaultReflectorFactory implements ReflectorFactory {
   private boolean classCacheEnabled = true;
   // 类和反射器的映射 Map

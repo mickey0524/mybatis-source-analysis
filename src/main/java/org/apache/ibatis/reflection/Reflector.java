@@ -51,23 +51,24 @@ import org.apache.ibatis.reflection.property.PropertyNamer;
 // 这个缓存一组类定义的信息，允许在属性和 getter/setter 方法之间进行简单的映射
 public class Reflector {
 
-  private final Class<?> type;
+  private final Class<?> type;  // 反射器实例对应的类
   private final String[] readablePropertyNames;
   private final String[] writablePropertyNames;
-  private final Map<String, Invoker> setMethods = new HashMap<>();
-  private final Map<String, Invoker> getMethods = new HashMap<>();
-  private final Map<String, Class<?>> setTypes = new HashMap<>();
-  private final Map<String, Class<?>> getTypes = new HashMap<>();
-  private Constructor<?> defaultConstructor;
+  private final Map<String, Invoker> setMethods = new HashMap<>();  // 存放属性和 set 方法的映射
+  private final Map<String, Invoker> getMethods = new HashMap<>();  // 存放属性和 get 方法的映射
+  private final Map<String, Class<?>> setTypes = new HashMap<>();  // 存放属性和 set 方法中参数类型的映射
+  private final Map<String, Class<?>> getTypes = new HashMap<>();  // 存放属性和 get 方法中返回类型的映射 
+  private Constructor<?> defaultConstructor;  // 默认的无参数的构造器函数
 
-  private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();
+  private Map<String, String> caseInsensitivePropertyMap = new HashMap<>();  // 存储属性名大写与属性名的映射
 
+  // 传入类
   public Reflector(Class<?> clazz) {
     type = clazz;
     addDefaultConstructor(clazz);  // 设置默认的构造器
-    addGetMethods(clazz);
-    addSetMethods(clazz);
-    addFields(clazz);
+    addGetMethods(clazz);  // 设置 get 方法
+    addSetMethods(clazz);  // 设置 set 方法
+    addFields(clazz);  // 设置属性
     readablePropertyNames = getMethods.keySet().toArray(new String[0]);  // 可读的属性名数组
     writablePropertyNames = setMethods.keySet().toArray(new String[0]);  // 可写的属性名数组
     for (String propName : readablePropertyNames) {
@@ -85,10 +86,11 @@ public class Reflector {
       .findAny().ifPresent(constructor -> this.defaultConstructor = constructor);
   }
 
+  // 处理 Get 方法
   private void addGetMethods(Class<?> clazz) {
     Map<String, List<Method>> conflictingGetters = new HashMap<>();
     Method[] methods = getClassMethods(clazz);  // 获取类中定义的所有方法
-    // 先过滤出 get 方法
+    // 先过滤出 get 方法，然后将 name 对应的所有 get 方法写入 conflictingGetters
     Arrays.stream(methods).filter(m -> m.getParameterTypes().length == 0 && PropertyNamer.isGetter(m.getName()))
       .forEach(m -> addMethodConflict(conflictingGetters, PropertyNamer.methodToProperty(m.getName()), m));
     resolveGetterConflicts(conflictingGetters);
@@ -96,6 +98,7 @@ public class Reflector {
 
   // 解决 get 方法的冲突
   private void resolveGetterConflicts(Map<String, List<Method>> conflictingGetters) {
+    // conflictingGetters 中 key 为属性名，value 为类中定义的所有的 get 方法
     for (Entry<String, List<Method>> entry : conflictingGetters.entrySet()) {
       Method winner = null;
       String propName = entry.getKey();  // 属性名
@@ -106,6 +109,7 @@ public class Reflector {
           winner = candidate;
           continue;
         }
+        // 获取返回类型
         Class<?> winnerType = winner.getReturnType();
         Class<?> candidateType = candidate.getReturnType();
         if (candidateType.equals(winnerType)) {
@@ -118,11 +122,11 @@ public class Reflector {
             winner = candidate;
           }
         } else if (candidateType.isAssignableFrom(winnerType)) {
-          // winner 是为超类
+          // candidateType 是为超类
           // OK getter type is descendant
         } else if (winnerType.isAssignableFrom(candidateType)) {
+          // winnerType 为超类
           winner = candidate;
-          // candidate 为超类
         } else {
           isAmbiguous = true;
           break;
@@ -132,6 +136,7 @@ public class Reflector {
     }
   }
 
+  // 添加解决冲突之后的 get 方法
   private void addGetMethod(String name, Method method, boolean isAmbiguous) {
     MethodInvoker invoker = isAmbiguous
         ? new AmbiguousMethodInvoker(method, MessageFormat.format(
@@ -143,6 +148,7 @@ public class Reflector {
     getTypes.put(name, typeToClass(returnType));
   }
 
+  // 处理 Set 方法
   private void addSetMethods(Class<?> clazz) {
     Map<String, List<Method>> conflictingSetters = new HashMap<>();
     Method[] methods = getClassMethods(clazz);  // 获取类中定义的所有方法
@@ -161,6 +167,7 @@ public class Reflector {
 
   // 解决 set 方法的冲突
   private void resolveSetterConflicts(Map<String, List<Method>> conflictingSetters) {
+    // conflictingSetters 的 key 是属性名称，value 是所有 set 方法的集合
     for (String propName : conflictingSetters.keySet()) {
       List<Method> setters = conflictingSetters.get(propName);
       Class<?> getterType = getTypes.get(propName);  // 之前处理 get 方法的时候写入了 getTypes
@@ -171,6 +178,7 @@ public class Reflector {
         // 类型和 get 中获取的一样
         if (!isGetterAmbiguous && setter.getParameterTypes()[0].equals(getterType)) {
           // should be the best match
+          // 这是最为匹配的 set 方法
           match = setter;
           break;
         }
@@ -194,10 +202,10 @@ public class Reflector {
     Class<?> paramType1 = setter1.getParameterTypes()[0];
     Class<?> paramType2 = setter2.getParameterTypes()[0];
     if (paramType1.isAssignableFrom(paramType2)) {
-      // paramType2 是 paramType1 的父类
+      // paramType1 是 paramType2 的父类
       return setter2;
     } else if (paramType2.isAssignableFrom(paramType1)) {
-      // paramType1 是 paramType2 的父类
+      // paramType2 是 paramType1 的父类
       return setter1;
     }
     // 冲突了
@@ -211,6 +219,7 @@ public class Reflector {
     return null;  // 冲突了，所以返回 null
   }
 
+  // 添加解决冲突之后的 set 方法
   private void addSetMethod(String name, Method method) {
     MethodInvoker invoker = new MethodInvoker(method);
     setMethods.put(name, invoker);
@@ -228,7 +237,7 @@ public class Reflector {
       // 处理泛型
       result = (Class<?>) ((ParameterizedType) src).getRawType();
     } else if (src instanceof GenericArrayType) {
-      // GenericArrayType 是指以 Class 或 GenericArrayType 为元素的数组
+      // GenericArrayType 是指以 Class 或 ParameterizedType 为元素的数组
       Type componentType = ((GenericArrayType) src).getGenericComponentType();
       if (componentType instanceof Class) {
         result = Array.newInstance((Class<?>) componentType, 0).getClass();
@@ -247,6 +256,7 @@ public class Reflector {
   private void addFields(Class<?> clazz) {
     Field[] fields = clazz.getDeclaredFields();
     for (Field field : fields) {
+      // 类没有定义 field 的 set 方法
       if (!setMethods.containsKey(field.getName())) {
         // issue #379 - removed the check for final because JDK 1.5 allows
         // modification of final fields through reflection (JSR-133). (JGB)
@@ -257,6 +267,7 @@ public class Reflector {
           addSetField(field);
         }
       }
+      // 类没有定义 field 的 get 方法
       if (!getMethods.containsKey(field.getName())) {
         addGetField(field);
       }
@@ -305,6 +316,7 @@ public class Reflector {
     Class<?> currentClass = clazz;
     // 循环调用，使用 getSuperclass() 方法
     while (currentClass != null && currentClass != Object.class) {
+      // 调用 getDeclaredMethods 方法获取所有方法
       addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
 
       // we also need to look for interface methods -
@@ -332,7 +344,7 @@ public class Reflector {
         // check to see if the method is already known
         // if it is known, then an extended class must have
         // overridden a method
-        // 子类中重写的方法需要过滤
+        // 父类同名同参同返回方法不能覆盖子类定义的方法
         if (!uniqueMethods.containsKey(signature)) {
           uniqueMethods.put(signature, currentMethod);
         }
@@ -383,6 +395,7 @@ public class Reflector {
     return type;
   }
 
+  // 获取默认的构造器
   public Constructor<?> getDefaultConstructor() {
     if (defaultConstructor != null) {
       return defaultConstructor;
@@ -395,6 +408,7 @@ public class Reflector {
     return defaultConstructor != null;
   }
 
+  // 获取属性对应的 SetInvoker
   public Invoker getSetInvoker(String propertyName) {
     Invoker method = setMethods.get(propertyName);
     if (method == null) {
@@ -403,6 +417,7 @@ public class Reflector {
     return method;
   }
 
+  // 获取属性对应的 GetInvoker
   public Invoker getGetInvoker(String propertyName) {
     Invoker method = getMethods.get(propertyName);
     if (method == null) {
@@ -417,6 +432,7 @@ public class Reflector {
    * @param propertyName - the name of the property
    * @return The Class of the property setter
    */
+  // 获取属性对应的 SetterType
   public Class<?> getSetterType(String propertyName) {
     Class<?> clazz = setTypes.get(propertyName);
     if (clazz == null) {
@@ -431,6 +447,7 @@ public class Reflector {
    * @param propertyName - the name of the property
    * @return The Class of the property getter
    */
+  // 获取属性对应的 GetterType
   public Class<?> getGetterType(String propertyName) {
     Class<?> clazz = getTypes.get(propertyName);
     if (clazz == null) {

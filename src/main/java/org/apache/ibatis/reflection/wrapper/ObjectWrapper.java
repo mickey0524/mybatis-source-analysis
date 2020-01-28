@@ -24,6 +24,7 @@ import org.apache.ibatis.reflection.property.PropertyTokenizer;
 /**
  * @author Clinton Begin
  */
+// 对象包裹器接口，内部包裹一个特定类型的接口
 public interface ObjectWrapper {
 
   Object get(PropertyTokenizer prop);

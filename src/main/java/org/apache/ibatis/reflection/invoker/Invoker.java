@@ -22,7 +22,9 @@ import java.lang.reflect.InvocationTargetException;
  */
 // Invoker 接口
 public interface Invoker {
+
   Object invoke(Object target, Object[] args) throws IllegalAccessException, InvocationTargetException;
 
   Class<?> getType();
+  
 }

@@ -21,6 +21,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 /**
  * @author Clinton Begin
  */
+// 异常工具类
 public class ExceptionUtil {
 
   private ExceptionUtil() {

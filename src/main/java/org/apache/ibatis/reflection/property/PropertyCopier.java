@@ -34,6 +34,7 @@ public final class PropertyCopier {
   public static void copyBeanProperties(Class<?> type, Object sourceBean, Object destinationBean) {
     Class<?> parent = type;
     while (parent != null) {
+      // 获取所有的 field，包括 private 的，所以需要使用 while 将 parent 设置为 superClass
       final Field[] fields = parent.getDeclaredFields();
       for (Field field : fields) {
         try {

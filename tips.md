@@ -154,3 +154,5 @@ enum Enum {
 ## java sql Statement
 
 [java sql Statement](https://www.yiibai.com/jdbc/jdbc-statements.html)
+
+## Method 和 Constructor 全部继承 Executable 类

@@ -16,4 +16,5 @@
 /**
  * Unused.
  */
+// 反射包中的触发器
 package org.apache.ibatis.reflection.invoker;

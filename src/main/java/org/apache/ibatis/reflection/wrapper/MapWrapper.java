@@ -37,6 +37,7 @@ public class MapWrapper extends BaseWrapper {
     this.map = map;
   }
 
+  // get 获取元素
   @Override
   public Object get(PropertyTokenizer prop) {
     if (prop.getIndex() != null) {
@@ -47,6 +48,7 @@ public class MapWrapper extends BaseWrapper {
     }
   }
 
+  // set 设置元素
   @Override
   public void set(PropertyTokenizer prop, Object value) {
     if (prop.getIndex() != null) {
@@ -72,6 +74,7 @@ public class MapWrapper extends BaseWrapper {
     return map.keySet().toArray(new String[map.keySet().size()]);
   }
 
+  // Map 的 set 和 get 的 type 是一样的，所以 getSetterType 和 getGetterType 相同
   @Override
   public Class<?> getSetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
@@ -137,6 +140,8 @@ public class MapWrapper extends BaseWrapper {
     }
   }
 
+  // 实例化属性的值，在 metaObject 中的 setValue 方法中使用，当 prop 存在 children 的时候
+  // 但是 . 前面的父对象没有实例化的时候调用
   @Override
   public MetaObject instantiatePropertyValue(String name, PropertyTokenizer prop, ObjectFactory objectFactory) {
     HashMap<String, Object> map = new HashMap<>();
