@@ -69,6 +69,7 @@ public final class TypeHandlerRegistry {
   /**
    * The default constructor.
    */
+  // 默认的构造器
   public TypeHandlerRegistry() {
     this(new Configuration());
   }
@@ -79,9 +80,11 @@ public final class TypeHandlerRegistry {
    * @param configuration a MyBatis configuration
    * @since 3.5.4
    */
+  // Configuration 类中调用
   public TypeHandlerRegistry(Configuration configuration) {
     this.unknownTypeHandler = new UnknownTypeHandler(configuration);
 
+    // 注册 Java 类型和 JDBC 类型的 TypeHandler
     register(Boolean.class, new BooleanTypeHandler());
     register(boolean.class, new BooleanTypeHandler());
     register(JdbcType.BOOLEAN, new BooleanTypeHandler());
@@ -233,12 +236,13 @@ public final class TypeHandlerRegistry {
     return getTypeHandler(javaTypeReference.getRawType(), jdbcType);
   }
 
+  // 获取 TypeHandler
   @SuppressWarnings("unchecked")
   private <T> TypeHandler<T> getTypeHandler(Type type, JdbcType jdbcType) {
     if (ParamMap.class.equals(type)) {
       return null;
     }
-    Map<JdbcType, TypeHandler<?>> jdbcHandlerMap = getJdbcHandlerMap(type);
+    Map<JdbcType, TypeHandler<?>> jdbcHandlerMap = getJdbcHandlerMap(type);  // 获取 Java Type 对应的 Map
     TypeHandler<?> handler = null;
     if (jdbcHandlerMap != null) {
       handler = jdbcHandlerMap.get(jdbcType);
@@ -333,6 +337,7 @@ public final class TypeHandlerRegistry {
     return unknownTypeHandler;
   }
 
+  // 注册 JDBC 和 TypeHandler
   public void register(JdbcType jdbcType, TypeHandler<?> handler) {
     jdbcTypeHandlerMap.put(jdbcType, handler);
   }
@@ -346,7 +351,7 @@ public final class TypeHandlerRegistry {
   @SuppressWarnings("unchecked")
   public <T> void register(TypeHandler<T> typeHandler) {
     boolean mappedTypeFound = false;
-    // 类上有 MappedTypes 注解，java type
+    // 类上有 MappedTypes 注解，获取 TypeHandler 作用的 java type
     MappedTypes mappedTypes = typeHandler.getClass().getAnnotation(MappedTypes.class);
     if (mappedTypes != null) {
       for (Class<?> handledType : mappedTypes.value()) {
@@ -355,6 +360,7 @@ public final class TypeHandlerRegistry {
       }
     }
     // @since 3.1.0 - try to auto-discover the mapped type
+    // 尝试自行发现作用作用的 Java Type
     if (!mappedTypeFound && typeHandler instanceof TypeReference) {
       try {
         TypeReference<T> typeReference = (TypeReference<T>) typeHandler;
@@ -377,6 +383,7 @@ public final class TypeHandlerRegistry {
 
   // 处理 Java Type 和 Handler 的映射
   private <T> void register(Type javaType, TypeHandler<? extends T> typeHandler) {
+    // 查看 typeHandler 类上是否定义了 MappedJdbcTypes 注解
     MappedJdbcTypes mappedJdbcTypes = typeHandler.getClass().getAnnotation(MappedJdbcTypes.class);
     if (mappedJdbcTypes != null) {
       for (JdbcType handledJdbcType : mappedJdbcTypes.value()) {

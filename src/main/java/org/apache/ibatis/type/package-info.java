@@ -16,4 +16,8 @@
 /**
  * Type handlers.
  */
+// 类型处理器
+// 本包负责 Java Type 和 JDBC Type 的相互转化
+// 当 set param 的时候将 Java Type => JDBC Type
+// 从 ResultSet 中获取数据的时候将 JDBC Type => Java Type
 package org.apache.ibatis.type;
