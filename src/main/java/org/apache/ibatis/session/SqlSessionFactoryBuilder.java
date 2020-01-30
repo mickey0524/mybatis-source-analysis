@@ -30,7 +30,8 @@ import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
  *
  * @author Clinton Begin
  */
-// 生成 SqlSession 实例
+// 暴露给外部，Mybatis应用 初始化的时候都需要调用 SqlSessionFactoryBuilder 来生成 SqlSessionFactory 实例
+// 传入 MyBatis 配置文件，得到 Configuration 实例
 public class SqlSessionFactoryBuilder {
 
   public SqlSessionFactory build(Reader reader) {

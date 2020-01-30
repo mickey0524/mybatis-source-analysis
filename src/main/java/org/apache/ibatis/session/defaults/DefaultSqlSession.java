@@ -46,7 +46,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Clinton Begin
  */
 // SqlSession 的默认实现
-// 这个类不是线程安全的
+// 需要注意这个类不是线程安全的
 public class DefaultSqlSession implements SqlSession {
 
   private final Configuration configuration;
@@ -150,7 +150,7 @@ public class DefaultSqlSession implements SqlSession {
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
-      MappedStatement ms = configuration.getMappedStatement(statement);
+      MappedStatement ms = configuration.getMappedStatement(statement);  // 从 map 中取出 statement 对应的 MappedStatement 实例
       return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
     } catch (Exception e) {
       throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
