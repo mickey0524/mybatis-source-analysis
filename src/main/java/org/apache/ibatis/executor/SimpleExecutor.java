@@ -54,6 +54,7 @@ public class SimpleExecutor extends BaseExecutor {
     }
   }
 
+  // 传递进来的 parameter 执行了 wrapCollection 方法
   @Override
   public <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
     Statement stmt = null;

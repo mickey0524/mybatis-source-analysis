@@ -55,7 +55,7 @@ public abstract class BaseExecutor implements Executor {
   protected Transaction transaction;
   protected Executor wrapper;  // 包裹类
 
-  protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
+  protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;  // 线程安全的
   protected PerpetualCache localCache;  // PerpetualCache 是最基本的 Cache，一个 HashMap 写入完事
   protected PerpetualCache localOutputParameterCache;
   protected Configuration configuration;
@@ -169,6 +169,7 @@ public abstract class BaseExecutor implements Executor {
       }
       // issue #601
       deferredLoads.clear();
+      // 如果本地缓存范围是一次请求，那么完毕后清空本地缓存
       if (configuration.getLocalCacheScope() == LocalCacheScope.STATEMENT) {
         // issue #482
         clearLocalCache();
@@ -209,7 +210,7 @@ public abstract class BaseExecutor implements Executor {
     cacheKey.update(rowBounds.getLimit());
     cacheKey.update(boundSql.getSql());
     List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
-    TypeHandlerRegistry typeHandlerRegistry = ms.getConfiguration().getTypeHandlerRegistry();
+    TypeHandlerRegistry typeHandlerRegistry = ms.getConfiguration().getTypeHandlerRegistry();  // 用于类型转换
     // mimic DefaultParameterHandler logic
     // 将参数的 value 也拼接起来
     for (ParameterMapping parameterMapping : parameterMappings) {
@@ -229,6 +230,7 @@ public abstract class BaseExecutor implements Executor {
         cacheKey.update(value);
       }
     }
+    // 数据库名称
     if (configuration.getEnvironment() != null) {
       // issue #176
       cacheKey.update(configuration.getEnvironment().getId());
@@ -316,6 +318,7 @@ public abstract class BaseExecutor implements Executor {
 
   // 本地缓存中存在对应的 key
   private void handleLocallyCachedOutputParameters(MappedStatement ms, CacheKey key, Object parameter, BoundSql boundSql) {
+    // 事务请求类型
     if (ms.getStatementType() == StatementType.CALLABLE) {
       final Object cachedParameter = localOutputParameterCache.getObject(key);  // 缓存的参数
       if (cachedParameter != null && parameter != null) {
@@ -339,11 +342,13 @@ public abstract class BaseExecutor implements Executor {
     List<E> list;
     localCache.putObject(key, EXECUTION_PLACEHOLDER);  // key 对应的请求正在进行中
     try {
+      // 缓存失败，执行真正的 query 方法
       list = doQuery(ms, parameter, rowBounds, resultHandler, boundSql);
     } finally {
       localCache.removeObject(key);
     }
     localCache.putObject(key, list);
+    // 事务请求类型，缓存请求参数
     if (ms.getStatementType() == StatementType.CALLABLE) {
       localOutputParameterCache.putObject(key, parameter);
     }
@@ -382,13 +387,13 @@ public abstract class BaseExecutor implements Executor {
                         PerpetualCache localCache,
                         Configuration configuration,
                         Class<?> targetType) {
-      this.resultObject = resultObject;
-      this.property = property;
+      this.resultObject = resultObject;  // 结果存储对象
+      this.property = property;  // 结果存储 key
       this.key = key;
       this.localCache = localCache;
       this.objectFactory = configuration.getObjectFactory();
-      this.resultExtractor = new ResultExtractor(configuration, objectFactory);
-      this.targetType = targetType;
+      this.resultExtractor = new ResultExtractor(configuration, objectFactory);  // 实例化结果提取器
+      this.targetType = targetType;  // 目标类型
     }
     
     // 可以加载了

@@ -40,7 +40,7 @@ import org.apache.ibatis.transaction.Transaction;
 public class CachingExecutor implements Executor {
 
   private final Executor delegate;
-  private final TransactionalCacheManager tcm = new TransactionalCacheManager();
+  private final TransactionalCacheManager tcm = new TransactionalCacheManager();  // 事务缓存管理器
 
   public CachingExecutor(Executor delegate) {
     this.delegate = delegate;
@@ -96,6 +96,7 @@ public class CachingExecutor implements Executor {
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
     Cache cache = ms.getCache();
+    // 如果 Mapper 中定义了 Cache
     if (cache != null) {
       flushCacheIfRequired(ms);
       if (ms.isUseCache() && resultHandler == null) {

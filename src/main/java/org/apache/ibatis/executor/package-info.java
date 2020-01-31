@@ -16,5 +16,9 @@
 /**
  * Contains the statement executors.
  */
-// 包含 statement 的执行器
+// 包含 Statement 的执行器，其实说到底 MyBatis 最后还是调用 java.sql 中的三种 Statement
+// Statement、PrepareStatement 以及 CallableStatement
+// Session -> CachingExecutor -> BaseExecutor -> 具体的三种执行器
+// CachingExecutor 中的 Cache 是一个 Mapper 文件一个实例
+// BaseExecutor 中使用的是本地 Cache，只在一个 Session 中有用
 package org.apache.ibatis.executor;
