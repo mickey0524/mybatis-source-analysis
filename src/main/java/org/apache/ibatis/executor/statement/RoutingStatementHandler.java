@@ -36,7 +36,7 @@ import org.apache.ibatis.session.RowBounds;
 // 工厂模式，所有的方法，路由到 delegate 的同名方法中
 public class RoutingStatementHandler implements StatementHandler {
 
-  private final StatementHandler delegate;
+  private final StatementHandler delegate;  // 类中有一个代理 StatementHandler 实例
 
   public RoutingStatementHandler(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
 

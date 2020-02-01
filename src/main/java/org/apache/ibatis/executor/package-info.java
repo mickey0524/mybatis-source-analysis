@@ -21,4 +21,8 @@
 // Session -> CachingExecutor -> BaseExecutor -> 具体的三种执行器
 // CachingExecutor 中的 Cache 是一个 Mapper 文件一个实例
 // BaseExecutor 中使用的是本地 Cache，只在一个 Session 中有用
+// 一般来说，默认使用的是 SimpleExecutor
+// 然后根据 Statement 不同的类型（普通的 Statement、PrepareStatement 以及 CallableStatement）选择不同的 StatementHandler
+// 然后执行对应的 query/update 方法，执行 Statement 的 execute 方法
+// 获取 ResultSet 之后，取出结果
 package org.apache.ibatis.executor;

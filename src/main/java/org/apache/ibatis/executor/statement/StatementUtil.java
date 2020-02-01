@@ -41,7 +41,7 @@ public class StatementUtil {
    * @param transactionTimeout a transaction timeout
    * @throws SQLException if a database access error occurs, this method is called on a closed <code>Statement</code>
    */
-  // 设置事务的超时时间
+  // 设置事务的超时时间，同时对请求超时时间做兜底设置
   public static void applyTransactionTimeout(Statement statement, Integer queryTimeout, Integer transactionTimeout) throws SQLException {
     if (transactionTimeout == null) {
       return;

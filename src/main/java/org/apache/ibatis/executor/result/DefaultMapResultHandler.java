@@ -41,7 +41,7 @@ public class DefaultMapResultHandler<K, V> implements ResultHandler<V> {
     this.objectFactory = objectFactory;
     this.objectWrapperFactory = objectWrapperFactory;
     this.reflectorFactory = reflectorFactory;
-    this.mappedResults = objectFactory.create(Map.class);
+    this.mappedResults = objectFactory.create(Map.class);  // 会生成 HashMap 的实例
     this.mapKey = mapKey;
   }
 

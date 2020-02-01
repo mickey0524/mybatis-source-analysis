@@ -17,4 +17,5 @@
  * Contains the result handlers.
  */
 // 包含结果处理程序
+// 主要是用于辅助 resultSet 中对结果的解析
 package org.apache.ibatis.executor.result;

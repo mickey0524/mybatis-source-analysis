@@ -38,13 +38,14 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 /**
  * @author Iwao AVE!
  */
+// ResultSet 包裹器
 public class ResultSetWrapper {
 
   private final ResultSet resultSet;
   private final TypeHandlerRegistry typeHandlerRegistry;
-  private final List<String> columnNames = new ArrayList<>();
-  private final List<String> classNames = new ArrayList<>();
-  private final List<JdbcType> jdbcTypes = new ArrayList<>();
+  private final List<String> columnNames = new ArrayList<>();  // 存储 resultSet 中元素的列名
+  private final List<String> classNames = new ArrayList<>();  // 存储 resultSet 中元素的类名
+  private final List<JdbcType> jdbcTypes = new ArrayList<>();  // 存储 resultSet 中元素的 JDBC 类型
   private final Map<String, Map<Class<?>, TypeHandler<?>>> typeHandlerMap = new HashMap<>();
   private final Map<String, List<String>> mappedColumnNamesMap = new HashMap<>();
   private final Map<String, List<String>> unMappedColumnNamesMap = new HashMap<>();
@@ -52,7 +53,7 @@ public class ResultSetWrapper {
   public ResultSetWrapper(ResultSet rs, Configuration configuration) throws SQLException {
     super();
     this.typeHandlerRegistry = configuration.getTypeHandlerRegistry();
-    this.resultSet = rs;
+    this.resultSet = rs;  // 存储 resultSet
     final ResultSetMetaData metaData = rs.getMetaData();
     final int columnCount = metaData.getColumnCount();
     // 从 1 开始
@@ -184,6 +185,7 @@ public class ResultSetWrapper {
     return resultMap.getId() + ":" + columnPrefix;
   }
 
+  // 添加前缀
   private Set<String> prependPrefixes(Set<String> columnNames, String prefix) {
     if (columnNames == null || columnNames.isEmpty() || prefix == null || prefix.length() == 0) {
       return columnNames;

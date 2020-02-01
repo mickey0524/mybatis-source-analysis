@@ -17,4 +17,8 @@
  * Contains the result processing logic
  */
 // 包含结果处理逻辑
+// 其实就是从 Statement 中得到 ResultSet
+// 然后通过 resultSet.next() 获取逐行的值
+// 通过 ResultMap 和 ResultType 将获取的行实例化为对象
+// 然后返回结果
 package org.apache.ibatis.executor.resultset;

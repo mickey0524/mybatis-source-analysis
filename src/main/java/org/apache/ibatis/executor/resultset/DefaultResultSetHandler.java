@@ -187,12 +187,12 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     int resultSetCount = 0;
     ResultSetWrapper rsw = getFirstResultSet(stmt);
 
-    List<ResultMap> resultMaps = mappedStatement.getResultMaps();
+    List<ResultMap> resultMaps = mappedStatement.getResultMaps();  // XML 中定义的 resultMap
     // 一般 resultMaps 里只有一个元素
     int resultMapCount = resultMaps.size();
     validateResultMapsCount(rsw, resultMapCount);
     while (rsw != null && resultMapCount > resultSetCount) {
-      ResultMap resultMap = resultMaps.get(resultSetCount);
+      ResultMap resultMap = resultMaps.get(resultSetCount);  // 获取 ResultMap 实例
       handleResultSet(rsw, resultMap, multipleResults, null);
       rsw = getNextResultSet(stmt);
       cleanUpAfterHandlingResultSet();
@@ -406,7 +406,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   // 核心，取得一行的值
   private Object getRowValue(ResultSetWrapper rsw, ResultMap resultMap, String columnPrefix) throws SQLException {
     final ResultLoaderMap lazyLoader = new ResultLoaderMap();
-    Object rowValue = createResultObject(rsw, resultMap, lazyLoader, columnPrefix);
+    Object rowValue = createResultObject(rsw, resultMap, lazyLoader, columnPrefix);  // 获取一行的值
     if (rowValue != null && !hasTypeHandlerForResultObject(rsw, resultMap.getType())) {
       final MetaObject metaObject = configuration.newMetaObject(rowValue);
       boolean foundValues = this.useConstructorMappings;
@@ -620,9 +620,9 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   // 创建结果对象
   private Object createResultObject(ResultSetWrapper rsw, ResultMap resultMap, List<Class<?>> constructorArgTypes, List<Object> constructorArgs, String columnPrefix)
       throws SQLException {
-    // 获取 result type
+    // 获取 result type，是 Java 中定义的一个类
     final Class<?> resultType = resultMap.getType();
-    final MetaClass metaType = MetaClass.forClass(resultType, reflectorFactory);
+    final MetaClass metaType = MetaClass.forClass(resultType, reflectorFactory);  // 创建一个元类
     final List<ResultMapping> constructorMappings = resultMap.getConstructorResultMappings();
     if (hasTypeHandlerForResultObject(rsw, resultType)) {
       // 基本型
