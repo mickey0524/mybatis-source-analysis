@@ -56,6 +56,7 @@ import org.apache.ibatis.logging.LogFactory;
  *
  * @author Tim Fennell
  */
+// 解析器工具类
 public class ResolverUtil<T> {
   /*
    * An instance of Log to use for logging in this class.
@@ -66,7 +67,7 @@ public class ResolverUtil<T> {
    * A simple interface that specifies how to test classes to determine if they
    * are to be included in the results produced by the ResolverUtil.
    */
-  // Base 接口
+  // Base 接口，直接命名为 Test 可太秀了
   public interface Test {
     /**
      * Will be called repeatedly with candidate classes. Must return True if a class
@@ -126,12 +127,14 @@ public class ResolverUtil<T> {
   }
 
   /** The set of matches being accumulated. */
+  // 存放 match 成功的类
   private Set<Class<? extends T>> matches = new HashSet<>();
 
   /**
    * The ClassLoader to use when looking for classes. If null then the ClassLoader returned
    * by Thread.currentThread().getContextClassLoader() will be used.
    */
+  // 不如在 ClassLoaderWrapper 中新增一个 getClassLoaders 的函数，返回所有的 ClassLoader
   private ClassLoader classloader;
 
   /**

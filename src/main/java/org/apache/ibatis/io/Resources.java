@@ -128,6 +128,7 @@ public class Resources {
    * @throws java.io.IOException If the resource cannot be found or read
    */
   // 获取资源，返回 Properties 对象
+  // 其实可以调用 getResourceAsProperties(null, resource);
   public static Properties getResourceAsProperties(String resource) throws IOException {
     Properties props = new Properties();
     try (InputStream in = getResourceAsStream(resource)) {

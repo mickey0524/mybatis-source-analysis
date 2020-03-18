@@ -16,4 +16,5 @@
 /**
  * Base package for cursor feature
  */
+// 实现游标特性的基础包
 package org.apache.ibatis.cursor;

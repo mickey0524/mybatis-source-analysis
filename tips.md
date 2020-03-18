@@ -156,3 +156,17 @@ enum Enum {
 [java sql Statement](https://www.yiibai.com/jdbc/jdbc-statements.html)
 
 ## Method 和 Constructor 全部继承 Executable 类
+
+## 反射中 Method 实例获取方法所属类的方法
+
+```java
+method.getDeclaringClass();
+
+
+if (Object.class.equals(method.getDeclaringClass())) {
+    return method.invoke(this, args);
+}
+```
+
+可以用于动态代理中区分是否为 Object 类的方法
+

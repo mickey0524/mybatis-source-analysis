@@ -17,4 +17,6 @@
  * Utilities to read resources.
  */
 // 读取资源的工具类
+// 可以读取 Java 类文件（classForName）
+// 也可以将 XML 等文件读取为 URL/InputStream（getResource/getResourceAsStream）
 package org.apache.ibatis.io;

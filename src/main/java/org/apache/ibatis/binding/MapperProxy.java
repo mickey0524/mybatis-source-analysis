@@ -33,6 +33,7 @@ import org.apache.ibatis.session.SqlSession;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+// Mapper 接口的代理类（JDK 动态代理）
 public class MapperProxy<T> implements InvocationHandler, Serializable {
 
   private static final long serialVersionUID = -4724728412955527868L;
@@ -41,7 +42,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   private static final Constructor<Lookup> lookupConstructor;
   private static final Method privateLookupInMethod;
   private final SqlSession sqlSession;
-  private final Class<T> mapperInterface;
+  private final Class<T> mapperInterface;  // Mapper 接口
   private final Map<Method, MapperMethodInvoker> methodCache;  // 是 MapperProxyFactory 中传入的，一个接口类共用一个
 
   public MapperProxy(SqlSession sqlSession, Class<T> mapperInterface, Map<Method, MapperMethodInvoker> methodCache) {

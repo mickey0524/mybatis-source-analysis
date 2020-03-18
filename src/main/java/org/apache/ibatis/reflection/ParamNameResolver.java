@@ -127,11 +127,12 @@ public class ParamNameResolver {
     if (args == null || paramCount == 0) {
       return null;
     } else if (!hasParamAnnotation && paramCount == 1) {
-      return args[names.firstKey()];
+      return args[names.firstKey()];  // 这里 firstKey 一定是 0-。-，还是为了 Defense In Depth 吗--，有点蠢
     } else {
       final Map<String, Object> param = new ParamMap<>();
       int i = 0;
       for (Map.Entry<Integer, String> entry : names.entrySet()) {
+        // key 是参数的索引数，value 是参数对应的名称
         param.put(entry.getValue(), args[entry.getKey()]);
         // add generic param names (param1, param2, ...)
         final String genericParamName = GENERIC_NAME_PREFIX + (i + 1);

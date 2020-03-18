@@ -52,7 +52,7 @@ public class MapperMethod {
 
   // 传递是那个接口的哪个方法，以及配置文件
   public MapperMethod(Class<?> mapperInterface, Method method, Configuration config) {
-    this.command = new SqlCommand(config, mapperInterface, method);
+    this.command = new SqlCommand(config, mapperInterface, method);  // 用于获取 method 对应的 sql 的类型
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
@@ -268,7 +268,7 @@ public class MapperMethod {
       return type;
     }
 
-    // 获取 MappedStatement 实例
+    // 从 configuration 的 StatementMap 中获取 MappedStatement 实例
     private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
         Class<?> declaringClass, Configuration configuration) {
       String statementId = mapperInterface.getName() + "." + methodName;  // namespace（Mapper 上定义的） + id（sql id 为接口中的方法名）
@@ -387,6 +387,7 @@ public class MapperMethod {
       Integer index = null;
       // 获取 method 的全部参数
       final Class<?>[] argTypes = method.getParameterTypes();
+      // 遍历获取类型匹配的 index
       for (int i = 0; i < argTypes.length; i++) {
         if (paramType.isAssignableFrom(argTypes[i])) {
           if (index == null) {
@@ -403,6 +404,7 @@ public class MapperMethod {
       String mapKey = null;
       // method 的返回类型是 Map 的子类
       if (Map.class.isAssignableFrom(method.getReturnType())) {
+        // 同时 method 应用了 MapKey 注解
         final MapKey mapKeyAnnotation = method.getAnnotation(MapKey.class);
         if (mapKeyAnnotation != null) {
           mapKey = mapKeyAnnotation.value();
