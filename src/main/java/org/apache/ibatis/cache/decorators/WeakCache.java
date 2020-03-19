@@ -28,7 +28,7 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
-// 弱饮用的 Cache 装饰器，代码和 SoftCache 如出一辙，就是将 SoftReference 换成了 WeakReference
+// 弱引用的 Cache 装饰器，代码和 SoftCache 如出一辙，就是将 SoftReference 换成了 WeakReference
 public class WeakCache implements Cache {
   private final Deque<Object> hardLinksToAvoidGarbageCollection;
   private final ReferenceQueue<Object> queueOfGarbageCollectedEntries;
@@ -37,7 +37,7 @@ public class WeakCache implements Cache {
 
   public WeakCache(Cache delegate) {
     this.delegate = delegate;
-    this.numberOfHardLinks = 256;
+    this.numberOfHardLinks = 256;  // 256 可以抽象为一个 public final
     this.hardLinksToAvoidGarbageCollection = new LinkedList<>();
     this.queueOfGarbageCollectedEntries = new ReferenceQueue<>();
   }

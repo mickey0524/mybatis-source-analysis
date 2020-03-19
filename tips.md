@@ -170,3 +170,21 @@ if (Object.class.equals(method.getDeclaringClass())) {
 
 可以用于动态代理中区分是否为 Object 类的方法
 
+## 装饰器，代理等模式，被包裹的变量可以命名为 delegate
+
+## 从动态代理类获取被代理的原始类
+
+```java
+public static Connection unwrapConnection(Connection conn) {
+  // 判断 conn 是否被动态代理
+  if (Proxy.isProxyClass(conn.getClass())) {
+    // 获取动态代理类
+    InvocationHandler handler = Proxy.getInvocationHandler(conn);
+    if (handler instanceof PooledConnection) {
+      // 获取真正的连接
+      return ((PooledConnection) handler).getRealConnection();
+    }
+  }
+  return conn;
+}
+```

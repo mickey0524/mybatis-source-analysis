@@ -17,4 +17,9 @@
  * Simple single-thread pooled datasource
  */
 // 简单的单线程数据源
+// PooledDataSource 增加了连接池的概念
+// 其实和线程池差不多
+// 对 Connection 进行动态代理，主要用于捕获 close 方法，将当前 Connection 放回连接池
+// 连接池同样有 idle 和 active 的概念，当存在 idle 的时候，直接 pop
+// 当 active 数量小于 max，直接新建连接
 package org.apache.ibatis.datasource.pooled;

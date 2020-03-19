@@ -17,4 +17,7 @@
  * Hyper-simple Datasource.
  */
 // 超级简单的数据源
+// 没有任何复杂的处理机制
+// 当获取 Connection 的请求过来的时候
+// 调用 DriverManager.getConnection 获取 Connection
 package org.apache.ibatis.datasource.unpooled;

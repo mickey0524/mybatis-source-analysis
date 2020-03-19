@@ -19,6 +19,7 @@ package org.apache.ibatis.cache;
  * @author Clinton Begin
  * @deprecated Since 3.5.3, This class never used and will be removed future version.
  */
+// CacheKey 内定义了 NullCacheKey
 @Deprecated
 public final class NullCacheKey extends CacheKey {
 

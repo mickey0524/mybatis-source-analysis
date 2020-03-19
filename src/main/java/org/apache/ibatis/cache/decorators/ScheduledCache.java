@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @author Clinton Begin
  */
 // 定时清理（清空）的 Cache 装饰器
+// 当调用 getSize/putObject/getObject 等方法的时候，都会进行时间判断
 public class ScheduledCache implements Cache {
 
   private final Cache delegate;

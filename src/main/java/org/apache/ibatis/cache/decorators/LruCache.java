@@ -30,7 +30,8 @@ public class LruCache implements Cache {
 
   private final Cache delegate;
   private Map<Object, Object> keyMap;  // 如果是我的话，这个 Map 的 Value 类型会使用 Byte，省空间，反正也没用
-  private Object eldestKey;
+  private Object eldestKey;  // 存储最老的 key，如果 putObject 方法调用完毕，eldestKey 不为 null，则在 delegate 中 remove key 为
+                            // eldestKey 的 kv pair
 
   public LruCache(Cache delegate) {
     this.delegate = delegate;

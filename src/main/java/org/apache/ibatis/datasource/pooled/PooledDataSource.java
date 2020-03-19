@@ -406,6 +406,7 @@ public class PooledDataSource implements DataSource {
         }
         state.badConnectionCount++;
       }
+      // conn = null; 可以增加这句话，help gc
     }
   }
   
