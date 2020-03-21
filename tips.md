@@ -188,3 +188,11 @@ public static Connection unwrapConnection(Connection conn) {
   return conn;
 }
 ```
+
+## 判断 Class 是否为集合
+
+```java
+public <T> boolean isCollection(Class<T> type) {
+  return Collection.class.isAssignableFrom(type);
+}
+```

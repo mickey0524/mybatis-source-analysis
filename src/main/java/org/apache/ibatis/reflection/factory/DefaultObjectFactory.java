@@ -92,6 +92,10 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
   }
 
   // type 为接口的化，给出默认的子类
+  // List/Collection/Iterable => ArrayList
+  // Map => HashMap
+  // Set => HashSet
+  // SortedSet => TreeSet
   protected Class<?> resolveInterface(Class<?> type) {
     Class<?> classToCreate;
     if (type == List.class || type == Collection.class || type == Iterable.class) {

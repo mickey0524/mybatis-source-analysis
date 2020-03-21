@@ -99,6 +99,7 @@ public class Reflector {
   // 解决 get 方法的冲突
   private void resolveGetterConflicts(Map<String, List<Method>> conflictingGetters) {
     // conflictingGetters 中 key 为属性名，value 为类中定义的所有的 get 方法
+    // 这些 get 方法的 signature 不相同
     for (Entry<String, List<Method>> entry : conflictingGetters.entrySet()) {
       Method winner = null;
       String propName = entry.getKey();  // 属性名
@@ -352,7 +353,7 @@ public class Reflector {
     }
   }
 
-  // ${方法返回类的名字}#${方法的名字}:${第一个参数的类名},{之后参数的类名}
+  // ${方法返回类的名字}#${方法的名字}:${第一个参数的类名},${之后参数的类名}
   private String getSignature(Method method) {
     StringBuilder sb = new StringBuilder();
     Class<?> returnType = method.getReturnType();

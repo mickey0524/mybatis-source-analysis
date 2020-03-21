@@ -24,4 +24,6 @@
 // 本包中最重要的类是 Reflector 类，利用反射获取类的所有方法和属性
 // MetaClass 是元类，表示一个类，用于调用 Reflector
 // MetaObject 是元对象，提供 set 和 get 方法，metaObject 需要和 wrapper 目录交互
+// MetaObject 在 getValue/setValue 的时候，会调用到 wrapper
+// 当遇到 a.b 的时候，wrapper 会返回来调用 MetaObject 生成新的 MetaObject
 package org.apache.ibatis.reflection;

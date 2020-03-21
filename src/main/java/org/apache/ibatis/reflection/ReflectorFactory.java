@@ -15,7 +15,7 @@
  */
 package org.apache.ibatis.reflection;
 
-// 反射器工厂
+// 反射器工厂，DefaultReflectorFactory 为该接口的默认实现
 public interface ReflectorFactory {
 
   boolean isClassCacheEnabled();

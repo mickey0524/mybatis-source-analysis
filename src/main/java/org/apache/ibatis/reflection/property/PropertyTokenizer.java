@@ -61,6 +61,7 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
     return children;
   }
 
+  // 实现了 Iterator<PropertyTokenizer> 接口
   @Override
   public boolean hasNext() {
     return children != null;

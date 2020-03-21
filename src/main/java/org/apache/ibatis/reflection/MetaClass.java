@@ -46,7 +46,7 @@ public class MetaClass {
     return new MetaClass(type, reflectorFactory);
   }
 
-  // 属性的元类
+  // 构建 Class 中 Field 属性对应的 MetaClass
   public MetaClass metaClassForProperty(String name) {
     Class<?> propType = reflector.getGetterType(name);  // 获取 type 类中 name 字段的类
     return MetaClass.forClass(propType, reflectorFactory);
@@ -88,6 +88,7 @@ public class MetaClass {
     }
   }
 
+  // 获取 name 对应的字段的类型
   public Class<?> getGetterType(String name) {
     PropertyTokenizer prop = new PropertyTokenizer(name);
     if (prop.hasNext()) {
@@ -173,10 +174,12 @@ public class MetaClass {
     }
   }
 
+  // 获取 GetInvoker
   public Invoker getGetInvoker(String name) {
     return reflector.getGetInvoker(name);
   }
 
+  // 获取 SetInvoker
   public Invoker getSetInvoker(String name) {
     return reflector.getSetInvoker(name);
   }
