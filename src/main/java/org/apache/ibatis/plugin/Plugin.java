@@ -34,6 +34,7 @@ public class Plugin implements InvocationHandler {
   private final Interceptor interceptor;
   private final Map<Class<?>, Set<Method>> signatureMap;
 
+  // 构造函数是 private 的，wrap 方法中会调用此方法
   private Plugin(Object target, Interceptor interceptor, Map<Class<?>, Set<Method>> signatureMap) {
     this.target = target;
     this.interceptor = interceptor;
@@ -41,10 +42,11 @@ public class Plugin implements InvocationHandler {
   }
 
   public static Object wrap(Object target, Interceptor interceptor) {
-    Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);  // 获取拦截器需要处理的方法
+    Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);  // 获取拦截器需要处理的方法，key 是 Class，value 是 Method 数组
     Class<?> type = target.getClass();  // 获取 target 的类型
-    Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
+    Class<?>[] interfaces = getAllInterfaces(type, signatureMap);  // 获取 target 对象实现了多少被 Intercept 的类
     if (interfaces.length > 0) {
+      // 走动态代理
       return Proxy.newProxyInstance(
           type.getClassLoader(),
           interfaces,
@@ -57,10 +59,13 @@ public class Plugin implements InvocationHandler {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      // method.getDeclaringClass() 能够获取 method 是哪个类定义的
       Set<Method> methods = signatureMap.get(method.getDeclaringClass());
       if (methods != null && methods.contains(method)) {
+        // intercept 前后就可以做 pre-process 和 post-process 的拦截
         return interceptor.intercept(new Invocation(target, method, args));
       }
+      // 不是 interceptor 的目标方法
       return method.invoke(target, args);
     } catch (Exception e) {
       throw ExceptionUtil.unwrapThrowable(e);

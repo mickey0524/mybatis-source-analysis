@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 /**
  * @author Clinton Begin
  */
-// 调用器
+// 调用器，执行 Method 方法
 public class Invocation {
 
   private final Object target;

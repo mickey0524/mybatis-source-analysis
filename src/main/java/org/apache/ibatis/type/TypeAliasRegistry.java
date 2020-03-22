@@ -52,6 +52,7 @@ public class TypeAliasRegistry {
     registerAlias("float", Float.class);
     registerAlias("boolean", Boolean.class);
 
+    // 前面没加_的是大写的 Byte 数组，加了_的是小写的 byte 数组
     registerAlias("byte[]", Byte[].class);
     registerAlias("long[]", Long[].class);
     registerAlias("short[]", Short[].class);
@@ -123,6 +124,7 @@ public class TypeAliasRegistry {
     }
   }
 
+  // 调用重载类，superType 设为 Object，等于白给
   public void registerAliases(String packageName) {
     registerAliases(packageName, Object.class);
   }

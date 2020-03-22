@@ -52,14 +52,15 @@ import org.apache.ibatis.session.Configuration;
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
+// TypeHandler 管理器，因为 Java 类型和 Jdbc 类型需要相互转换
 public final class TypeHandlerRegistry {
 
   // 存储 JdbcType 和 Handler 的映射
   private final Map<JdbcType, TypeHandler<?>>  jdbcTypeHandlerMap = new EnumMap<>(JdbcType.class);
-  // 存储 JavaType 与 (JdbcType, typeHandler) 的映射
+  // 存储 JavaType 与 (JdbcType, typeHandler) 的映射，命名改成 javaTypeHandlerMap 就舒服很多
   private final Map<Type, Map<JdbcType, TypeHandler<?>>> typeHandlerMap = new ConcurrentHashMap<>();
   private final TypeHandler<Object> unknownTypeHandler;
-  // 存储 typeHandler 类和实例的映射
+  // 上述两个 Map 存储的 value 是 Class，那么自然需要实例化，这里存储 typeHandler 类和实例的映射
   private final Map<Class<?>, TypeHandler<?>> allTypeHandlersMap = new HashMap<>();
 
   private static final Map<JdbcType, TypeHandler<?>> NULL_TYPE_HANDLER_MAP = Collections.emptyMap();
@@ -479,7 +480,7 @@ public final class TypeHandlerRegistry {
   }
 
   // scan
-
+  // scan 一个包，找出所有的 TypeHandler 文件
   public void register(String packageName) {
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
     resolverUtil.find(new ResolverUtil.IsA(TypeHandler.class), packageName);

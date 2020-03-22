@@ -23,4 +23,5 @@
 // Interceptor intercept 方法可以在 Invocation 执行前后做自己的事情
 // Invocation 就是执行一个 Method 的反射调用
 // Plugin 用于判断拦截器是否需要拦截目标方法
+// Mybatis 中的 plugin 机制也是使用动态代理的（很容易想到），因此也是基于接口来做的，Signature 注解中的 type 需要时接口类
 package org.apache.ibatis.plugin;
