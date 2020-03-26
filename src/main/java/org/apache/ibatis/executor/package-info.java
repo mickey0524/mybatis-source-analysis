@@ -19,7 +19,7 @@
 // 包含 Statement 的执行器，其实说到底 MyBatis 最后还是调用 java.sql 中的三种 Statement
 // Statement、PrepareStatement 以及 CallableStatement
 // Session -> CachingExecutor -> BaseExecutor -> 具体的三种执行器
-// CachingExecutor 中的 Cache 是一个 Mapper 文件一个实例
+// CachingExecutor 中的 Cache 是一个 Statement 一个实例，采用分布式缓存
 // BaseExecutor 中使用的是本地 Cache，只在一个 Session 中有用
 // 一般来说，默认使用的是 SimpleExecutor
 // 然后根据 Statement 不同的类型（普通的 Statement、PrepareStatement 以及 CallableStatement）选择不同的 StatementHandler

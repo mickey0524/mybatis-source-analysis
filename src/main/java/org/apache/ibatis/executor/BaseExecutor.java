@@ -65,7 +65,7 @@ public abstract class BaseExecutor implements Executor {
 
   protected BaseExecutor(Configuration configuration, Transaction transaction) {
     this.transaction = transaction;
-    this.deferredLoads = new ConcurrentLinkedQueue<>();
+    this.deferredLoads = new ConcurrentLinkedQueue<>();  // 延迟加载
     this.localCache = new PerpetualCache("LocalCache");  // 传入的是 id
     this.localOutputParameterCache = new PerpetualCache("LocalOutputParameterCache");
     this.closed = false;
@@ -158,6 +158,7 @@ public abstract class BaseExecutor implements Executor {
       if (list != null) {
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
       } else {
+        // 本地缓存不存在，请求 DB
         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
       }
     } finally {
@@ -401,6 +402,7 @@ public abstract class BaseExecutor implements Executor {
       return localCache.getObject(key) != null && localCache.getObject(key) != EXECUTION_PLACEHOLDER;
     }
 
+    // 延迟加载
     public void load() {
       @SuppressWarnings("unchecked")
       // we suppose we get back a List

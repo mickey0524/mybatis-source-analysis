@@ -126,6 +126,7 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  // 校验 <settings> 中定义的配置，需要是 Configuration 中的 Field
   private Properties settingsAsProperties(XNode context) {
     if (context == null) {
       return new Properties();

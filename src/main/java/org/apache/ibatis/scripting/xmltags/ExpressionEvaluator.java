@@ -26,6 +26,7 @@ import org.apache.ibatis.builder.BuilderException;
 /**
  * @author Clinton Begin
  */
+// 表达式评估器
 public class ExpressionEvaluator {
 
   public boolean evaluateBoolean(String expression, Object parameterObject) {

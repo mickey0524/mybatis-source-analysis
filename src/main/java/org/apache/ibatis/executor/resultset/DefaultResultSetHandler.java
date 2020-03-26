@@ -187,7 +187,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     int resultSetCount = 0;
     ResultSetWrapper rsw = getFirstResultSet(stmt);
 
-    List<ResultMap> resultMaps = mappedStatement.getResultMaps();  // XML 中定义的 resultMap
+    List<ResultMap> resultMaps = mappedStatement.getResultMaps();  // XML 中定义的 resultMap，resultType 也会被创建为 inlineResultMap
     // 一般 resultMaps 里只有一个元素
     int resultMapCount = resultMaps.size();
     validateResultMapsCount(rsw, resultMapCount);

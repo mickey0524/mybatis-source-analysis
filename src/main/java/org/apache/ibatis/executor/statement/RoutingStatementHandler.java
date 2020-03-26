@@ -46,7 +46,7 @@ public class RoutingStatementHandler implements StatementHandler {
         delegate = new SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         break;
       case PREPARED:
-        // PreparedStatement
+        // PreparedStatement，MappedStatement 的默认 type 就是 PreparedStatement
         delegate = new PreparedStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
         break;
       case CALLABLE:

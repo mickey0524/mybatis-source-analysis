@@ -21,6 +21,7 @@ import java.lang.reflect.Constructor;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+// 日志工厂
 public final class LogFactory {
 
   /**

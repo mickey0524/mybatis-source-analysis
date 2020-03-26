@@ -117,7 +117,7 @@ public abstract class BaseBuilder {
     }
   }
 
-  // 获取类
+  // 获取类，优先走 Alias，然后走 Resources.classForName 兜底
   protected <T> Class<? extends T> resolveClass(String alias) {
     if (alias == null) {
       return null;

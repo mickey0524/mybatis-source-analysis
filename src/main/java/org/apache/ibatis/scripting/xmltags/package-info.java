@@ -16,4 +16,5 @@
 /**
  * Default XML MyBatis language.
  */
+// 默认的 XML MyBatis 语言
 package org.apache.ibatis.scripting.xmltags;

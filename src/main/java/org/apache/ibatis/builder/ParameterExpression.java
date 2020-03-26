@@ -53,6 +53,7 @@ public class ParameterExpression extends HashMap<String, String> {
     }
   }
 
+  // 处理表达式
   private void expression(String expression, int left) {
     int match = 1;
     int right = left + 1;
@@ -68,6 +69,7 @@ public class ParameterExpression extends HashMap<String, String> {
     jdbcTypeOpt(expression, right);
   }
 
+  // 处理属性
   private void property(String expression, int left) {
     if (left < expression.length()) {
       // 首先，得到逗号或者冒号之前的字符串，加入到 property
@@ -138,7 +140,7 @@ public class ParameterExpression extends HashMap<String, String> {
     }
   }
 
-  // 过滤 str 首位的空白
+  // 过滤 str 首尾的空白
   private String trimmedStr(String str, int start, int end) {
     while (str.charAt(start) <= 0x20) {
       start++;

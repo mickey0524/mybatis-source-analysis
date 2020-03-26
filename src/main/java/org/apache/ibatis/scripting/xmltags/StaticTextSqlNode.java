@@ -18,6 +18,7 @@ package org.apache.ibatis.scripting.xmltags;
 /**
  * @author Clinton Begin
  */
+// 静态的文字 Sql 节点
 public class StaticTextSqlNode implements SqlNode {
   private final String text;
 

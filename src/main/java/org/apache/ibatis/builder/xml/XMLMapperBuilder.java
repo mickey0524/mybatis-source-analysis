@@ -117,12 +117,12 @@ public class XMLMapperBuilder extends BaseBuilder {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
-      cacheRefElement(context.evalNode("cache-ref"));
-      cacheElement(context.evalNode("cache"));
+      cacheRefElement(context.evalNode("cache-ref"));  // <cache-ref>
+      cacheElement(context.evalNode("cache"));  // <cache>
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
-      resultMapElements(context.evalNodes("/mapper/resultMap"));
-      sqlElement(context.evalNodes("/mapper/sql"));
-      buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
+      resultMapElements(context.evalNodes("/mapper/resultMap"));  // <resultMap>
+      sqlElement(context.evalNodes("/mapper/sql"));  // <sql>
+      buildStatementFromContext(context.evalNodes("select|insert|update|delete"));  // <curd>
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
     }
@@ -212,7 +212,7 @@ public class XMLMapperBuilder extends BaseBuilder {
     if (context != null) {
       String type = context.getStringAttribute("type", "PERPETUAL");
       Class<? extends Cache> typeClass = typeAliasRegistry.resolveAlias(type);  // Cache 类型
-      String eviction = context.getStringAttribute("eviction", "LRU");
+      String eviction = context.getStringAttribute("eviction", "LRU");  // 驱逐类型
       Class<? extends Cache> evictionClass = typeAliasRegistry.resolveAlias(eviction);  // Eviction 类型
       Long flushInterval = context.getLongAttribute("flushInterval");
       Integer size = context.getIntAttribute("size");
@@ -281,7 +281,8 @@ public class XMLMapperBuilder extends BaseBuilder {
     List<ResultMapping> resultMappings = new ArrayList<>();
     resultMappings.addAll(additionalResultMappings);
     List<XNode> resultChildren = resultMapNode.getChildren();
-    // 开始遍历 <mapper> 中的子标签
+    // 开始遍历 <resultMap> 中的子标签
+    // 将 <resultMap> 中的子标签变成 ResultMapping 对象
     for (XNode resultChild : resultChildren) {
       if ("constructor".equals(resultChild.getName())) {
         processConstructorElement(resultChild, typeClass, resultMappings);
@@ -406,8 +407,8 @@ public class XMLMapperBuilder extends BaseBuilder {
     String resultSet = context.getStringAttribute("resultSet");
     String foreignColumn = context.getStringAttribute("foreignColumn");
     boolean lazy = "lazy".equals(context.getStringAttribute("fetchType", configuration.isLazyLoadingEnabled() ? "lazy" : "eager"));
-    Class<?> javaTypeClass = resolveClass(javaType);
-    Class<? extends TypeHandler<?>> typeHandlerClass = resolveClass(typeHandler);
+    Class<?> javaTypeClass = resolveClass(javaType);  // Java Class
+    Class<? extends TypeHandler<?>> typeHandlerClass = resolveClass(typeHandler);  // TypeHandler Class
     JdbcType jdbcTypeEnum = resolveJdbcType(jdbcType);
     return builderAssistant.buildResultMapping(resultType, property, column, javaTypeClass, jdbcTypeEnum, nestedSelect, nestedResultMap, notNullColumn, columnPrefix, typeHandlerClass, flags, resultSet, foreignColumn, lazy);
   }

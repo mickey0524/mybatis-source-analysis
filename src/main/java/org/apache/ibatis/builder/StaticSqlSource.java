@@ -25,7 +25,7 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
-// 静态 SqlSource
+// 静态 SqlSource，StaticSqlSource 是 SqlSourceBuilder 中生成的
 public class StaticSqlSource implements SqlSource {
 
   private final String sql;

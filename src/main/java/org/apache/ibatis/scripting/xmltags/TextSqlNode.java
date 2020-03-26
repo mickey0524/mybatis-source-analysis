@@ -38,6 +38,7 @@ public class TextSqlNode implements SqlNode {
     this.injectionFilter = injectionFilter;
   }
 
+  // 如果 text 中出现 `${XXX}`，则说明是动态节点
   public boolean isDynamic() {
     DynamicCheckerTokenParser checker = new DynamicCheckerTokenParser();
     GenericTokenParser parser = createParser(checker);
@@ -56,6 +57,7 @@ public class TextSqlNode implements SqlNode {
     return new GenericTokenParser("${", "}", handler);
   }
 
+  // binding token 解析器
   private static class BindingTokenParser implements TokenHandler {
 
     private DynamicContext context;
@@ -68,6 +70,7 @@ public class TextSqlNode implements SqlNode {
 
     @Override
     public String handleToken(String content) {
+      // 获取 parameterObject
       Object parameter = context.getBindings().get("_parameter");
       if (parameter == null) {
         context.getBindings().put("value", null);
@@ -87,6 +90,7 @@ public class TextSqlNode implements SqlNode {
     }
   }
 
+  // 动态检测器 Token 解析器
   private static class DynamicCheckerTokenParser implements TokenHandler {
 
     private boolean isDynamic;

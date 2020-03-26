@@ -120,6 +120,7 @@ public class CacheBuilder {
     }
   }
 
+  // 设置标准的装饰器
   private Cache setStandardDecorators(Cache cache) {
     try {
       MetaObject metaCache = SystemMetaObject.forObject(cache);

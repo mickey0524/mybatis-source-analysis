@@ -36,13 +36,13 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
-// 默认的参数处理器
+// 默认的参数处理器，在 Statement 实例创建后调用
 public class DefaultParameterHandler implements ParameterHandler {
 
-  private final TypeHandlerRegistry typeHandlerRegistry;
+  private final TypeHandlerRegistry typeHandlerRegistry;  // 就指着这个变化类型了
 
   private final MappedStatement mappedStatement;
-  private final Object parameterObject;
+  private final Object parameterObject;  // 传递进来的参数对象
   private final BoundSql boundSql;
   private final Configuration configuration;
 
@@ -64,10 +64,11 @@ public class DefaultParameterHandler implements ParameterHandler {
   public void setParameters(PreparedStatement ps) {
     // parameterMap 已经被弃用了
     ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
-    List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+    List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();  // 这个是解析的时候获取的参数类型
     if (parameterMappings != null) {
       for (int i = 0; i < parameterMappings.size(); i++) {
         ParameterMapping parameterMapping = parameterMappings.get(i);
+        // 作用域 IN 和 INOUT 类型
         if (parameterMapping.getMode() != ParameterMode.OUT) {
           Object value;
           String propertyName = parameterMapping.getProperty();

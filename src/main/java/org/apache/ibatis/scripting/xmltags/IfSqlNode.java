@@ -18,10 +18,11 @@ package org.apache.ibatis.scripting.xmltags;
 /**
  * @author Clinton Begin
  */
+// <if> SqlNode
 public class IfSqlNode implements SqlNode {
   private final ExpressionEvaluator evaluator;
   private final String test;
-  private final SqlNode contents;
+  private final SqlNode contents;  // 传递进来的是 MixedSqlNode
 
   public IfSqlNode(SqlNode contents, String test) {
     this.test = test;
@@ -32,7 +33,7 @@ public class IfSqlNode implements SqlNode {
   @Override
   public boolean apply(DynamicContext context) {
     if (evaluator.evaluateBoolean(test, context.getBindings())) {
-      contents.apply(context);
+      contents.apply(context);  // <if> 中所有的 SqlNode 执行 apply 方法
       return true;
     }
     return false;

@@ -16,4 +16,5 @@
 /**
  * Base package for logging.
  */
+// logging 的基础包
 package org.apache.ibatis.logging;

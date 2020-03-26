@@ -20,6 +20,7 @@ import java.util.List;
 /**
  * @author Clinton Begin
  */
+// 多个 SqlNode 的集合
 public class MixedSqlNode implements SqlNode {
   private final List<SqlNode> contents;
 

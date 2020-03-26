@@ -32,6 +32,8 @@ import org.apache.ibatis.session.Configuration;
  * @since 3.2.0
  * @author Eduardo Macarron
  */
+// 原生的 Sql Source
+// 配合 StaticTextSqlNode.java 使用
 public class RawSqlSource implements SqlSource {
 
   private final SqlSource sqlSource;
@@ -42,10 +44,11 @@ public class RawSqlSource implements SqlSource {
 
   public RawSqlSource(Configuration configuration, String sql, Class<?> parameterType) {
     SqlSourceBuilder sqlSourceParser = new SqlSourceBuilder(configuration);
-    Class<?> clazz = parameterType == null ? Object.class : parameterType;
+    Class<?> clazz = parameterType == null ? Object.class : parameterType;  // 参数类型
     sqlSource = sqlSourceParser.parse(sql, clazz, new HashMap<>());
   }
 
+  // 获取 Sql
   private static String getSql(Configuration configuration, SqlNode rootSqlNode) {
     DynamicContext context = new DynamicContext(configuration, null);
     rootSqlNode.apply(context);

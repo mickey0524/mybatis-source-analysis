@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 /**
  * @author Clinton Begin
  */
+// XML 脚本的建造者
 public class XMLScriptBuilder extends BaseBuilder {
 
   private final XNode context;
@@ -50,7 +51,7 @@ public class XMLScriptBuilder extends BaseBuilder {
     initNodeHandlerMap();
   }
 
-
+  // 初始化 NodeHandler 的 Map
   private void initNodeHandlerMap() {
     nodeHandlerMap.put("trim", new TrimHandler());
     nodeHandlerMap.put("where", new WhereHandler());
@@ -63,17 +64,21 @@ public class XMLScriptBuilder extends BaseBuilder {
     nodeHandlerMap.put("bind", new BindHandler());
   }
 
+  // 解析节点
   public SqlSource parseScriptNode() {
     MixedSqlNode rootSqlNode = parseDynamicTags(context);
     SqlSource sqlSource;
     if (isDynamic) {
+      // text 中存在 ${}
       sqlSource = new DynamicSqlSource(configuration, rootSqlNode);
     } else {
+      // text 不存在 ${}
       sqlSource = new RawSqlSource(configuration, rootSqlNode, parameterType);
     }
     return sqlSource;
   }
 
+  // 解析动态 tag
   protected MixedSqlNode parseDynamicTags(XNode node) {
     List<SqlNode> contents = new ArrayList<>();
     NodeList children = node.getNode().getChildNodes();
@@ -82,6 +87,7 @@ public class XMLScriptBuilder extends BaseBuilder {
       if (child.getNode().getNodeType() == Node.CDATA_SECTION_NODE || child.getNode().getNodeType() == Node.TEXT_NODE) {
         String data = child.getStringBody("");
         TextSqlNode textSqlNode = new TextSqlNode(data);
+        // 向 contents 中添加 Text 节点
         if (textSqlNode.isDynamic()) {
           contents.add(textSqlNode);
           isDynamic = true;
@@ -94,6 +100,7 @@ public class XMLScriptBuilder extends BaseBuilder {
         if (handler == null) {
           throw new BuilderException("Unknown element <" + nodeName + "> in SQL statement.");
         }
+        // handleNode 函数会向 contents 中添加 TrimSqlNode 等节点
         handler.handleNode(child, contents);
         isDynamic = true;
       }
@@ -101,6 +108,7 @@ public class XMLScriptBuilder extends BaseBuilder {
     return new MixedSqlNode(contents);
   }
 
+  // Node 的处理者
   private interface NodeHandler {
     void handleNode(XNode nodeToHandle, List<SqlNode> targetContents);
   }
@@ -181,6 +189,7 @@ public class XMLScriptBuilder extends BaseBuilder {
     }
   }
 
+  // 这个可能是最常用的 tag 了
   private class IfHandler implements NodeHandler {
     public IfHandler() {
       // Prevent Synthetic Access
@@ -189,7 +198,7 @@ public class XMLScriptBuilder extends BaseBuilder {
     @Override
     public void handleNode(XNode nodeToHandle, List<SqlNode> targetContents) {
       MixedSqlNode mixedSqlNode = parseDynamicTags(nodeToHandle);
-      String test = nodeToHandle.getStringAttribute("test");
+      String test = nodeToHandle.getStringAttribute("test");  // 获取判断条件
       IfSqlNode ifSqlNode = new IfSqlNode(mixedSqlNode, test);
       targetContents.add(ifSqlNode);
     }

@@ -16,4 +16,11 @@
 /**
  * Base package for languages.
  */
+// 当 XMLStatementBuilder 中生成 MappedStatement 对象的时候，会调用
+// langDriver.createSqlSource() 方法，MyBatis 中，默认是 XMLLanguageDriver
+// XMLLanguageDriver 创建 XMLScriptBuilder 对象进行 XML 节点的递归解析，得到各种 SqlNode 的集合
+// 根据 TextNode 中是否包含 ${} 来判断是静态的和还是动态的，分别调用 RawSqlSource 和 DynamicContext
+// RawSqlSource 由于是静态的，会在构造函数中调用 SqlSourceBuilder 生成 SqlSource，而 DynamicContext 是动态的
+// 需要在 getBoundSql 根据传入的参数进行 ${} 的替换，再实时创建 sqlSource，因此会比静态的慢
+// 这里需要注意是根据 ${} 而不是 #{}
 package org.apache.ibatis.scripting;

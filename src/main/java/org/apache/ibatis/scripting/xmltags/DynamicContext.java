@@ -29,6 +29,7 @@ import org.apache.ibatis.session.Configuration;
 /**
  * @author Clinton Begin
  */
+// 动态上下文
 public class DynamicContext {
 
   public static final String PARAMETER_OBJECT_KEY = "_parameter";
@@ -42,6 +43,7 @@ public class DynamicContext {
   private final StringJoiner sqlBuilder = new StringJoiner(" ");
   private int uniqueNumber = 0;
 
+  // 传入的 parameterObject 就是参数
   public DynamicContext(Configuration configuration, Object parameterObject) {
     if (parameterObject != null && !(parameterObject instanceof Map)) {
       MetaObject metaObject = configuration.newMetaObject(parameterObject);
@@ -74,9 +76,10 @@ public class DynamicContext {
     return uniqueNumber++;
   }
 
+  // 上下文 Map
   static class ContextMap extends HashMap<String, Object> {
     private static final long serialVersionUID = 2977601501966151582L;
-    private final MetaObject parameterMetaObject;
+    private final MetaObject parameterMetaObject;  // 参数源对象
     private final boolean fallbackParameterObject;
 
     public ContextMap(MetaObject parameterMetaObject, boolean fallbackParameterObject) {
@@ -104,6 +107,7 @@ public class DynamicContext {
     }
   }
 
+  // 上下文属性获取器
   static class ContextAccessor implements PropertyAccessor {
 
     @Override

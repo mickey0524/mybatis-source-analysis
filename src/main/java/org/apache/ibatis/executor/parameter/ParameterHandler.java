@@ -24,6 +24,7 @@ import java.sql.SQLException;
  * @author Clinton Begin
  */
 // 参数处理器，用于 PreparedStatement
+// 不懂 DefaultParameterHandler 为啥不放在这个目录
 public interface ParameterHandler {
 
   Object getParameterObject();

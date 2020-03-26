@@ -31,7 +31,8 @@ import org.apache.ibatis.type.JdbcType;
 /**
  * @author Clinton Begin
  */
-// SqlSource 的生成器
+// SqlSource 的生成器，RawSqlSource 和 DynamicSqlSource 中调用了
+// 主要是用于生成 parameterMappings
 public class SqlSourceBuilder extends BaseBuilder {
 
   private static final String PARAMETER_PROPERTIES = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
@@ -67,12 +68,12 @@ public class SqlSourceBuilder extends BaseBuilder {
     @Override
     public String handleToken(String content) {
       parameterMappings.add(buildParameterMapping(content));
-      return "?";
+      return "?";  // 符号抽常量
     }
 
     // 生成 ParameterMapping
     private ParameterMapping buildParameterMapping(String content) {
-      Map<String, String> propertiesMap = parseParameterMapping(content);
+      Map<String, String> propertiesMap = parseParameterMapping(content);  // 解析 ParameterExpression
       String property = propertiesMap.get("property");  // 属性名
       Class<?> propertyType;
       if (metaParameters.hasGetter(property)) { // issue #448 get type from additional params

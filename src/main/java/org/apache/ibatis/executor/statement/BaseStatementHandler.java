@@ -103,6 +103,7 @@ public abstract class BaseStatementHandler implements StatementHandler {
     }
   }
 
+  // 实例化 Statement
   protected abstract Statement instantiateStatement(Connection connection) throws SQLException;
 
   // 设置超时

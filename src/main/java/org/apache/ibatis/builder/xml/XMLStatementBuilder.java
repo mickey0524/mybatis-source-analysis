@@ -64,7 +64,7 @@ public class XMLStatementBuilder extends BaseBuilder {
       return;
     }
 
-    String nodeName = context.getNode().getNodeName();
+    String nodeName = context.getNode().getNodeName();  // insert|update|select|delete
     SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));  // 获取 SQL 类型
     boolean isSelect = sqlCommandType == SqlCommandType.SELECT;  // 是否为 select 语句
     boolean flushCache = context.getBooleanAttribute("flushCache", !isSelect);
@@ -73,11 +73,12 @@ public class XMLStatementBuilder extends BaseBuilder {
 
     // Include Fragments before parsing
     // 解析之前先解析 <include> SQL片段 这个在前面 XMLMapperBuilder 中已经构建完成，这里需要调用并解析
+    // 将 <include> 替换为真正的 sql 片段
     XMLIncludeTransformer includeParser = new XMLIncludeTransformer(configuration, builderAssistant);
     includeParser.applyIncludes(context.getNode());
 
     String parameterType = context.getStringAttribute("parameterType");  // 获取参数类型
-    Class<?> parameterTypeClass = resolveClass(parameterType);
+    Class<?> parameterTypeClass = resolveClass(parameterType);  // 获取 parameterType
 
     String lang = context.getStringAttribute("lang");
     LanguageDriver langDriver = getLanguageDriver(lang);
@@ -139,7 +140,7 @@ public class XMLStatementBuilder extends BaseBuilder {
   // parentId 是 insert 的 id
   private void parseSelectKeyNodes(String parentId, List<XNode> list, Class<?> parameterTypeClass, LanguageDriver langDriver, String skRequiredDatabaseId) {
     for (XNode nodeToHandle : list) {
-      String id = parentId + SelectKeyGenerator.SELECT_KEY_SUFFIX;  // 添加 selectKey 的后缀
+      String id = parentId + SelectKeyGenerator.SELECT_KEY_SUFFIX;  // !添加 selectKey 的后缀
       String databaseId = nodeToHandle.getStringAttribute("databaseId");
       if (databaseIdMatchesCurrent(id, databaseId, skRequiredDatabaseId)) {
         parseSelectKeyNode(id, nodeToHandle, parameterTypeClass, langDriver, databaseId);
@@ -181,6 +182,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     configuration.addKeyGenerator(id, new SelectKeyGenerator(keyStatement, executeBefore));
   }
 
+  // 处理完 <selectKey> 之后，将节点删除
   private void removeSelectKeyNodes(List<XNode> selectKeyNodes) {
     for (XNode nodeToHandle : selectKeyNodes) {
       nodeToHandle.getParent().getNode().removeChild(nodeToHandle.getNode());
